@@ -47,6 +47,7 @@ output/
 .env.local
 config.json
 api_keys.json
+demo/
 
 # Test and development
 test_output/
