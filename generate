@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v python3 >/dev/null 2>&1; then
+  exec python3 tools/generate.py "$@"
+else
+  echo "python3 not found. Run: python tools/generate.py $@" >&2
+  exit 1
+fi
+

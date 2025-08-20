@@ -1,0 +1,46 @@
+{
+  "timestamp": "2025-08-18T20:30:36.328186",
+  "summary": {
+    "total_tests": 25,
+    "passed": 18,
+    "warnings": 1,
+    "failed": 2,
+    "success_rate": 72.0
+  },
+  "results": {
+    "modules": {
+      "config": "OK",
+      "core": "OK",
+      "crawler": "OK",
+      "methodology": "OK",
+      "analytics": "OK",
+      "charts": "OK",
+      "remediation": "OK",
+      "accessibility_statement": "OK",
+      "processors": "OK",
+      "report": "OK",
+      "pdf": "OK",
+      "emailer": "OK"
+    },
+    "features": {
+      "crawler": "OK - 4 pagine trovate",
+      "methodology": "OK",
+      "analytics": "OK",
+      "charts": "OK - 9 grafici",
+      "remediation": "OK",
+      "statement": "OK"
+    },
+    "integration": {
+      "full_scan": "ERROR: ChartGenerator.__init__() takes from 1 to 2 positional arguments but 3 were given",
+      "multi_page": "ERROR: \"Config\" object has no field \"scan_config\""
+    },
+    "performance": {
+      "memory": "SKIP - psutil non installato",
+      "crawler_init": "0.06ms",
+      "analytics_init": "0.00ms",
+      "charts_init": "0.13ms",
+      "metadata_init": "0.03ms"
+    },
+    "errors": []
+  }
+}

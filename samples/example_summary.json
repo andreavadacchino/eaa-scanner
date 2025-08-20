@@ -1,0 +1,126 @@
+{
+  "scan_id": "eaa_1705745400000",
+  "timestamp": "2024-01-20T10:30:00Z",
+  "url": "https://example.com",
+  "company_name": "ACME Spa",
+  "compliance": {
+    "wcag_version": "2.1",
+    "wcag_level": "AA",
+    "compliance_level": "parzialmente_conforme",
+    "eaa_compliance": "partially_compliant",
+    "overall_score": 75,
+    "categories": {
+      "perceivable": {
+        "errors": 5,
+        "warnings": 10
+      },
+      "operable": {
+        "errors": 2,
+        "warnings": 5
+      },
+      "understandable": {
+        "errors": 1,
+        "warnings": 3
+      },
+      "robust": {
+        "errors": 0,
+        "warnings": 2
+      }
+    }
+  },
+  "detailed_results": {
+    "errors": [
+      {
+        "type": "error",
+        "severity": "high",
+        "code": "alt_missing",
+        "description": "Immagine senza testo alternativo",
+        "count": 3,
+        "wcag_criteria": "1.1.1",
+        "remediation": "Aggiungere attributo alt descrittivo alle immagini",
+        "source": "WAVE"
+      },
+      {
+        "type": "error",
+        "severity": "high",
+        "code": "contrast",
+        "description": "Contrasto colore insufficiente",
+        "count": 2,
+        "wcag_criteria": "1.4.3",
+        "remediation": "Aumentare il contrasto colore (minimo 4.5:1 per testo normale)",
+        "source": "WAVE"
+      },
+      {
+        "type": "error",
+        "severity": "medium",
+        "code": "label_missing",
+        "description": "Campo form senza label",
+        "count": 1,
+        "wcag_criteria": "1.3.1",
+        "remediation": "Associare ogni campo input con un elemento label",
+        "source": "Axe-Core"
+      }
+    ],
+    "warnings": [
+      {
+        "type": "warning",
+        "severity": "low",
+        "code": "heading_skipped",
+        "description": "Livello di heading saltato",
+        "count": 2,
+        "wcag_criteria": "1.3.1",
+        "remediation": "Utilizzare heading in ordine gerarchico",
+        "source": "Pa11y"
+      }
+    ],
+    "scanner_scores": {
+      "wave": 70,
+      "pa11y": 75,
+      "axe_core": 80,
+      "lighthouse": 78
+    }
+  },
+  "recommendations": [
+    {
+      "priority": "alta",
+      "title": "Testo alternativo per immagini",
+      "description": "Molte immagini mancano di testo alternativo descrittivo, rendendo il contenuto inaccessibile agli screen reader",
+      "actions": [
+        "Aggiungere attributi alt descrittivi a tutte le immagini informative",
+        "Usare alt=\"\" per immagini decorative",
+        "Verificare che il testo alternativo descriva il contenuto, non solo l'immagine"
+      ]
+    },
+    {
+      "priority": "alta",
+      "title": "Contrasto colore insufficiente",
+      "description": "Il contrasto tra testo e sfondo non rispetta i requisiti minimi WCAG",
+      "actions": [
+        "Aumentare il contrasto a minimo 4.5:1 per testo normale",
+        "Garantire contrasto 3:1 per testo grande (18pt o 14pt bold)",
+        "Utilizzare strumenti di verifica contrasto nella fase di design"
+      ]
+    },
+    {
+      "priority": "media",
+      "title": "Etichette form mancanti",
+      "description": "Campi form senza label associate impediscono la corretta identificazione degli input",
+      "actions": [
+        "Associare ogni campo input con un elemento label",
+        "Utilizzare attributi aria-label dove le label visibili non sono possibili",
+        "Raggruppare campi correlati con fieldset e legend"
+      ]
+    }
+  ],
+  "scan_metadata": {
+    "scan_date": "2024-01-20",
+    "scanners_used": ["wave", "pa11y", "axe_core", "lighthouse"],
+    "total_issues": 11
+  },
+  "raw_scanner_data": {
+    "wave": {},
+    "pa11y": {},
+    "axe_core": {},
+    "lighthouse": {}
+  }
+}

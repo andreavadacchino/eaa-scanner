@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Accessibilità EAA - {{ company_name }}</title>
+    <style>
+        /* Reset e Base Styles */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            /* Modern Color Palette 2025 */
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1d4ed8;
+            --success: #059669;
+            --warning: #d97706;
+            --error: #dc2626;
+            --critical: #991b1b;
+            --neutral-50: #f9fafb;
+            --neutral-100: #f3f4f6;
+            --neutral-200: #e5e7eb;
+            --neutral-300: #d1d5db;
+            --neutral-400: #9ca3af;
+            --neutral-600: #4b5563;
+            --neutral-700: #374151;
+            --neutral-800: #1f2937;
+            --neutral-900: #111827;
+            
+            /* Typography */
+            --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            --font-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+            
+            /* Spacing */
+            --space-xs: 0.25rem;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 1.5rem;
+            --space-xl: 2rem;
+            --space-2xl: 3rem;
+            
+            /* Border Radius */
+            --radius-sm: 0.375rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        /* Base Typography */
+        html {
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            color: var(--neutral-800);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--neutral-50);
+            min-height: 100vh;
+        }
+
+        /* Skip Link per Accessibilità */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: var(--primary);
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: var(--radius-sm);
+            z-index: 100;
+        }
+
+        .skip-link:focus {
+            top: 6px;
+        }
+
+        /* Layout Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--neutral-200);
+            padding: var(--space-lg) 0;
+            margin-bottom: var(--space-2xl);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--space-md);
+        }
+
+        .company-info h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--neutral-900);
+            margin-bottom: var(--space-xs);
+        }
+
+        .company-info p {
+            color: var(--neutral-600);
+            font-size: 0.875rem;
+        }
+
+        .report-meta {
+            text-align: right;
+            font-size: 0.875rem;
+            color: var(--neutral-600);
+        }
+
+        .report-meta strong {
+            color: var(--neutral-800);
+        }
+
+        /* Section Styles */
+        .section {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--space-xl);
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: var(--space-lg);
+            border-bottom: 1px solid var(--neutral-200);
+            background: var(--neutral-50);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--neutral-900);
+            margin-bottom: var(--space-xs);
+        }
+
+        .section-description {
+            color: var(--neutral-600);
+            font-size: 0.875rem;
+        }
+
+        .section-content {
+            padding: var(--space-lg);
+        }
+
+        /* Dashboard Metriche */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            box-shadow: var(--shadow-md);
+            border-left: 4px solid var(--primary);
+            transition: transform 0.2s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .metric-card.success {
+            border-left-color: var(--success);
+        }
+
+        .metric-card.warning {
+            border-left-color: var(--warning);
+        }
+
+        .metric-card.error {
+            border-left-color: var(--error);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: var(--space-xs);
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: var(--neutral-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+        }
+
+        /* Compliance Status */
+        .compliance-status {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .compliance-status.compliant {
+            background: rgb(34 197 94 / 0.1);
+            color: var(--success);
+        }
+
+        .compliance-status.partially-compliant {
+            background: rgb(245 158 11 / 0.1);
+            color: var(--warning);
+        }
+
+        .compliance-status.non-compliant {
+            background: rgb(239 68 68 / 0.1);
+            color: var(--error);
+        }
+
+        /* Tabelle */
+        .table-container {
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--neutral-200);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        th {
+            background: var(--neutral-50);
+            padding: var(--space-md);
+            text-align: left;
+            font-weight: 600;
+            color: var(--neutral-700);
+            border-bottom: 1px solid var(--neutral-200);
+        }
+
+        td {
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--neutral-100);
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background: var(--neutral-50);
+        }
+
+        /* Severity Tags */
+        .severity-tag {
+            display: inline-block;
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .severity-critical {
+            background: rgb(153 27 27 / 0.1);
+            color: var(--critical);
+        }
+
+        .severity-high {
+            background: rgb(220 38 38 / 0.1);
+            color: var(--error);
+        }
+
+        .severity-medium {
+            background: rgb(217 119 6 / 0.1);
+            color: var(--warning);
+        }
+
+        .severity-low {
+            background: rgb(75 85 99 / 0.1);
+            color: var(--neutral-600);
+        }
+
+        /* LLM Content Areas */
+        .llm-content {
+            background: var(--neutral-50);
+            border: 2px dashed var(--neutral-300);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin: var(--space-lg) 0;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neutral-400);
+            font-style: italic;
+        }
+
+        .llm-content.populated {
+            background: white;
+            border: 1px solid var(--neutral-200);
+            color: var(--neutral-800);
+            font-style: normal;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            background: var(--neutral-200);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            height: 12px;
+            margin: var(--space-sm) 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+            border-radius: var(--radius-md);
+        }
+
+        .progress-fill.success {
+            background: var(--success);
+        }
+
+        .progress-fill.warning {
+            background: var(--warning);
+        }
+
+        .progress-fill.error {
+            background: var(--error);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                text-align: center;
+            }
+
+            .report-meta {
+                text-align: center;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 0 var(--space-sm);
+            }
+
+            .section-content {
+                padding: var(--space-md);
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .section {
+                box-shadow: none;
+                border: 1px solid var(--neutral-200);
+                margin-bottom: var(--space-lg);
+                break-inside: avoid;
+            }
+
+            .metric-card {
+                box-shadow: none;
+                border: 1px solid var(--neutral-200);
+            }
+
+            .skip-link {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Skip Link per Accessibilità -->
+    <a href="#main-content" class="skip-link">Salta al contenuto principale</a>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="company-info">
+                    <h1>Report Accessibilità EAA</h1>
+                    <p><strong>{{ company_name }}</strong> - {{ url }}</p>
+                </div>
+                <div class="report-meta">
+                    <p><strong>Data scansione:</strong> {{ scan_date }}</p>
+                    <p><strong>Versione:</strong> {{ report_version }}</p>
+                    <p><strong>Email:</strong> {{ contact_email }}</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="container">
+        
+        <!-- Executive Summary (LLM Generated) -->
+        <section class="section" aria-labelledby="executive-summary-title">
+            <div class="section-header">
+                <h2 id="executive-summary-title" class="section-title">Sommario Esecutivo</h2>
+                <p class="section-description">Analisi generale dello stato di accessibilità del sito web</p>
+            </div>
+            <div class="section-content">
+                <div class="llm-content {% if executive_summary %}populated{% endif %}">
+                    {% if executive_summary %}
+                        {{ executive_summary|safe }}
+                    {% else %}
+                        [Contenuto generato automaticamente da OpenAI - Executive Summary]
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Metriche -->
+        <section class="section" aria-labelledby="metrics-title">
+            <div class="section-header">
+                <h2 id="metrics-title" class="section-title">Metriche di Accessibilità</h2>
+                <p class="section-description">Panoramica dei risultati della scansione</p>
+            </div>
+            <div class="section-content">
+                <div class="metrics-grid">
+                    <div class="metric-card {% if compliance_score >= 80 %}success{% elif compliance_score >= 60 %}warning{% else %}error{% endif %}">
+                        <div class="metric-value" style="color: {% if compliance_score >= 80 %}var(--success){% elif compliance_score >= 60 %}var(--warning){% else %}var(--error){% endif %}">
+                            {{ compliance_score|default(0) }}%
+                        </div>
+                        <div class="metric-label">Punteggio Conformità</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill {% if compliance_score >= 80 %}success{% elif compliance_score >= 60 %}warning{% else %}error{% endif %}" style="width: {{ compliance_score|default(0) }}%"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric-card error">
+                        <div class="metric-value" style="color: var(--error)">{{ total_issues|default(0) }}</div>
+                        <div class="metric-label">Problemi Totali</div>
+                        <div class="compliance-status {{ compliance_level|default('non-compliant') }}">
+                            {% if compliance_level == 'compliant' %}
+                                ✓ Conforme
+                            {% elif compliance_level == 'partially_compliant' %}
+                                ⚠ Parzialmente Conforme
+                            {% else %}
+                                ✗ Non Conforme
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="metric-card critical">
+                        <div class="metric-value" style="color: var(--critical)">{{ critical_issues|default(0) }}</div>
+                        <div class="metric-label">Problemi Critici</div>
+                    </div>
+
+                    <div class="metric-card warning">
+                        <div class="metric-value" style="color: var(--warning)">{{ scanners_used|length|default(0) }}</div>
+                        <div class="metric-label">Scanner Utilizzati</div>
+                        <p style="font-size: 0.75rem; margin-top: var(--space-xs); color: var(--neutral-600);">
+                            {% for scanner in scanners_used %}{{ scanner }}{% if not loop.last %}, {% endif %}{% endfor %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problemi per Categoria WCAG -->
+        <section class="section" aria-labelledby="issues-title">
+            <div class="section-header">
+                <h2 id="issues-title" class="section-title">Problemi per Categoria WCAG 2.2</h2>
+                <p class="section-description">Dettaglio dei problemi rilevati organizzati per principi WCAG</p>
+            </div>
+            <div class="section-content">
+                {% for category in wcag_categories %}
+                <div style="margin-bottom: var(--space-xl);">
+                    <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: var(--space-md); color: var(--neutral-800);">
+                        {{ category.name }} ({{ category.issues|length }} problemi)
+                    </h3>
+                    
+                    <div class="table-container">
+                        <table>
+                            <caption class="sr-only">Problemi di accessibilità per la categoria {{ category.name }}</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Problema</th>
+                                    <th scope="col">Gravità</th>
+                                    <th scope="col">Criterio WCAG</th>
+                                    <th scope="col">Elementi Affetti</th>
+                                    <th scope="col">Scanner</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for issue in category.issues %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ issue.description }}</strong>
+                                        {% if issue.help %}<br><small style="color: var(--neutral-600);">{{ issue.help }}</small>{% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="severity-tag severity-{{ issue.severity|lower }}">
+                                            {{ issue.severity }}
+                                        </span>
+                                    </td>
+                                    <td>{{ issue.wcag_criterion }}</td>
+                                    <td>{{ issue.count }}</td>
+                                    <td>{{ issue.source }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Raccomandazioni Tecniche (LLM Generated) -->
+        <section class="section" aria-labelledby="recommendations-title">
+            <div class="section-header">
+                <h2 id="recommendations-title" class="section-title">Raccomandazioni Tecniche</h2>
+                <p class="section-description">Suggerimenti specifici per risolvere i problemi identificati</p>
+            </div>
+            <div class="section-content">
+                <div class="llm-content {% if technical_recommendations %}populated{% endif %}">
+                    {% if technical_recommendations %}
+                        {{ technical_recommendations|safe }}
+                    {% else %}
+                        [Contenuto generato automaticamente da OpenAI - Raccomandazioni Tecniche Dettagliate]
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Piano di Remediation (LLM Generated) -->
+        <section class="section" aria-labelledby="remediation-title">
+            <div class="section-header">
+                <h2 id="remediation-title" class="section-title">Piano di Remediation</h2>
+                <p class="section-description">Roadmap prioritizzata per la risoluzione dei problemi</p>
+            </div>
+            <div class="section-content">
+                <div class="llm-content {% if remediation_plan %}populated{% endif %}">
+                    {% if remediation_plan %}
+                        {{ remediation_plan|safe }}
+                    {% else %}
+                        [Contenuto generato automaticamente da OpenAI - Piano di Remediation Strutturato con Timeline]
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Appendici e Dettagli Tecnici -->
+        <section class="section" aria-labelledby="appendix-title">
+            <div class="section-header">
+                <h2 id="appendix-title" class="section-title">Appendici Tecniche</h2>
+                <p class="section-description">Dettagli tecnici, metodologia e riferimenti normativi</p>
+            </div>
+            <div class="section-content">
+                
+                <!-- Metodologia -->
+                <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: var(--space-md);">Metodologia di Scansione</h3>
+                <div style="margin-bottom: var(--space-xl);">
+                    <p style="margin-bottom: var(--space-md);">La scansione è stata eseguita utilizzando i seguenti strumenti automatizzati:</p>
+                    <ul style="margin-left: var(--space-lg); margin-bottom: var(--space-md);">
+                        {% for scanner in scanners_used %}
+                        <li style="margin-bottom: var(--space-xs);"><strong>{{ scanner }}</strong></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Limitazioni -->
+                <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: var(--space-md);">Limitazioni</h3>
+                <div style="margin-bottom: var(--space-xl);">
+                    <ul style="margin-left: var(--space-lg);">
+                        <li style="margin-bottom: var(--space-xs);">I test automatizzati coprono circa il 30-40% dei requisiti di accessibilità</li>
+                        <li style="margin-bottom: var(--space-xs);">È necessaria una valutazione manuale per una conformità completa</li>
+                        <li style="margin-bottom: var(--space-xs);">I risultati si riferiscono alla data di scansione indicata</li>
+                        <li style="margin-bottom: var(--space-xs);">Alcune funzionalità dinamiche potrebbero richiedere test specifici</li>
+                    </ul>
+                </div>
+
+                <!-- Riferimenti Normativi -->
+                <h3 style="font-size: 1.125rem; font-weight: 600; margin-bottom: var(--space-md);">Riferimenti Normativi</h3>
+                <div>
+                    <ul style="margin-left: var(--space-lg);">
+                        <li style="margin-bottom: var(--space-xs);"><strong>European Accessibility Act (EAA)</strong> - Direttiva UE 2019/882</li>
+                        <li style="margin-bottom: var(--space-xs);"><strong>WCAG 2.2</strong> - Web Content Accessibility Guidelines Livello AA</li>
+                        <li style="margin-bottom: var(--space-xs);"><strong>EN 301 549 v3.2.1</strong> - Standard Europeo per l'Accessibilità</li>
+                        <li style="margin-bottom: var(--space-xs);"><strong>Legge Stanca</strong> - Disposizioni per favorire l'accesso dei soggetti disabili</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer style="background: var(--neutral-100); padding: var(--space-lg) 0; margin-top: var(--space-2xl); text-align: center; font-size: 0.875rem; color: var(--neutral-600);">
+        <div class="container">
+            <p>Report generato il {{ generation_date }} - EAA Scanner v{{ scanner_version }}</p>
+            <p style="margin-top: var(--space-xs);">Questo report è conforme alle linee guida di accessibilità WCAG 2.2 AA</p>
+        </div>
+    </footer>
+
+    <script>
+        // Enhance accessibility and interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add keyboard navigation for metric cards
+            const metricCards = document.querySelectorAll('.metric-card');
+            metricCards.forEach(card => {
+                card.setAttribute('tabindex', '0');
+                card.setAttribute('role', 'button');
+                card.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        // Could trigger detailed view or modal
+                    }
+                });
+            });
+
+            // Smooth scroll for skip link
+            const skipLink = document.querySelector('.skip-link');
+            if (skipLink) {
+                skipLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.getElementById('main-content').focus();
+                });
+            }
+
+            // Add aria-live region for dynamic content updates
+            const ariaLive = document.createElement('div');
+            ariaLive.setAttribute('aria-live', 'polite');
+            ariaLive.setAttribute('aria-atomic', 'false');
+            ariaLive.className = 'sr-only';
+            ariaLive.id = 'status-updates';
+            document.body.appendChild(ariaLive);
+        });
+    </script>
+
+    <!-- Screen Reader Only Styles -->
+    <style>
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</body>
+</html>

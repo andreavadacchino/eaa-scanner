@@ -1,0 +1,15 @@
+# Page/Flow Inventory
+# Generated 2025-08-18T15:13:46.800662Z
+items:
+  - name: Home
+    path: /
+    notes: "<notes>"
+  - name: Sign in
+    path: /login
+    notes: "<notes>"
+  - name: Checkout
+    path: /checkout
+    notes: "<notes>"
+  - name: Account
+    path: /account
+    notes: "<notes>"

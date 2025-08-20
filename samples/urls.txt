@@ -1,0 +1,6 @@
+# Esempio di file con URL da scansionare
+# Una URL per riga, righe che iniziano con # sono ignorate
+
+https://www.example.com
+https://www.google.com
+https://www.wikipedia.org

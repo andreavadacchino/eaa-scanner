@@ -1,0 +1,11 @@
+[project]
+name = "eaa-scanner"
+version = "0.1.0"
+description = "EAA Accessibility Multi-Scanner pipeline (Python)"
+requires-python = ">=3.10"
+readme = "README.md"
+authors = [{name = "Principi Team"}]
+
+[project.scripts]
+eaa-scan = "eaa_scanner.cli:main"
+

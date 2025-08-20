@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relazione di conformità all'accessibilità del sito {{ company_name }}</title>
+    <style>
+        /* Stile pulito e minimale per report professionale */
+        body {
+            background-color: #ffffff;
+            color: #000000;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 2em;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        h1, h2, h3 {
+            font-weight: bold;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            color: #003366;
+        }
+        
+        h1 {
+            font-size: 1.8em;
+            border-bottom: 2px solid #003366;
+            padding-bottom: 0.3em;
+        }
+        
+        h2 {
+            font-size: 1.4em;
+            margin-top: 2em;
+        }
+        
+        h3 {
+            font-size: 1.2em;
+            color: #004080;
+        }
+        
+        p {
+            margin: 1em 0;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin: 1em 0;
+            padding-left: 2em;
+        }
+        
+        li {
+            margin: 0.5em 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5em 0;
+        }
+        
+        th, td {
+            border: 1px solid #000000;
+            padding: 0.75em;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        
+        caption {
+            font-weight: bold;
+            text-align: left;
+            margin-bottom: 0.5em;
+            font-size: 1.1em;
+        }
+        
+        /* Classi per priorità */
+        .prio-critical {
+            color: #990000;
+            font-weight: bold;
+        }
+        
+        .prio-high {
+            color: #cc0000;
+            font-weight: bold;
+        }
+        
+        .prio-medium {
+            color: #cc6600;
+        }
+        
+        .prio-low {
+            color: #666666;
+        }
+        
+        /* Badge di conformità */
+        .conformity-badge {
+            display: inline-block;
+            padding: 0.5em 1em;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 0.5em 0;
+        }
+        
+        .conformity-compliant {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .conformity-partial {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        
+        .conformity-non-compliant {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Codice inline */
+        code {
+            background-color: #f5f5f5;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        /* Sezioni evidenziate */
+        .highlight-box {
+            background-color: #f0f8ff;
+            border-left: 4px solid #003366;
+            padding: 1em;
+            margin: 1.5em 0;
+        }
+        
+        /* Sintesi Esecutiva - Design Migliorato */
+        .executive-summary-section {
+            margin: 2em 0;
+        }
+        
+        .conformity-status-banner {
+            display: flex;
+            align-items: center;
+            padding: 1.5em;
+            margin-bottom: 2em;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e9e9e9 100%);
+            border-left: 5px solid #666;
+        }
+        
+        .conformity-status-banner.conforme {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left-color: #4caf50;
+        }
+        
+        .conformity-status-banner.parzialmente-conforme {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left-color: #ff9800;
+        }
+        
+        .conformity-status-banner.non-conforme {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border-left-color: #f44336;
+        }
+        
+        .status-icon {
+            font-size: 3em;
+            margin-right: 1em;
+            color: #666;
+        }
+        
+        .conforme .status-icon { color: #4caf50; }
+        .parzialmente-conforme .status-icon { color: #ff9800; }
+        .non-conforme .status-icon { color: #f44336; }
+        
+        .status-content h3 {
+            margin: 0 0 0.5em 0;
+            color: #003366;
+        }
+        
+        .status-text {
+            font-weight: bold;
+        }
+        
+        .status-content p {
+            margin: 0;
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        /* Dashboard Metriche */
+        .metrics-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5em;
+            margin: 2em 0;
+        }
+        
+        .metric-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5em;
+            display: flex;
+            align-items: flex-start;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .metric-icon {
+            font-size: 2em;
+            margin-right: 1em;
+            opacity: 0.8;
+        }
+        
+        .metric-content {
+            flex: 1;
+        }
+        
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #003366;
+            line-height: 1;
+            margin-bottom: 0.2em;
+        }
+        
+        .metric-label {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 0.2em;
+        }
+        
+        .metric-sublabel {
+            color: #666;
+            font-size: 0.85em;
+        }
+        
+        .metric-errors .metric-value { color: #d32f2f; }
+        .metric-warnings .metric-value { color: #f57c00; }
+        .metric-score .metric-value { color: #003366; }
+        .metric-pages .metric-value { color: #388e3c; }
+        
+        /* Progress Bar */
+        .metric-progress {
+            margin-top: 0.5em;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #003366, #0066cc);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .executive-text {
+            margin-top: 2em;
+            padding: 1.5em;
+            background: #fafafa;
+            border-radius: 4px;
+        }
+        
+        /* Print styles */
+        @media print {
+            body {
+                margin: 0;
+                font-size: 12pt;
+            }
+            
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+            
+            table {
+                page-break-inside: avoid;
+            }
+            
+            .no-print {
+                display: none;
+            }
+        }
+        
+        /* Link accessibili */
+        a {
+            color: #0066cc;
+            text-decoration: underline;
+        }
+        
+        a:hover, a:focus {
+            color: #0052a3;
+            text-decoration: none;
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+        
+        /* Footer */
+        .report-footer {
+            margin-top: 3em;
+            padding-top: 2em;
+            border-top: 1px solid #ccc;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Relazione di conformità all'accessibilità del sito {{ company_name }}</h1>
+
+    <!-- Sezione 1: Descrizione introduttiva -->
+    <h2>Descrizione introduttiva</h2>
+    {% if llm_content and llm_content.executive_summary %}
+    {{ llm_content.executive_summary | safe }}
+    {% else %}
+    <p>Questa relazione tecnica di conformità all'accessibilità è stata generata automaticamente sulla base di dati provenienti da analisi condotte tramite strumenti automatizzati di validazione, in conformità con i criteri previsti dal WCAG 2.1 livello AA, la norma EN 301 549 e le linee guida AgID, nel rispetto dell'European Accessibility Act (EAA). Il documento rappresenta una fotografia attendibile dello stato attuale di accessibilità del sito <a href="{{ url }}">{{ url }}</a>, evidenziando le principali criticità rilevate in modo tecnico e documentato.</p>
+    
+    <p>L'obiettivo della relazione è fornire un quadro sintetico e dettagliato di conformità, identificando le aree di massimo impatto e le urgenze di intervento, per permettere una pianificazione efficace della remediation e garantire l'accessibilità digitale a tutti gli utenti, incluse le persone con disabilità. Si sottolinea che questa analisi rappresenta una prima valutazione tecnica automatizzata che deve essere integrata con verifiche manuali e test di fruibilità reali per una certificazione completa del sito.</p>
+    
+    <p>L'European Accessibility Act e le normative associate rappresentano un obbligo normativo crescente per la digitalizzazione inclusiva e questo documento intende aiutare {{ company_name }} a conformarsi in modo efficace, responsabilizzato e conforme agli standard internazionali. Le anomalie individuate sono descritte dettagliatamente con riferimenti ai criteri WCAG e alle best practice di sviluppo accessibile.</p>
+    {% endif %}
+
+    <!-- Sezione 2: Metadati -->
+    <h2>Metadati</h2>
+    <ul>
+        <li><strong>Cliente:</strong> {{ company_name }}</li>
+        <li><strong>URL Testato:</strong> <a href="{{ test_url }}">{{ test_url }}</a></li>
+        <li><strong>Data e ora verifica:</strong> {{ test_datetime }}</li>
+        <li><strong>Numero pagine analizzate:</strong> {{ test_scope }}</li>
+        <li><strong>Fornitore:</strong> {{ provider | default('Team Accessibilità') }}</li>
+        <li><strong>Referente tecnico:</strong> {{ contact_email }}</li>
+        <li><strong>Strumenti utilizzati:</strong>
+            <ul>
+                {% for scanner in scanners_used %}
+                <li>{{ scanner }} - {{ scanner_descriptions[scanner] | default('Scanner di accessibilità') }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% if llm_model %}
+        <li><strong>Analisi AI:</strong> {{ llm_model }} (OpenAI)</li>
+        {% endif %}
+    </ul>
+
+    <!-- Sezione 3: Sintesi esecutiva -->
+    <h2>Sintesi esecutiva</h2>
+    <div class="executive-summary-section">
+        <!-- Badge di stato prominente -->
+        <div class="conformity-status-banner {{ compliance_status }}">
+            <div class="status-icon">
+                {% if compliance_status == 'conforme' %}
+                ✓
+                {% elif compliance_status == 'parzialmente-conforme' %}
+                ⚠
+                {% else %}
+                ✗
+                {% endif %}
+            </div>
+            <div class="status-content">
+                <h3>Stato di Conformità: <span class="status-text">{{ compliance_text | upper }}</span></h3>
+                <p>Valutazione secondo European Accessibility Act, EN 301 549 e WCAG 2.1 AA</p>
+            </div>
+        </div>
+        
+        <!-- Metriche principali con design migliorato -->
+        <div class="metrics-dashboard">
+            <div class="metric-card metric-errors">
+                <div class="metric-icon">⚠️</div>
+                <div class="metric-content">
+                    <div class="metric-value">{{ total_errors | default(0) }}</div>
+                    <div class="metric-label">Errori Critici</div>
+                    <div class="metric-sublabel">Richiedono intervento immediato</div>
+                </div>
+            </div>
+            
+            <div class="metric-card metric-warnings">
+                <div class="metric-icon">ℹ️</div>
+                <div class="metric-content">
+                    <div class="metric-value">{{ total_warnings | default(0) }}</div>
+                    <div class="metric-label">Avvisi</div>
+                    <div class="metric-sublabel">Da verificare manualmente</div>
+                </div>
+            </div>
+            
+            <div class="metric-card metric-score">
+                <div class="metric-icon">📊</div>
+                <div class="metric-content">
+                    <div class="metric-value">{{ compliance_score | default(0) }}%</div>
+                    <div class="metric-label">Punteggio Conformità</div>
+                    <div class="metric-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ compliance_score | default(0) }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="metric-card metric-pages">
+                <div class="metric-icon">📄</div>
+                <div class="metric-content">
+                    <div class="metric-value">{{ pages_scanned | default(1) }}</div>
+                    <div class="metric-label">Pagine Analizzate</div>
+                    <div class="metric-sublabel">{{ scan_date | default('Oggi') }}</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sintesi testuale -->
+        <div class="executive-text">
+            {% if llm_content and llm_content.executive_analysis %}
+            {{ llm_content.executive_analysis | safe }}
+            {% else %}
+            <p>Durante l'audit automatico sono stati rilevati complessivamente <strong>{{ total_errors | default(0) }} errori</strong> e <strong>{{ total_warnings | default(0) }} avvisi</strong> che interessano principalmente le aree di {{ main_issue_areas | join(', ') | default('accessibilità generale') }}. La classificazione come {{ compliance_text }} deriva dalla presenza di errori di severità {{ severity_distribution | default('da determinare') }} che impattano direttamente l'esperienza di persone con disabilità.</p>
+            <p>Si sottolinea che questa valutazione è basata su un'analisi automatizzata e rappresenta una prima fotografia dello stato di accessibilità presente, da integrare necessariamente con verifiche manuali per una valutazione definitiva e certificata.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Sezione 4: Contesto e ambito -->
+    <h2>Contesto e ambito</h2>
+    <p>L'analisi tecnica è stata eseguita sul sito web pubblico disponibile all'URL <a href="{{ url }}">{{ url }}</a>. Il workflow di scansione ha considerato {{ pages_scanned }} pagine rappresentative del dominio, con tecnologie web standard come HTML, CSS e ARIA. Non sono stati valutati sistemi backend, applicazioni mobili native o software esterni.</p>
+    
+    <p>La verifica è basata su strumenti automatizzati che individuano problemi di accessibilità relativi a strutture semantiche, testi alternativi, contrasti, form e interazioni. Tuttavia, non copre interazioni complesse, contenuti dinamici non accessibili automaticamente, né elementi multimediali avanzati con necessità di verifiche manuali specifiche.</p>
+    
+    <p>L'ambito normativo considerato include standard europei (EAA, EN 301 549), criteri internazionali (WCAG 2.1 AA) e linee guida italiane per siti pubblici (AgID). Sono esclusi dal controllo i documenti PDF esterni e app mobile non collegati direttamente al sito web.</p>
+
+    <!-- Sezione 5: Metodologia -->
+    <h2>Metodologia</h2>
+    <p>L'analisi di accessibilità è stata condotta con l'ausilio di strumenti automatizzati riconosciuti nel settore:</p>
+    <ul>
+        {% for scanner in scanners_used %}
+        <li><strong>{{ scanner }}</strong>: {{ scanner_descriptions[scanner] | default('Scanner di accessibilità') }}</li>
+        {% endfor %}
+    </ul>
+    
+    <p>Il processo di validazione ha permesso di identificare errori e avvisi secondo le logiche di scansione integrate nei software. I dati raccolti sono stati successivamente elaborati per aggregare errori unici e raggruppare le problematiche per categorie secondo linee guida consolidate.</p>
+    
+    {% if llm_model %}
+    <p>L'analisi è stata arricchita con intelligenza artificiale ({{ llm_model }}) per fornire raccomandazioni contestualizzate e piani di remediation prioritizzati basati sulle best practice del settore.</p>
+    {% endif %}
+
+    <!-- Sezione 6: Quadro normativo -->
+    <h2>Quadro normativo</h2>
+    <p>La conformità è valutata rispetto ai seguenti standard e normative:</p>
+    
+    <table>
+        <caption>Tabella riepilogativa delle principali normative</caption>
+        <thead>
+            <tr>
+                <th scope="col">Norma</th>
+                <th scope="col">Data</th>
+                <th scope="col">Ambito</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">WCAG 2.1 Level AA</th>
+                <td>Giugno 2018</td>
+                <td>Standard internazionale per l'accessibilità web</td>
+            </tr>
+            <tr>
+                <th scope="row">EN 301 549 v3.2.1</th>
+                <td>Marzo 2021</td>
+                <td>Accessibilità ICT per prodotti e servizi (web, app, hardware)</td>
+            </tr>
+            <tr>
+                <th scope="row">European Accessibility Act (EAA)</th>
+                <td>Applicazione obbligatoria dal 28 giugno 2025</td>
+                <td>Prodotti e servizi digitali in EU, inclusi privati e commercio elettronico</td>
+            </tr>
+            <tr>
+                <th scope="row">Linee Guida AgID</th>
+                <td>Aggiornamento continuo</td>
+                <td>Accessibilità siti web PA italiana</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Sezione 7: Sintesi del livello di conformità -->
+    <h2>Sintesi del livello di conformità</h2>
+    <p>Le WCAG 2.1 sono organizzate attorno a quattro principi fondamentali sintetizzati nell'acronimo P.O.U.R.:</p>
+    
+    <table>
+        <caption>Stato di conformità per area WCAG</caption>
+        <thead>
+            <tr>
+                <th scope="col">Area</th>
+                <th scope="col">Stato</th>
+                <th scope="col">Problemi rilevati</th>
+                <th scope="col">Note</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for area in pour_analysis %}
+            <tr>
+                <th scope="row">{{ area.name }}</th>
+                <td class="conformity-{{ area.status }}">{{ area.status_text }}</td>
+                <td>{{ area.issue_count }}</td>
+                <td>{{ area.notes }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Sezione 8: Problemi principali rilevati -->
+    <h2>Problemi principali rilevati</h2>
+    {% for category in issue_categories %}
+    <h3>{{ category.name }}</h3>
+    <p><strong>Impatto:</strong> {{ category.impact }}</p>
+    <p>{{ category.description }}</p>
+    
+    {% if category.wcag_criteria %}
+    <p><strong>Criteri WCAG correlati:</strong> {{ category.wcag_criteria | join(', ') }}</p>
+    {% endif %}
+    
+    {% if llm_content and llm_content.recommendations and llm_content.recommendations[category.key] %}
+    <div class="highlight-box">
+        <p><strong>Raccomandazione AI:</strong></p>
+        {{ llm_content.recommendations[category.key] | safe }}
+    </div>
+    {% endif %}
+    
+    <p><strong>Azioni consigliate:</strong></p>
+    <ul>
+        {% for action in category.actions %}
+        <li>{{ action }}</li>
+        {% endfor %}
+    </ul>
+    {% endfor %}
+
+    <!-- Sezione 9: Elenco dettagliato problemi -->
+    <h2>Elenco dettagliato problemi</h2>
+    <p>Questa sezione documenta in dettaglio ogni problematica rilevata durante l'analisi automatica.</p>
+    
+    <table>
+        <caption>Dettaglio problemi rilevati</caption>
+        <thead>
+            <tr>
+                <th scope="col">Categoria</th>
+                <th scope="col">Descrizione</th>
+                <th scope="col">Occorrenze</th>
+                <th scope="col">WCAG</th>
+                <th scope="col">Priorità</th>
+                <th scope="col">Azione Specifica</th>
+                <th scope="col">Localizzazione</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for issue in detailed_issues %}
+            <tr>
+                <th scope="row">{{ issue.category }}</th>
+                <td>
+                    {{ issue.description }}
+                    {% if issue.code_snippet %}
+                    <details>
+                        <summary>Mostra codice con errore</summary>
+                        <pre><code>{{ issue.code_snippet }}</code></pre>
+                    </details>
+                    {% endif %}
+                    {% if issue.fixed_example %}
+                    <details>
+                        <summary>Esempio corretto</summary>
+                        <pre><code>{{ issue.fixed_example }}</code></pre>
+                    </details>
+                    {% endif %}
+                </td>
+                <td>{{ issue.count }}</td>
+                <td>
+                    {% if issue.wcag_criterion != 'N/A' %}
+                    <a href="https://www.w3.org/WAI/WCAG21/Understanding/{{ issue.wcag_criterion | replace('.', '') }}.html" 
+                       target="_blank" rel="noopener">
+                        {{ issue.wcag_criterion }}
+                    </a>
+                    {% else %}
+                    {{ issue.wcag_criterion }}
+                    {% endif %}
+                </td>
+                <td class="prio-{{ issue.priority | lower }}">{{ issue.priority }}</td>
+                <td>{{ issue.action }}</td>
+                <td>
+                    {% if issue.selectors %}
+                    <details>
+                        <summary>Selettori CSS</summary>
+                        <ul>
+                            {% for selector in issue.selectors %}
+                            <li><code>{{ selector }}</code></li>
+                            {% endfor %}
+                        </ul>
+                    </details>
+                    {% endif %}
+                    {% if issue.pages %}
+                    <small>Pagine: {{ issue.pages | join(', ') }}</small>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Sezione 10: Glossario criteri WCAG più frequenti -->
+    <h2>Glossario criteri WCAG più frequenti</h2>
+    <ul>
+        <li><strong>1.1.1 Testo alternativo</strong> – Le immagini devono avere una descrizione alternativa (attributo alt) che trasmetta il contenuto e la funzione dell'immagine per utenti con disabilità visive.</li>
+        <li><strong>1.3.1 Informazioni e relazioni</strong> – Le informazioni, la struttura e le relazioni veicolate attraverso la presentazione possono essere determinate programmaticamente o sono disponibili nel testo.</li>
+        <li><strong>1.4.3 Contrasto minimo</strong> – Il testo e gli elementi interattivi devono avere un contrasto sufficiente rispetto allo sfondo (almeno 4.5:1 per testo normale).</li>
+        <li><strong>2.1.1 Tastiera</strong> – Tutte le funzionalità devono essere accessibili tramite la tastiera senza richiedere mouse.</li>
+        <li><strong>2.4.1 Salto di blocchi</strong> – È disponibile un meccanismo per saltare blocchi di contenuto che si ripetono su più pagine web.</li>
+        <li><strong>3.3.2 Etichette e suggerimenti</strong> – I campi dei moduli devono essere etichettati in modo chiaro con istruzioni e label.</li>
+        <li><strong>4.1.2 Nome, ruolo, valore</strong> – Per tutti i componenti dell'interfaccia utente, il nome e il ruolo possono essere determinati programmaticamente.</li>
+    </ul>
+
+    <!-- Sezione 11: Piano di remediation -->
+    <h2>Piano di remediation</h2>
+    {% if llm_content and llm_content.remediation_plan %}
+    {{ llm_content.remediation_plan | safe }}
+    {% else %}
+    <table>
+        <caption>Piano operativo di remediation con priorità e assegnazioni</caption>
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Intervento</th>
+                <th scope="col">Area WCAG</th>
+                <th scope="col">Impatto</th>
+                <th scope="col">Priorità</th>
+                <th scope="col">Owner</th>
+                <th scope="col">Stato</th>
+                <th scope="col">Deadline</th>
+                <th scope="col">Note Tecniche</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for action in remediation_actions %}
+            <tr>
+                <th scope="row">{{ loop.index }}</th>
+                <td>{{ action.intervention }}</td>
+                <td>{{ action.area }}</td>
+                <td>{{ action.impact }}</td>
+                <td class="prio-{{ action.priority | lower }}">{{ action.priority }}</td>
+                <td>{{ action.owner | default('Da assegnare') }}</td>
+                <td>{{ action.status | default('Da iniziare') }}</td>
+                <td>{{ action.deadline | default('Da definire') }}</td>
+                <td>{{ action.technical_notes | default('Verificare con test automatici e manuali') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <!-- Sezione 12: Raccomandazioni finali -->
+    <h2>Raccomandazioni finali</h2>
+    {% if llm_content and llm_content.final_recommendations %}
+    {{ llm_content.final_recommendations | safe }}
+    {% else %}
+    <p>Per garantire la piena conformità alle normative sull'accessibilità e migliorare l'esperienza utente per tutti, si raccomanda di:</p>
+    <ol>
+        <li>Implementare le correzioni identificate seguendo l'ordine di priorità indicato</li>
+        <li>Condurre test manuali con utenti reali, incluse persone con disabilità</li>
+        <li>Stabilire un processo di monitoraggio continuo dell'accessibilità</li>
+        <li>Formare il team di sviluppo sulle best practice di accessibilità</li>
+        <li>Integrare i controlli di accessibilità nel processo di sviluppo (shift-left)</li>
+        <li>Pubblicare una dichiarazione di accessibilità sul sito</li>
+        <li>Implementare un meccanismo di feedback per gli utenti</li>
+    </ol>
+    {% endif %}
+
+    <!-- Footer del report -->
+    <div class="report-footer">
+        <p><strong>Nota:</strong> Questo report è stato generato automaticamente il {{ scan_date }} utilizzando strumenti di scansione automatizzati. Per una valutazione completa della conformità, si raccomanda di integrare questa analisi con test manuali e valutazioni da parte di esperti di accessibilità.</p>
+        
+        {% if llm_model %}
+        <p><em>Analisi arricchita con AI ({{ llm_model }}) per fornire raccomandazioni contestualizzate.</em></p>
+        {% endif %}
+        
+        <p>© {{ current_year }} - Report di Accessibilità EAA - {{ company_name }}</p>
+    </div>
+</body>
+</html>

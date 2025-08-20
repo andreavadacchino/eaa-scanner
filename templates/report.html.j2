@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Report accessibilità – {{ company_name or url }}</title>
+  <style>
+    body {
+      background: #fff;
+      color: #000;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 2rem;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    h1, h2, h3 {
+      color: #003366;
+      margin-top: 1.5rem;
+    }
+    h1 {
+      font-size: 2rem;
+      border-bottom: 3px solid #003366;
+      padding-bottom: 0.5rem;
+    }
+    h2 {
+      font-size: 1.5rem;
+      margin-top: 2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 0.75rem;
+      text-align: left;
+    }
+    th {
+      background: #f2f2f2;
+      font-weight: bold;
+    }
+    caption {
+      font-weight: bold;
+      text-align: left;
+      margin: 0.5rem 0;
+      font-size: 1.1rem;
+    }
+    .header-info {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+    .header-info p {
+      margin: 0.5rem 0;
+    }
+    .score {
+      font-size: 2rem;
+      font-weight: bold;
+      color: {% if compliance.overall_score >= 85 %}#27ae60{% elif compliance.overall_score >= 60 %}#f39c12{% else %}#e74c3c{% endif %};
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border: 2px solid;
+      border-radius: 999px;
+      font-weight: bold;
+      margin-left: 1rem;
+    }
+    .badge.conforme {
+      color: #27ae60;
+      border-color: #27ae60;
+      background: #eafaf1;
+    }
+    .badge.parzialmente_conforme {
+      color: #f39c12;
+      border-color: #f39c12;
+      background: #fef5e7;
+    }
+    .badge.non_conforme {
+      color: #e74c3c;
+      border-color: #e74c3c;
+      background: #fdedec;
+    }
+    .prio-alta {
+      color: #c00;
+      font-weight: bold;
+    }
+    .prio-media {
+      color: #c60;
+    }
+    .prio-bassa {
+      color: #666;
+    }
+    .recommendations {
+      background: #f0f8ff;
+      border-left: 4px solid #003366;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    .recommendations ul {
+      margin: 0.5rem 0;
+    }
+    .recommendations li {
+      margin: 0.5rem 0;
+    }
+    .severity-critical {
+      background: #ffebee;
+      color: #c62828;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .severity-high {
+      background: #fff3e0;
+      color: #e65100;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+    }
+    .severity-medium {
+      background: #fff9c4;
+      color: #f57c00;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+    }
+    .severity-low {
+      background: #f1f8e9;
+      color: #689f38;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+    }
+    footer {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid #ccc;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .stat-card {
+      background: #f8f9fa;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #003366;
+    }
+    .stat-label {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    .executive-summary {
+      background: #e8f4fd;
+      border-left: 4px solid #003366;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      border-radius: 8px;
+    }
+    .llm-note {
+      background: #e8f5e8;
+      color: #2e7d32;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .recommendation-item {
+      background: #f8f9fa;
+      border-left: 4px solid #003366;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 8px;
+    }
+    .recommendation-item.priority-alta {
+      border-left-color: #e74c3c;
+    }
+    .recommendation-item.priority-media {
+      border-left-color: #f39c12;
+    }
+    .recommendation-item.priority-bassa {
+      border-left-color: #27ae60;
+    }
+    .rec-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .rec-badges {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .priority-badge, .effort-badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+    }
+    .priority-badge.alta {
+      background: #ffebee;
+      color: #c62828;
+    }
+    .priority-badge.media {
+      background: #fff3e0;
+      color: #e65100;
+    }
+    .priority-badge.bassa {
+      background: #e8f5e8;
+      color: #2e7d32;
+    }
+    .effort-badge {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+    .remediation-plan .phase-item {
+      background: #f8f9fa;
+      border-left: 4px solid #003366;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 8px;
+    }
+    .phase-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    .phase-duration {
+      background: #ecf0f1;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    .phase-priority {
+      margin: 0.5rem 0;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    .phase-priority.priority-critica {
+      background: #ffebee;
+      color: #c62828;
+    }
+    .phase-priority.priority-alta {
+      background: #fff3e0;
+      color: #e65100;
+    }
+    .phase-priority.priority-media {
+      background: #fff9c4;
+      color: #f57c00;
+    }
+    @media print {
+      body {
+        padding: 1rem;
+      }
+      .badge {
+        border-width: 1px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Report di Accessibilità Web</h1>
+      <div class="header-info">
+        <p><strong>Azienda:</strong> {{ company_name or "Non specificata" }}</p>
+        <p><strong>URL analizzato:</strong> <a href="{{ url }}" target="_blank">{{ url }}</a></p>
+        <p><strong>Data scansione:</strong> {{ scan_metadata.scan_date }}</p>
+        <p>
+          <strong>Punteggio complessivo:</strong> 
+          <span class="score">{{ compliance.overall_score }}/100</span>
+          <span class="badge {{ compliance.compliance_level }}">{{ compliance.compliance_level|upper|replace("_", " ") }}</span>
+        </p>
+      </div>
+    </header>
+
+    <section>
+      <h2>Riepilogo Conformità</h2>
+      <p>
+        <strong>Standard di riferimento:</strong> WCAG {{ compliance.wcag_version }} Livello {{ compliance.wcag_level }}<br>
+        <strong>Conformità EAA:</strong> {{ compliance.eaa_compliance|replace("_", " ")|title }}<br>
+        <strong>Scanner utilizzati:</strong> {{ scan_metadata.scanners_used|join(", ") }}
+      </p>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">{{ detailed_results.errors|length }}</div>
+          <div class="stat-label">Errori Critici</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">{{ detailed_results.warnings|length }}</div>
+          <div class="stat-label">Avvisi</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">{{ scan_metadata.total_issues }}</div>
+          <div class="stat-label">Problemi Totali</div>
+        </div>
+      </div>
+
+      <table>
+        <caption>Riepilogo per Principi WCAG (POUR)</caption>
+        <thead>
+          <tr>
+            <th scope="col">Principio</th>
+            <th scope="col">Descrizione</th>
+            <th scope="col">Errori</th>
+            <th scope="col">Avvisi</th>
+            <th scope="col">Stato</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Percepibile</strong></td>
+            <td>Le informazioni devono essere presentate in modi percepibili</td>
+            <td>{{ compliance.categories.perceivable.errors }}</td>
+            <td>{{ compliance.categories.perceivable.warnings }}</td>
+            <td>{% if compliance.categories.perceivable.errors == 0 %}✅{% else %}⚠️{% endif %}</td>
+          </tr>
+          <tr>
+            <td><strong>Utilizzabile</strong></td>
+            <td>I componenti dell'interfaccia devono essere utilizzabili</td>
+            <td>{{ compliance.categories.operable.errors }}</td>
+            <td>{{ compliance.categories.operable.warnings }}</td>
+            <td>{% if compliance.categories.operable.errors == 0 %}✅{% else %}⚠️{% endif %}</td>
+          </tr>
+          <tr>
+            <td><strong>Comprensibile</strong></td>
+            <td>Le informazioni devono essere comprensibili</td>
+            <td>{{ compliance.categories.understandable.errors }}</td>
+            <td>{{ compliance.categories.understandable.warnings }}</td>
+            <td>{% if compliance.categories.understandable.errors == 0 %}✅{% else %}⚠️{% endif %}</td>
+          </tr>
+          <tr>
+            <td><strong>Robusto</strong></td>
+            <td>Il contenuto deve essere abbastanza robusto da funzionare con diverse tecnologie</td>
+            <td>{{ compliance.categories.robust.errors }}</td>
+            <td>{{ compliance.categories.robust.warnings }}</td>
+            <td>{% if compliance.categories.robust.errors == 0 %}✅{% else %}⚠️{% endif %}</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    {% if executive_summary %}
+    <section>
+      <h2>📋 Executive Summary</h2>
+      <div class="executive-summary">
+        <p>{{ executive_summary }}</p>
+        {% if llm_enhanced %}
+        <div class="llm-note">✨ Generato automaticamente via AI ({{ llm_model }})</div>
+        {% endif %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% if recommendations %}
+    <section>
+      <h2>💡 Raccomandazioni Tecniche</h2>
+      {% for rec in recommendations %}
+      <div class="recommendation-item priority-{{ rec.priority|lower }}">
+        <div class="rec-header">
+          <h3>{{ rec.title }}</h3>
+          <div class="rec-badges">
+            <span class="priority-badge {{ rec.priority|lower }}">{{ rec.priority|title }}</span>
+            {% if rec.estimated_effort %}
+            <span class="effort-badge">{{ rec.estimated_effort|title }}</span>
+            {% endif %}
+          </div>
+        </div>
+        <p>{{ rec.description }}</p>
+        {% if rec.actions %}
+        <p><strong>Azioni consigliate:</strong></p>
+        <ul>
+          {% for action in rec.actions %}
+          <li>{{ action }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        {% if rec.wcag_criteria %}
+        <div style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">
+          📖 WCAG: {{ rec.wcag_criteria }}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+      {% if llm_enhanced %}
+      <div class="llm-note">✨ Raccomandazioni generate via AI ({{ llm_model }})</div>
+      {% endif %}
+    </section>
+    {% endif %}
+
+    <section>
+      <h2>Dettaglio Problemi Rilevati</h2>
+      
+      {% if detailed_results.errors %}
+      <table>
+        <caption>Errori di Accessibilità (Top {{ detailed_results.errors|length }})</caption>
+        <thead>
+          <tr>
+            <th scope="col">Severità</th>
+            <th scope="col">Descrizione</th>
+            <th scope="col">Criterio WCAG</th>
+            <th scope="col">Scanner</th>
+            <th scope="col">Occorrenze</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for error in detailed_results.errors[:20] %}
+          <tr>
+            <td><span class="severity-{{ error.severity }}">{{ error.severity|upper }}</span></td>
+            <td>{{ error.description }}</td>
+            <td>{{ error.wcag_criteria or "—" }}</td>
+            <td>{{ error.source }}</td>
+            <td>{{ error.count or 1 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+
+      {% if detailed_results.warnings %}
+      <table>
+        <caption>Avvisi di Accessibilità (Top {{ detailed_results.warnings|length }})</caption>
+        <thead>
+          <tr>
+            <th scope="col">Severità</th>
+            <th scope="col">Descrizione</th>
+            <th scope="col">Criterio WCAG</th>
+            <th scope="col">Scanner</th>
+            <th scope="col">Occorrenze</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for warning in detailed_results.warnings[:15] %}
+          <tr>
+            <td><span class="severity-{{ warning.severity }}">{{ warning.severity|upper }}</span></td>
+            <td>{{ warning.description }}</td>
+            <td>{{ warning.wcag_criteria or "—" }}</td>
+            <td>{{ warning.source }}</td>
+            <td>{{ warning.count or 1 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+    </section>
+
+    {% if detailed_results.scanner_scores %}
+    <section>
+      <h2>Punteggi per Scanner</h2>
+      <table>
+        <caption>Risultati individuali degli scanner di accessibilità</caption>
+        <thead>
+          <tr>
+            <th scope="col">Scanner</th>
+            <th scope="col">Punteggio</th>
+            <th scope="col">Stato</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for scanner, score in detailed_results.scanner_scores.items() %}
+          <tr>
+            <td>{{ scanner|upper|replace("_", " ") }}</td>
+            <td>{{ score }}/100</td>
+            <td>
+              {% if score >= 85 %}✅ Buono{% elif score >= 60 %}⚠️ Migliorabile{% else %}❌ Critico{% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+    {% endif %}
+
+    {% if remediation_plan and remediation_plan.fasi %}
+    <section>
+      <h2>🎯 Piano di Remediation</h2>
+      <div class="remediation-plan">
+        {% for fase in remediation_plan.fasi %}
+        <div class="phase-item">
+          <div class="phase-header">
+            <h3>{{ fase.nome }}</h3>
+            <span class="phase-duration">{{ fase.durata_stimata }}</span>
+          </div>
+          <div class="phase-priority priority-{{ fase.priorita|lower }}">
+            Priorità: {{ fase.priorita|title }}
+          </div>
+          {% if fase.obiettivi %}
+          <div style="margin: 0.5rem 0;">
+            <strong>Obiettivi:</strong> {{ fase.obiettivi|join(', ') }}
+          </div>
+          {% endif %}
+          {% if fase.attivita %}
+          <ul>
+            {% for attivita in fase.attivita %}
+            <li>{{ attivita }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+        {% endfor %}
+        
+        {% if remediation_plan.milestone %}
+        <h3>Milestone</h3>
+        {% for milestone in remediation_plan.milestone %}
+        <div style="background: #e8f4fd; padding: 1rem; margin: 0.5rem 0; border-radius: 8px;">
+          <strong>Settimana {{ milestone.settimana }}:</strong> {{ milestone.obiettivo }}<br>
+          <small>Metriche: {{ milestone.metriche|join(', ') }}</small>
+        </div>
+        {% endfor %}
+        {% endif %}
+        
+        {% if llm_enhanced %}
+        <div class="llm-note">✨ Piano generato automaticamente via AI ({{ llm_model }})</div>
+        {% endif %}
+      </div>
+    </section>
+    {% endif %}
+
+    <footer>
+      <h3>Note Importanti</h3>
+      <p>
+        Questo report è generato attraverso una <strong>valutazione automatizzata</strong> e fornisce 
+        un'analisi preliminare dell'accessibilità del sito web secondo gli standard 
+        <strong>WCAG {{ compliance.wcag_version }} Livello {{ compliance.wcag_level }}</strong>.
+      </p>
+      <p>
+        <strong>Riferimenti normativi:</strong>
+      </p>
+      <ul>
+        <li>Web Content Accessibility Guidelines (WCAG) 2.1/2.2 Level AA</li>
+        <li>EN 301 549 v3.2.1 - Standard europeo per l'accessibilità ICT</li>
+        <li>European Accessibility Act (EAA) - Direttiva (UE) 2019/882</li>
+        <li>Legge Stanca (L. 4/2004) - Normativa italiana sull'accessibilità</li>
+      </ul>
+      <p>
+        <strong>Limitazioni:</strong> I test automatizzati possono rilevare solo circa il 30-40% 
+        dei problemi di accessibilità. Per una dichiarazione di conformità ufficiale è necessaria 
+        una <strong>verifica manuale approfondita</strong> che includa:
+      </p>
+      <ul>
+        <li>Test con tecnologie assistive reali (screen reader, ingranditori, ecc.)</li>
+        <li>Verifica della navigazione da tastiera</li>
+        <li>Valutazione della comprensibilità dei contenuti</li>
+        <li>Test con utenti con disabilità</li>
+      </ul>
+      <p>
+        <em>Report generato il {{ scan_metadata.scan_date }} • EAA Accessibility Scanner v1.0</em>
+      </p>
+    </footer>
+  </div>
+</body>
+</html>

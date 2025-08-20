@@ -1,0 +1,1 @@
+"""Utilità generali per il sistema EAA Scanner"""

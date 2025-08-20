@@ -1,0 +1,364 @@
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Relazione di conformità all'accessibilità del sito Beinat S.r.l.</title>
+  <style>
+    body {background-color: #ffffff;color: #000000;font-family: Arial, sans-serif;font-size: 16px;line-height: 1.6; margin: 2em;}
+    h1, h2, h3 { font-weight: bold;margin-top: 1.5em;color: #003366;}
+    table {width: 100%;border-collapse: collapse;margin: 1.5em 0;}
+    th, td {border: 1px solid #000000;padding: 0.5em;text-align: left;}
+    th { background-color: #f2f2f2;font-weight: bold; }
+    caption {font-weight: bold; text-align: left; margin-bottom: 0.5em; }
+    .prio-high { color: #cc0000; font-weight: bold; }
+    .prio-medium { color: #cc6600; }
+    .prio-low { color: #666666; }
+  </style>
+</head>
+<body>
+  <h1>Relazione di conformità all'accessibilità del sito Beinat S.r.l.</h1>
+
+  <h2>Descrizione introduttiva</h2>
+  <p>Questa relazione tecnica di conformità all'accessibilità è stata generata automaticamente sulla base di dati provenienti da analisi condotte tramite strumenti automatizzati di validazione, in conformità con i criteri previsti dal WCAG 2.1 livello AA, la norma EN 301 549 e le linee guida AgID, nel rispetto dell'European Accessibility Act (EAA). Il documento rappresenta una fotografia attendibile dello stato attuale di accessibilità del sito <a href="https://ae.beinat.com">https://ae.beinat.com</a>, evidenziando le principali criticità rilevate in modo tecnico e documentato.</p>
+  <p>L'obiettivo della relazione è fornire un quadro sintetico e dettagliato di conformità, identificando le aree di massimo impatto e le urgenze di intervento, per permettere una pianificazione efficace della remediation e garantire l'accessibilità digitale a tutti gli utenti, incluse le persone con disabilità. Si sottolinea che questa analisi rappresenta una prima valutazione tecnica automatizzata che deve essere integrata con verifiche manuali e test di fruibilità reali per una certificazione completa del sito.</p>
+  <p>L'European Accessibility Act e le normative associate rappresentano un obbligo normativo crescente per la digitalizzazione inclusiva e questo documento intende aiutare Beinat S.r.l. a conformarsi in modo efficace, responsabilizzato e conforme agli standard internazionali. Le anomalie individuate sono descritte dettagliatamente con riferimenti ai criteri WCAG e alle best practice di sviluppo accessibile.</p>
+  <p>La relazione rappresenta uno strumento tecnico avanzato e affidabile, utile ai team tecnici, ai responsabili di progetto e ai decisori per valutare puntualmente lo stato di accessibilità e intraprendere interventi mirati e prioritari. Il documento è pronto per essere integrato in sistemi di gestione documentale o stampato in PDF, garantendo la massima fruibilità e compatibilità.</p>
+  <p>Come per ogni analisi automatizzata, si raccomanda sempre di procedere con un audit manuale complementare per dettagliare e approfondire i casi più complessi, le interazioni utente specifiche e le personalizzazioni necessarie al rispetto pieno della normativa europea e italiana.</p>
+
+  <h2>Metadati</h2>
+  <ul>
+    <li>Cliente: Beinat S.r.l.</li>
+    <li>Progetto (URL): <a href="https://ae.beinat.com">https://ae.beinat.com</a></li>
+    <li>Data verifica: 28 luglio 2025</li>
+    <li>Fornitore: Principi S.r.l.</li>
+    <li>Referente tecnico: Team tecnico accessibilità</li>
+    <li>Strumenti/versioni: WAVE (dati di scansione)</li>
+  </ul>
+
+  <h2>Sintesi esecutiva</h2>
+  <p>Il sito web <a href="https://ae.beinat.com">https://ae.beinat.com</a> analizzato presenta uno stato di <strong>parziale conformità</strong> ai requisiti di accessibilità stabiliti dall’European Accessibility Act, dalla norma EN 301 549 e dal WCAG 2.1 livello AA. Durante l’audit automatico sono stati rilevati complessivamente <strong>62 errori</strong> e <strong>79 avvisi</strong> che interessano principalmente le aree di percezione e operatività, con punti critici quali mancanza di testi alternativi nelle immagini, assenza di etichette per moduli, link vuoti, e problemi di contrasto cromatico.</p>
+  <p>La classificazione come parzialmente conforme deriva dalla presenza di errori di severità alta e frequenza significativa, che impattano direttamente l’esperienza di persone con disabilità visive e motorie, minando la piena utilizzabilità del sito con tecnologie assistive e tastiera. Nonostante alcune aree siano conformi, quali quella dell’‘understandable’ e ‘robust’, le criticità individuate richiedono interventi mirati e prioritari di remediation per soddisfare gli obblighi normativi.</p>
+  <p>Si sottolinea che questa valutazione è basata su un’analisi automatizzata e rappresenta una prima fotografia dello stato di accessibilità presente, da integrare necessariamente con verifiche manuali per una valutazione definitiva e certificata. Le problematiche identificate necessitano di azioni correttive per garantire compliance normativa e migliorare l’esperienza utente a favore dell’inclusività digitale.</p>
+  <p>Questa relazione rappresenta una valutazione automatica avanzata delle principali criticità di accessibilità rilevabili. Offre una base strutturata e affidabile per pianificare interventi tecnici in conformità con le normative europee e italiane. Si raccomanda di adottare un piano di action plan dettagliato, coinvolgendo le figure responsabili per accelerare la conformità e mantenere uno standard elevato nel tempo.</p>
+  <p>In sintesi, Beinat S.r.l. dispone ora di un documento tecnico approfondito, utile a supportare le decisioni strategiche e operative nel percorso verso l’accessibilità digitale piena e certificata.</p>
+
+  <h2>Contesto e ambito</h2>
+  <p>L’analisi tecnica è stata eseguita sul sito web pubblico disponibile all’URL <a href="https://ae.beinat.com">https://ae.beinat.com</a>, con riferimento al territorio italiano. Il workflow di scansione ha considerato la homepage e alcune sezioni rappresentative del dominio, con tecnologie web standard come HTML, CSS e ARIA. Non sono stati valutati sistemi backend, applicazioni mobili native o software esterni.</p>
+  <p>La verifica è basata su strumenti automatizzati che individuano problemi di accessibilità relativi a strutture semantiche, testi alternativi, contrasti, form e interazioni. Tuttavia, non copre interazioni complesse, contenuti dinamici non accessibili automaticamente, né elementi multimediali avanzati con necessità di verifiche manuali specifiche.</p>
+  <p>L’ambito normativo considerato include standard europei (EAA, EN 301 549), criteri internazionali (WCAG 2.1 AA) e linee guida italiane per siti pubblici (AgID). Sono esclusi dal controllo i documenti PDF esterni e app mobile non collegati direttamente al sito web.</p>
+  <p>La scansione è stata effettuata il 28 luglio 2025 e il documento riflette lo stato di fatto in tale data. Si consiglia di aggiornare periodicamente i controlli in quanto l’accessibilità è un processo continuo e dinamico, specie per siti soggetti a modifiche frequenti.</p>
+  <p>Infine, la metodologia utilizzata garantisce una copertura significativa ma non esaustiva, che deve essere integrata con approfondimenti manuali, test con utenti reali e analisi di contenuti specifici per una piena conformità legale e qualitativa.</p>
+
+  <h2>Metodologia</h2>
+  <p>L’analisi di accessibilità è stata condotta esclusivamente con l’ausilio di strumenti automatizzati riconosciuti nel settore, in particolare lo strumento WAVE, che ha permesso di identificare errori e avvisi secondo le logiche di scansione integrate nel software. La data di esecuzione della verifica è il 28 luglio 2025.</p>
+  <p>Il tool WAVE effettua controlli su elementi HTML, attributi ARIA, contenuti testuali, contrasti colore, struttura DOM, link, moduli e altri aspetti tecnici rilevanti in relazione ai requisiti WCAG 2.1 AA. I dati raccolti sono stati successivamente elaborati per aggregare errori unici e raggruppare le problematiche per categorie secondo linee guida consolidate.</p>
+  <p>Va sottolineato che l’analisi automatizzata non sostituisce l’uso di test manuali o l’interazione diretta con utenti diversamente abili, ma rappresenta una base tecnica affidabile e oggettiva per individuare le criticità più evidenti e prioritarie. Sono stati esclusi verifiche manuali o interventi di correzione durante la scansione.</p>
+  <p>La metodologia fa riferimento ai requisiti normativi internazionali WCAG 2.1 livello AA, alla norma tecnica EN 301 549 versione 3.2.1 e alle linee guida AgID italiane. La classificazione e priorizzazione delle problematiche è stata effettuata con l’obiettivo di garantire un equilibrio tra efficacia e fattibilità degli interventi.</p>
+  <p>In sintesi, il processo di validazione consente di ottenere un quadro tecnico substantivo e di qualità, da utilizzare come base per l’avvio di un piano di remediation strutturato, conforme agli obblighi europei e nazionali.</p>
+
+  <h2>Quadro normativo</h2>
+  <p>La Direttiva (UE) 2016/2102, adottata il 26 ottobre 2016 e entrata in vigore il 15 novembre 2016, rappresenta il primo importante quadro normativo europeo sull’accessibilità digitale, imponendo a tutti gli Stati membri di assicurare che i siti web e le applicazioni mobili delle pubbliche amministrazioni siano accessibili secondo i principi del design universale. Tra i principali obblighi imposti dalla direttiva figurano la pubblicazione di una dichiarazione di accessibilità, l’istituzione di una procedura di feedback per gli utenti con disabilità, l’aggiornamento regolare dei contenuti e un regime di monitoraggio a livello nazionale per verificare la conformità.</p>
+  <p>Questa direttiva è stata importante perché ha introdotto il concetto di accessibilità come requisito legale per i servizi pubblici digitali, ponendo come riferimento i principi P.O.U.R. (Perceivable, Operable, Understandable, Robust), che costituiscono le basi per la progettazione di contenuti fruibili da parte di persone con diverse disabilità, inclusi deficit visivi, uditivi, motori e cognitivi. Il suo ambito è principalmente rivolto agli enti pubblici, ma ha fornito un modello di riferimento per regolamentazioni successive, come l’European Accessibility Act (EAA).</p>
+  <p>Lo standard EN 301 549 v3.2.1 pubblicato nel marzo 2021 da ETSI/CEN/CENELEC costituisce la norma armonizzata europea obbligatoria per la conformità sia con la Web Accessibility Directive che con l’EAA. Questo standard specifica i requisiti tecnici dettagliati che prodotti e servizi ICT devono rispettare, integrando e ampliando il riferimento alle WCAG 2.1 livello AA, con una copertura che spazia dai siti web alle applicazioni mobili, dai documenti digitali all’hardware e ai servizi correlati. Nel testo della norma sono incluse clausole specifiche come la 9.x dedicate al contrasto colore, metadati accessibili, e altri requisiti per garantire un’adozione concreta e completa dell’accessibilità digitale a livello europeo.</p>
+  <p>Le linee guida AgID, definite dall’Agenzia per l’Italia Digitale, forniscono l’adattamento italiano delle normative europee, con un focus particolare sull’accessibilità nei siti web della pubblica amministrazione. Esse riflettono gli aggiornamenti obbligatori già previsti dalla Legge Stanca (L. 4/2004 e D.Lgs. 82/2005) e includono indicazioni pratiche su modalità di segnalazione delle barriere, dichiarazioni di accessibilità e strumenti di controllo. Il capitolo 7 delle linee guida AgID è dedicato in modo specifico all’accessibilità dei contenuti web, rafforzando le prescrizioni e i controlli nazionali.</p>
+  <p>Infine, in un’ottica di conformità integrata, la relazione tra WCAG 2.1 AA, EN 301 549 e le direttive europee è fondamentale per la completa copertura normativa: mentre le WCAG 2.1 forniscono il corpus tecnico principale per l’accessibilità dei contenuti Web e applicazioni, la norma EN 301 549 aggiunge requisiti estesi e serve come standard armonizzato per la compliance. L’EAA estende l’ambito di applicazione anche a prodotti e servizi digitali privati, e-commerce e dispositivi elettronici, rafforzando ulteriormente l’obbligatorietà in tutti i contesti europei. È quindi essenziale citare e rispettare tutte queste fonti per garantire un approccio legale e tecnico completo.</p>
+  <table>
+    <caption>Tabella riepilogativa delle principali normative</caption>
+    <thead>
+      <tr>
+        <th scope="col">Norma</th>
+        <th scope="col">Data</th>
+        <th scope="col">Ambito</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Direttiva (UE) 2016/2102</th>
+        <td>26 ottobre 2016</td>
+        <td>Siti web e applicazioni mobili della PA</td>
+      </tr>
+      <tr>
+        <th scope="row">EN 301 549 v3.2.1</th>
+        <td>marzo 2021</td>
+        <td>Accessibilità ICT per prodotti e servizi (web, app, hardware)</td>
+      </tr>
+      <tr>
+        <th scope="row">European Accessibility Act (EAA)</th>
+        <td>entrata in vigore giugno-luglio 2019, applicazione obbligatoria dal 28 giugno 2025</td>
+        <td>Prodotti e servizi digitali in EU, inclusi privati e commercio elettronico</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Sintesi del livello di conformità</h2>
+  <p>Le WCAG 2.1 sono organizzate attorno a quattro principi fondamentali sintetizzati nell’acronimo P.O.U.R.: Perceivable (percepibile), Operable (operabile), Understandable (comprensibile) e Robust (robusto). Queste categorie identificano aspetti chiave dell’accessibilità, dalla capacità degli utenti di percepire i contenuti, alla facilità di interazione, alla chiarezza di comprensione e alla compatibilità con tecnologie e dispositivi diversi.</p>
+  <p>L’esito di conformità per ogni area può essere conforme, parzialmente conforme o non conforme e indica il grado di aderenza ai requisiti di accessibilità definiti dalle WCAG 2.1 AA e dalle normative correlate. La conformità su tutte le aree garantisce un’esperienza inclusiva e pienamente fruibile, mentre la mancata conformità in una o più aree segnala criticità che possono limitare l’accesso ai contenuti per specifiche categorie di utenti con disabilità.</p>
+  <p>Nel caso specifico del sito analizzato, le aree perceivable e operable presentano criticità con errori e avvisi significativi, influenzando la leggibilità, la navigabilità e l’interazione. Le aree understandable e robust risultano invece conformi, confermando che alcuni principi base sono rispettati.</p>
+  <p>La tabella seguente riepiloga lo stato delle quattro aree principali, evidenziando note operative e impatti per la strategia di remediation del sito.</p>
+
+  <table>
+    <caption>Stato di conformità per area WCAG</caption>
+    <thead>
+      <tr>
+        <th scope="col">Area</th>
+        <th scope="col">Esito</th>
+        <th scope="col">Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Perceivable</th>
+        <td class="prio-medium">Parzialmente conforme</td>
+        <td>62 errori e 60 avvisi rilevati principalmente su immagini e contrasto colore</td>
+      </tr>
+      <tr>
+        <th scope="row">Operable</th>
+        <td class="prio-medium">Parzialmente conforme (solo avvisi)</td>
+        <td>Nessun errore ma 19 avvisi su navigazione e elementi interattivi da verificare</td>
+      </tr>
+      <tr>
+        <th scope="row">Understandable</th>
+        <td class="prio-low">Conforme</td>
+        <td>Nessuna criticità rilevata</td>
+      </tr>
+      <tr>
+        <th scope="row">Robust</th>
+        <td class="prio-low">Conforme</td>
+        <td>Nessuna criticità rilevata</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Riepilogo numerico della scansione</h2>
+  <p>Un problema rilevato rappresenta un evento specifico individuato dall’analisi automatica che può compromettere l’accessibilità del sito. La scansione raccoglie errori (problematiche certe da correggere) e avvisi (potenziali criticità da approfondire) e li aggrega per tipologia per facilitare la comprensione e l’azione.</p>
+  <p>Il conteggio dei problemi è fondamentale per stabilire le priorità di intervento: errori frequenti o ad alto impatto vengono trattati come urgenti mentre gli avvisi richiedono valutazioni puntuali. La classificazione per categorie aiuta a focalizzare l’attenzione sulle aree più critiche e consente di organizzare il lavoro di remediation in modo efficace.</p>
+  <p>La tabella seguente mostra le categorie rilevanti, il numero di problematiche per categoria, la priorità di intervento suggerita e i riferimenti ai criteri WCAG più associati.</p>
+
+  <table>
+    <caption>Riepilogo delle categorie di problemi</caption>
+    <thead>
+      <tr>
+        <th scope="col">Categoria</th>
+        <th scope="col">Conteggio</th>
+        <th scope="col">Priorità</th>
+        <th scope="col">WCAG</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Testi alternativi mancanti</th>
+        <td class="prio-high">2 errori</td>
+        <td class="prio-high">Alta</td>
+        <td>1.1.1</td>
+      </tr>
+      <tr>
+        <th scope="row">Etichette modulo mancanti / associazioni accessibili</th>
+        <td class="prio-high">1 errore</td>
+        <td class="prio-high">Alta</td>
+        <td>1.3.1, 3.3.2, 4.1.2</td>
+      </tr>
+      <tr>
+        <th scope="row">Contrasto colore insufficiente</th>
+        <td class="prio-high">59 errori</td>
+        <td class="prio-high">Alta</td>
+        <td>1.4.3, 1.4.11</td>
+      </tr>
+      <tr>
+        <th scope="row">Altri problemi di accessibilità (fallback)</th>
+        <td class="prio-medium">0 errori e 17 avvisi</td>
+        <td class="prio-medium">Media</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Analisi dettagliata per categoria</h2>
+
+  <h3>Testi alternativi mancanti</h3>
+  <p>La mancanza di testi alternativi alle immagini è una problematica critica nell’ambito dell’accessibilità digitale, in quanto impedisce agli utenti che utilizzano lettori di schermo di comprendere il contenuto visuale non testuale. Tecnicamente, ogni elemento immagine (<code>&lt;img&gt;</code>) deve includere l’attributo <code>alt</code> con una descrizione pertinente, che consenta di trasmettere l’informazione anche in assenza della componente visiva.</p>
+  <p>Gli utenti più colpiti da questa carenza sono persone con disabilità visive, come non vedenti o ipovedenti, che si affidano a tecnologie assistive per interpretare i contenuti multimediali. L’assenza di testi alternativi crea una barriera significativa, rendendo inaccessibili parti di contenuto, con conseguente frustrazione, esclusione e limitazione dell’autonomia.</p>
+  <p>Dal punto di vista normativo, il requisito è sancito dalla WCAG 2.1 al criterio 1.1.1 (Testo alternativo) e richiamato esplicitamente dalla norma EN 301 549, oltre che dalle linee guida AgID. L’EAA indica la necessità di garantire pari accesso a tutti i contenuti digitali, inclusi quelli visivi.</p>
+  <p>Per risolvere il problema si consiglia di assegnare testi descrittivi adeguati e specifici alle immagini decorative o informative, evitando testi generici o vuoti, e di testare la fruibilità con lettori di schermo. In fase di sviluppo, va privilegiata la corretta gestione degli attributi HTML <code>alt</code> con l’obiettivo di fornire un’alternativa semantica fedele.</p>
+  <p>Esempi di selettori troncati evidenziati:
+  <ul>
+    <li><code>HTML > HEAD:first-child + BODY > SCRIPT:first-child + NOSCRIPT + A + DIV ... > RS-LAYER#slider-1-slide-7-layer-32 > IMG:first-child</code>: immagine priva di testo alternativo</li>
+    <li><code>HTML > HEAD:first-child + BODY > SCRIPT:first-child + NOSCRIPT + A + DIV ... > RS-LAYER#slider-1-slide-7-layer-29 > A#BX480-AX-home > IMG:first-child</code>: immagine linkata senza testo alt</li>
+  </ul>
+  <strong>Ruolo responsabile:</strong> Frontend developer</p>
+
+  <h3>Etichette modulo mancanti / associazioni accessibili</h3>
+  <p>Le etichette di modulo sono fondamentali per garantire l’accessibilità dei form online, consentendo a tutti gli utenti, in particolare a quelli che utilizzano tecnologie assistive, di comprendere chiaramente il significato e la funzione di ogni campo di input. Tecnicamente, ogni elemento interattivo deve essere associato a un <code>&lt;label&gt;</code> o equivalente tramite attributi ARIA.</p>
+  <p>La mancanza di etichette o associazioni corrette impatta soprattutto persone con disabilità visive, cognitive o utenti che navigano esclusivamente tramite tastiera. Senza una chiara identificazione, il completamento di moduli diventa difficile o impossibile, compromettendo l’accesso ai servizi digitali e la fruibilità.</p>
+  <p>La conformità a criteri WCAG 1.3.1 (Informazione e relazioni), 3.3.2 (Etichette o istruzioni) e 4.1.2 (Nome, ruolo, valore) è un requisito imprescindibile, così come da EN 301 549 e linee guida AgID. Applicare un’etichettatura chiara e semanticamente corretta è parte integrante della progettazione inclusiva.</p>
+  <p>La soluzione tecnica prevede l’uso del tag <code>label</code> con attributo <code>for</code> che faccia riferimento all’id del campo, o l’uso HTML5 con placeholder e ARIA label senza dimenticare la validazione con screen reader. L’adozione di pattern consolidati migliora l’esperienza e riduce errori.</p>
+  <p>Esempio di selettore troncato coinvolto:
+  <ul>
+    <li><code>HTML > HEAD:first-child + BODY ... > TEXTAREA#g-recaptcha-response-100000</code>: campo di input senza label associata</li>
+  </ul>
+  <strong>Ruolo responsabile:</strong> Frontend developer</p>
+
+  <h3>Contrasto colore insufficiente</h3>
+  <p>Un contrasto colore insufficiente rappresenta un grave ostacolo per la leggibilità dei contenuti e l’accesso alle informazioni, limitando la fruibilità soprattutto da parte di utenti con deficit visivi, ipovisione o daltonismo. Dal punto di vista tecnico, il testo e gli elementi interattivi devono avere un rapporto di contrasto rispetto allo sfondo di almeno 4.5:1 per testi normali (criterio WCAG 1.4.3) e parametri più elevati per testi grandi o interfacce complesse (1.4.11).</p>
+  <p>La scarsa percezione del contrasto può causare la difficoltà o impossibilità di distinguere testi, pulsanti, link o sezioni informative, aumentando l’affaticamento visivo e generando esclusione digitale. È pertanto cruciale rispettare i requisiti di contrasto cromatico per assicurare chiarezza e leggibilità.</p>
+  <p>La norma EN 301 549 e le linee guida AgID richiamano esplicitamente criteri specifici per il contrasto per garantire la compliance con il quadro normativo europeo e italiano, includendo anche linee guida per contenuti dinamici o multimediali.</p>
+  <p>Per risolvere, occorre analizzare gli schemi colore e adattare i valori di colore e sfondo, impiegando strumenti di verifica automatici e manuali per testare ogni elemento. È importante evitare combinazioni insufficienti e utilizzare palette accessibili secondo le best practice; un sistema di design accessibile facilita questa operazione.</p>
+  <p>Esempi di selettori con problemi di contrasto (troncati):
+  <ul>
+    <li><code>HTML > HEAD:first-child + BODY ... > NAV:first-child > UL:first-child > LI#menu-item-12605 > A:first-child > SPAN:first-child</code>: testo menu con contrasto basso</li>
+    <li><code>HTML > HEAD:first-child + BODY ... > DIV#ajax-content-wrap > DIV:first-child > DIV:first-child > DIV#fws_68878864588fc > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > H2:first-child</code>: intestazione con contrasto inadeguato</li>
+  </ul>
+  <strong>Ruolo responsabile:</strong> UI designer</p>
+
+  <h3>Altri problemi di accessibilità (fallback)</h3>
+  <p>Questa categoria raccoglie avvisi non classificati come errori ma che potrebbero impattare l’esperienza utente, come strutture ARIA non ottimali, mancata gestione di tastiera, link vuoti, navigazione incoerente o duplicata e indice di intestazioni non corretto. Sebbene non siano errori critici certificati, sono indispensabili da monitorare e correggere per una esperienza accessibile e fluida.</p>
+  <p>Gli utenti con disabilità motorie, cognitive o visive che usano ausili tecnologici possono riscontrare difficoltà con queste problematiche, che possono generare confusione, perdita di orientamento e frustrazione funzionale, abbassando la qualità e efficacia d’uso del sito.</p>
+  <p>Nel quadro normativo, tali problematiche sono ricondotte ai criteri WCAG relativi a strutture semantiche e ARIA (es. 1.3.1, 2.1.1, 4.1.2) e sono rilevanti in ottica di compliance con EN 301 549 e linee guida AgID. La loro risoluzione contribuisce significativamente alla robustezza e operabilità del sito.</p>
+  <p>Per la remediation si suggerisce una verifica tecnica approfondita, con correzione di ruoli ARIA, ottimizzazione della navigazione da tastiera, eliminazione o riattribuzione di link vuoti, gestione corretta delle intestazioni e miglioramento dell’architettura delle pagine.</p>
+  <p>Esempi di selettori troncati:
+  <ul>
+    <li><code>HTML > HEAD:first-child + BODY ... > DIV#ajax-content-wrap > DIV:first-child > DIV:first-child > DIV#fws_6887886469849 > DIV:first-child + DIV > DIV:first-child > DIV:first-child > DIV:first-child > H2:first-child + H3 + DIV + DIV ...</code>: link ridondante</li>
+    <li><code>HTML > HEAD:first-child + BODY ... > DIV#header-outer > HEADER#top > NAV:first-child</code>: struttura di navigazione con ARIA migliorabile</li>
+  </ul>
+  <strong>Ruolo responsabile:</strong> QA accessibility</p>
+
+  <h2>Elenco dettagliato problemi</h2>
+  <p>Questa sezione documenta in dettaglio ogni problematica rilevata durante l’analisi automatica, evidenziando la categoria del problema, la descrizione tecnica, il numero di occorrenze, i selettori CSS più rilevanti restringendo a una lunghezza massima di 80 caratteri per garantire leggibilità e integrare la tabella nel workflow tecnico, la priorità stimata e l’azione consigliata per la risoluzione. Fornisce un riferimento pratico per il team di sviluppo e controllo qualità, permettendo un piano di intervento strutturato e mirato.</p>
+
+  <table>
+    <caption>Dettaglio problemi rilevati</caption>
+    <thead>
+      <tr>
+        <th scope="col">Categoria</th>
+        <th scope="col">Descrizione</th>
+        <th scope="col">Conteggio</th>
+        <th scope="col">Selettore (troncato)</th>
+        <th scope="col">Priorità</th>
+        <th scope="col">Azione consigliata</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Testi alternativi mancanti</th>
+        <td>Immagine senza testo alternativo</td>
+        <td>1</td>
+        <td>HTML > HEAD:first-child + BODY > SCRIPT:first-child + NOSCRIPT + A + DIV > DIV:first...</td>
+        <td class="prio-high">Alta</td>
+        <td>Aggiungere testo alt descrittivo all'immagine</td>
+      </tr>
+      <tr>
+        <th scope="row">Testi alternativi mancanti</th>
+        <td>Immagine linkata senza testo alternativo</td>
+        <td>1</td>
+        <td>HTML > HEAD:first-child + BODY > SCRIPT:first-child + NOSCRIPT + A + DIV > DIV:first...</td>
+        <td class="prio-high">Alta</td>
+        <td>Aggiungere testo alternativo alle immagini linkate</td>
+      </tr>
+      <tr>
+        <th scope="row">Etichette modulo mancanti / associazioni accessibili</th>
+        <td>Campo di input senza label associata</td>
+        <td>1</td>
+        <td>HTML > HEAD:first-child + BODY ... > TEXTAREA#g-recaptcha-response-100000</td>
+        <td class="prio-high">Alta</td>
+        <td>Associare un <label> a ciascun campo di input</td>
+      </tr>
+      <tr>
+        <th scope="row">Contrasto colore insufficiente</th>
+        <td>Contrasto colore molto basso in diversi elementi testuali</td>
+        <td>59</td>
+        <td>HTML > HEAD:first-child + BODY ... > NAV:first-child > UL:first-child > LI#menu-item...</td>
+        <td class="prio-high">Alta</td>
+        <td>Aumentare il contrasto colore a 4.5:1 o superiore</td>
+      </tr>
+      <tr>
+        <th scope="row">Altri problemi di accessibilità (fallback)</th>
+        <td>Link vuoti, strutture aria e navigazione da verificare</td>
+        <td>17</td>
+        <td>HTML > HEAD:first-child + BODY ... > DIV#ajax-content-wrap > DIV:first-child > DIV...</td>
+        <td class="prio-medium">Media</td>
+        <td>Verificare e correggere link vuoti e strutture ARIA</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Glossario criteri WCAG più frequenti</h2>
+  <ul>
+    <li><strong>1.1.1 Testo alternativo</strong> – Le immagini devono avere una descrizione alternativa (attributo alt) che trasmetta il contenuto e la funzione dell’immagine per utenti con disabilità visive.</li>
+    <li><strong>1.4.3 Contrasto minimo</strong> – Il testo e gli elementi interattivi devono avere un contrasto sufficiente rispetto allo sfondo (almeno 4.5:1 per testo normale), per garantirne leggibilità e distinzione per ipovedenti.</li>
+    <li><strong>2.1.1 Tastiera</strong> – Tutte le funzionalità devono essere accessibili tramite la tastiera senza richiedere mouse, cruciale per utenti con mobilità ridotta.</li>
+    <li><strong>3.3.2 Etichette e suggerimenti</strong> – I campi dei moduli devono essere etichettati in modo chiaro con istruzioni e label per facilitare la comprensione dell’input richiesto.</li>
+  </ul>
+
+  <h2>Piano di remediation</h2>
+  <table>
+    <caption>Azioni consigliate per la conformità</caption>
+    <thead>
+      <tr>
+        <th scope="col">Intervento</th>
+        <th scope="col">Area</th>
+        <th scope="col">Impatto</th>
+        <th scope="col">Priorità</th>
+        <th scope="col">Owner</th>
+        <th scope="col">Nota</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Aggiungere testi alternativi descrittivi alle immagini, incluse immagini linkate</td>
+        <td>Perceivable</td>
+        <td>Alto - fondamentale per utenti con disabilità visive</td>
+        <td class="prio-high">Alta</td>
+        <td>Frontend developer</td>
+        <td>Garantire corretto uso attributi alt coerenti con contenuto</td>
+      </tr>
+      <tr>
+        <td>Associare etichette chiare a tutti i campi di input e form</td>
+        <td>Perceivable / Operable</td>
+        <td>Alto - miglioramento accessibilità moduli</td>
+        <td class="prio-high">Alta</td>
+        <td>Frontend developer</td>
+        <td>Usare <label> e ARIA quando necessario</td>
+      </tr>
+      <tr>
+        <td>Rivedere e aumentare il contrasto dei testi e pulsanti</td>
+        <td>Perceivable</td>
+        <td>Alto - fondamentale per leggibilità e usabilità</td>
+        <td class="prio-high">Alta</td>
+        <td>UI designer</td>
+        <td>Usare palette accessibili con ratio >= 4.5:1</td>
+      </tr>
+      <tr>
+        <td>Verificare e correggere link vuoti, strutture ARIA e navigazione da tastiera</td>
+        <td>Operable</td>
+        <td>Medio - migliora esperienza utente struttura e navigazione</td>
+        <td class="prio-medium">Media</td>
+        <td>QA accessibility</td>
+        <td>Test con screen reader e tastiera</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Metodologia e preparazione della dichiarazione</h2>
+  <p>La presente dichiarazione è stata generata tramite un sistema automatizzato di audit sull’accessibilità digitale, utilizzando lo strumento WAVE. La data di scansione è 28 luglio 2025. L’analisi automatica evidenzia un quadro tecnico dettagliato delle criticità riscontrate, da utilizzare quale base tecnica per interventi di remediazione e miglioramento.</p>
+  <p>Si sottolinea che l’audit non sostituisce le verifiche manuali, indispensabili per completare la valutazione di conformità e per identificare problemi complessi oppure casi eccezionali di fruibilità.</p>
+
+  <h2>Conclusioni</h2>
+  <p>Il sito <a href="https://ae.beinat.com">https://ae.beinat.com</a> di Beinat S.r.l. si trova in una condizione di parziale conformità alle normative europee e italiane in materia di accessibilità digitale. Le criticità evidenziate, tra cui la mancanza di testo alternativo, etichette modulo incomplete e problemi diffusi di contrasto, costituiscono rischi significativi per l’accesso e l’esperienza degli utenti con disabilità.</p>
+  <p>Per la piena compliance è necessario implementare un piano di remediation strutturato e tempestivo, che coinvolga le figure tecniche e di design, oltre a un monitoraggio continuo per garantire l’adeguamento dinamico. Nonostante alcune aree siano conformi, la mancata correzione delle criticità può comportare responsabilità legali e esclusione di utenti.</p>
+  <p>La presente relazione fornisce un supporto tecnico solido e uno strumento pratico per orientare la progettazione accessibile e le azioni correttive. Si raccomanda inoltre di svolgere audit manuali periodici, test con utenti reali e aggiornamenti continui del contenuto e della tecnologia.</p>
+  <p>In ultima analisi, garantire l’accessibilità digitale rappresenta un investimento nella qualità, nell’inclusività e nella responsabilità sociale, promuovendo un’esperienza digitale piena e universale, in linea con i requisiti legislativi europei e le migliori pratiche internazionali.</p>
+
+  <h2>Contatti di supporto</h2>
+  <p>Per segnalare barriere o problematiche di accessibilità sul sito <a href="https://ae.beinat.com">https://ae.beinat.com</a>, è disponibile il supporto via email all’indirizzo: <a href="mailto:accessibility@principi.it">accessibility@principi.it</a>. Le segnalazioni saranno gestite internamente con priorità e si garantisce una risposta tempestiva al fine di migliorare costantemente l’accessibilità del sito e la qualità del servizio offerto.</p>
+
+  <h2>Procedura di applicazione / reclami</h2>
+  <p>Gli utenti possono rivolgersi ai canali ufficiali nazionali di tutela dell’accessibilità digitale disponibili in Italia per avanzare reclami o segnalazioni in merito all’accessibilità dei servizi digitali. Beinat S.r.l. si impegna a pubblicare i riferimenti e le modalità di contatto sul proprio sito web per garantire la trasparenza e il diritto alla tutela previsto dalla normativa europea e nazionale.</p>
+
+  <h2>Stato aggiornamento</h2>
+  <p>Data generazione automatica: 28 luglio 2025<br>
+  Ultima revisione manuale: 28 luglio 2025</p>
+
+  <h2>Nota legale / disclaimer</h2>
+  <p>Questa relazione tecnica è stata generata da un sistema avanzato di audit automatico sull’accessibilità digitale, sviluppato per fornire una valutazione affidabile dello stato di conformità di un sito web rispetto ai principali standard normativi (WCAG 2.1 AA, EAA, AgID, EN 301 549).</p>
+  <p>L’analisi riguarda un insieme rappresentativo di pagine del sito (tra cui la homepage e sezioni principali) e riflette lo stato di accessibilità <strong>al momento dell’audit</strong>. Non copre l’intero sito né garantisce l’assenza totale di problemi accessibili <strong>al di fuori dell’ambito testato</strong>.</p>
+  <p>I risultati presentati sono da intendersi come <strong>indicazione tecnica professionale</strong> utile a definire le priorità di intervento. Per una verifica completa e continua, si raccomanda di integrare il presente audit con controlli manuali periodici e revisioni dei contenuti pubblicati.</p>
+</body>
+</html>
