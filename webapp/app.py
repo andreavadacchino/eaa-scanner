@@ -849,6 +849,7 @@ def handle_scan_stream(environ, start_response):
         """Generatore di eventi SSE con gestione disconnessioni"""
         monitor = get_scan_monitor()
         heartbeat_counter = 0
+        start_ts = time.time()
         
         # Log stato iniziale
         logger.info(f"SSE: Monitor ha {len(monitor.event_history.get(scan_id, []))} eventi per scan {scan_id}")
@@ -895,44 +896,63 @@ def handle_scan_stream(environ, start_response):
                             events_sent += 1
                         last_event_count = len(events)
                 
-                # Heartbeat ogni 15 secondi per mantenere connessione
+                # Heartbeat ogni 15 secondi per mantenere connessione (forma conforme al contratto)
                 current_time = time.time()
                 if current_time - last_heartbeat > 15:
-                    heartbeat_data = {
+                    heartbeat_evt = {
                         "event_type": "heartbeat",
                         "timestamp": datetime.now().isoformat(),
                         "scan_id": scan_id,
-                        "events_sent": events_sent
+                        "data": {
+                            "uptime_ms": int((current_time - start_ts) * 1000),
+                            "connection_id": f"conn_{scan_id}",
+                            "events_sent": events_sent,
+                        }
                     }
-                    yield f"data: {json.dumps(heartbeat_data, ensure_ascii=False)}\n\n".encode('utf-8')
+                    yield f"data: {json.dumps(heartbeat_evt, ensure_ascii=False)}\n\n".encode('utf-8')
                     last_heartbeat = current_time
                     heartbeat_counter += 1
                 
                 # Check se scan è completato
                 scan_data = _V2_SCANS.get(scan_id, {})
                 if scan_data.get('state') in ['completed', 'failed']:
-                    # Invia evento finale e chiudi
-                    final_data = {
-                        "event_type": "scan_complete",
-                        "state": scan_data.get('state'),
+                    # Invia evento finale conforme arricchito con metriche quando disponibili
+                    state = scan_data.get('state')
+                    data_payload = {"state": state}
+                    try:
+                        metrics = scan_data.get('metrics', {}) if isinstance(scan_data, dict) else {}
+                        if state == 'completed':
+                            if 'compliance_score' in metrics:
+                                data_payload['compliance_score'] = metrics.get('compliance_score')
+                            if 'errors' in metrics:
+                                data_payload['total_errors'] = metrics.get('errors')
+                            if 'warnings' in metrics:
+                                data_payload['total_warnings'] = metrics.get('warnings')
+                            # report url best-effort
+                            data_payload['report_url'] = f'/v2/preview?scan_id={scan_id}'
+                            # pages_scanned best-effort
+                            pages = scan_data.get('pages', []) if isinstance(scan_data, dict) else []
+                            if isinstance(pages, list) and pages:
+                                data_payload['pages_scanned'] = len(pages)
+                        else:  # failed
+                            if isinstance(scan_data, dict) and scan_data.get('error'):
+                                data_payload['error'] = scan_data.get('error')
+                    except Exception:
+                        pass
+
+                    final_evt = {
+                        "event_type": "scan_complete" if state == 'completed' else "scan_failed",
                         "timestamp": datetime.now().isoformat(),
-                        "scan_id": scan_id
+                        "scan_id": scan_id,
+                        "data": data_payload
                     }
-                    yield f"data: {json.dumps(final_data, ensure_ascii=False)}\n\n".encode('utf-8')
+                    yield f"data: {json.dumps(final_evt, ensure_ascii=False)}\n\n".encode('utf-8')
                     break
                 
                 # Sleep breve per non consumare troppa CPU
                 time.sleep(1)
                 
-                # Se non ci sono stati nuovi eventi per un po', invia heartbeat
-                if events_sent % 3 == 0:  # Ogni 30 secondi circa
-                    heartbeat_data = {
-                        "event_type": "heartbeat",
-                        "timestamp": datetime.now().isoformat(),
-                        "scan_id": scan_id
-                    }
-                    heartbeat_msg = f"data: {json.dumps(heartbeat_data, ensure_ascii=False)}\n\n"
-                    yield heartbeat_msg.encode('utf-8')
+                # Heartbeat leggero aggiuntivo rimosso per evitare duplicati non conformi
                     
             except Exception as e:
                 # Log errore e chiudi connessione
@@ -1044,10 +1064,30 @@ def _worker(scan_id: str, cfg: Config, enable_crawling: bool = False,
         _log(scan_id, f'✔ Report {report_type}: {html_path.name}')
 
         # Emit scan complete event
-        total_duration = time.time() - monitor.start_time if monitor else 0
-        monitor.emit_scan_complete(scan_id, total_duration, 
-                                 {"html_path": str(html_path)},
-                                 {"pages_scanned": result.get('pages_scanned', 1)})
+        # Calcolo durata se disponibile (fallback a 0 se non tracciata dal monitor)
+        try:
+            start_time_attr = getattr(monitor, 'start_time', None)
+            total_duration = (time.time() - start_time_attr) if (monitor and start_time_attr) else 0
+        except Exception:
+            total_duration = 0
+        # Emissione conforme al contratto SSE con payload unificato
+        monitor.emit_scan_complete(scan_id, {
+            'scan_duration_ms': int(total_duration * 1000),
+            'report_url': f'/v2/preview?scan_id={scan_id}',
+            'pages_scanned': result.get('pages_scanned', 1),
+            'total_errors': result.get('total_errors', 0),
+            'total_warnings': result.get('total_warnings', 0),
+            'compliance_score': result.get('compliance_score', 0),
+            # Include anche i risultati minimi per permettere skip del fetch
+            'scan_results': {
+                'summary': {
+                    'pages_scanned': result.get('pages_scanned', 1),
+                    'total_errors': result.get('total_errors', 0),
+                    'total_warnings': result.get('total_warnings', 0),
+                    'compliance_score': result.get('compliance_score', 0)
+                }
+            }
+        })
         
         _update(scan_id, stage='Completato', percent=100, status='done', message='', 
                 report_html=str(html_path), url=cfg.url, company_name=cfg.company_name, 
@@ -2183,11 +2223,13 @@ def _v2_llm_enhancement_worker(scan_id: str, llm_config: dict, scan_result: dict
         from webapp.scan_monitor import get_scan_monitor
         monitor = get_scan_monitor()
         monitor.emit_scan_complete(scan_id, {
-            'compliance_score': _V2_SCANS[scan_id]['metrics']['compliance_score'],
-            'total_errors': _V2_SCANS[scan_id]['metrics']['errors'],
-            'total_warnings': _V2_SCANS[scan_id]['metrics']['warnings'],
-            'llm_enhanced': True
-        })
+                'report_url': f'/v2/preview?scan_id={scan_id}',
+                'pages_scanned': result.get('pages_scanned', len(_V2_SCANS[scan_id].get('pages', [])) or 1),
+                'compliance_score': _V2_SCANS[scan_id]['metrics']['compliance_score'],
+                'total_errors': _V2_SCANS[scan_id]['metrics']['errors'],
+                'total_warnings': _V2_SCANS[scan_id]['metrics']['warnings'],
+                'llm_enhanced': True
+            })
         
     except Exception as e:
         logger.error(f"Errore enhancement LLM v2: {e}")
@@ -2210,6 +2252,8 @@ def _v2_llm_enhancement_worker(scan_id: str, llm_config: dict, scan_result: dict
         from webapp.scan_monitor import get_scan_monitor
         monitor = get_scan_monitor()
         monitor.emit_scan_complete(scan_id, {
+            'report_url': f'/v2/preview?scan_id={scan_id}',
+            'pages_scanned': len(_V2_SCANS[scan_id].get('pages', [])) or 1,
             'compliance_score': _V2_SCANS[scan_id]['metrics'].get('compliance_score', 75),
             'total_errors': _V2_SCANS[scan_id]['metrics'].get('errors', 0),
             'total_warnings': _V2_SCANS[scan_id]['metrics'].get('warnings', 0),

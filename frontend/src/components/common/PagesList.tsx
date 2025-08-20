@@ -89,16 +89,20 @@ export function PagesList({
     .filter(page => filterBy === 'all' || page.page_type === filterBy)
     .sort((a, b) => {
       switch (sortBy) {
-        case 'type':
+        case 'type': {
           return a.page_type.localeCompare(b.page_type)
-        case 'category':
+        }
+        case 'category': {
           const categoryOrder = { [PageCategory.CRITICAL]: 0, [PageCategory.IMPORTANT]: 1, [PageCategory.REPRESENTATIVE]: 2, [PageCategory.OPTIONAL]: 3 }
           return categoryOrder[a.category] - categoryOrder[b.category]
-        case 'priority':
+        }
+        case 'priority': {
           const priorityOrder = { [Priority.HIGH]: 0, [Priority.MEDIUM]: 1, [Priority.LOW]: 2 }
           return priorityOrder[a.priority] - priorityOrder[b.priority]
-        default:
+        }
+        default: {
           return a.url.localeCompare(b.url)
+        }
       }
     })
   

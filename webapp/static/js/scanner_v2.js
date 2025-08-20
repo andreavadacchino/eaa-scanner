@@ -217,6 +217,14 @@ class EAAScannerV2 {
     
     // Update stepper
     this.updateStepper(phase);
+
+    // Update test indicator for current phase (for E2E assertions)
+    // phaseId already declared above, reuse it
+    const phaseIndicator = document.querySelector('[data-testid="scan-phase"]');
+    if (phaseIndicator) {
+      phaseIndicator.textContent = phaseId;
+      phaseIndicator.setAttribute('data-phase', String(phase));
+    }
   }
   
   getPhaseId(phase) {

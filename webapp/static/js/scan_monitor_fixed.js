@@ -110,7 +110,7 @@
                 '            <h3><i class="fas fa-radar"></i> Monitoraggio Live Scansione</h3>',
                 '            <div class="scan-meta">',
                 '                <span class="scan-id">ID: ' + this.scanId + '</span>',
-                '                <span class="connection-status" id="connection-status">',
+                '                <span class="connection-status" id="connection-status" data-testid="sse-status">',
                 '                    <i class="fas fa-circle text-warning"></i> Connessione...',
                 '                </span>',
                 '                <span class="scan-duration" id="scan-duration">00:00:00</span>',
@@ -124,7 +124,7 @@
                 '            <span id="pages-progress">0/0 pagine</span>',
                 '        </div>',
                 '        <div class="progress progress-main">',
-                '            <div class="progress-bar progress-bar-animated" id="main-progress-bar" style="width: 0%"></div>',
+                '            <div class="progress-bar progress-bar-animated" id="main-progress-bar" data-testid="sse-progress" style="width: 0%"></div>',
                 '        </div>',
                 '    </div>',
                 '    <div class="event-log">',
@@ -189,12 +189,7 @@
             if (this.reconnectAttempts < this.config.maxReconnectAttempts && !this.reconnectScheduled) {
                 this.reconnectAttempts++;
                 this.reconnectScheduled = true;
-                
-                // Exponential backoff: 1s, 2s, 4s, 8s, 16s, 30s (max)
-                const delay = Math.min(
-                    this.config.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1),
-                    this.config.maxReconnectDelay
-                );
+                const delay = this.calculateBackoffDelay(this.reconnectAttempts);
                 
                 console.log(`🔄 Tentativo riconnessione ${this.reconnectAttempts}/${this.config.maxReconnectAttempts} in ${delay}ms`);
                 
@@ -211,6 +206,14 @@
                     window.scanner.sseFailure();
                 }
             }
+        }
+
+        // Utility per test: calcolo backoff esponenziale con cap
+        calculateBackoffDelay(attempt) {
+            const a = Math.max(1, Number(attempt || 1));
+            const base = this.config.reconnectDelay || 1000;
+            const cap = this.config.maxReconnectDelay || 30000;
+            return Math.min(base * Math.pow(2, a - 1), cap);
         }
         
         handleEvent(event) {
@@ -336,6 +339,8 @@
             
             const info = statusInfo[status] || statusInfo['error'];
             statusEl.innerHTML = '<i class="' + info.icon + '"></i> ' + info.text;
+            // also expose plain text content for testing
+            statusEl.setAttribute('data-status-text', info.text);
         }
         
         addToLog(event) {
