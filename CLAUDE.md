@@ -2,11 +2,21 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## ⚠️ ARCHITETTURA ATTUALE - IMPORTANTE LEGGERE
+
+**STACK IN USO (Gennaio 2025)**:
+- **Backend**: FastAPI (`webapp/app_fastapi.py`) - NON Flask/app.py
+- **Frontend**: React TypeScript (`webapp/frontend/`) - NON static JS/scanner_v2.js
+- **Scanner**: Modalità REALE (simulate=false) - NON simulazione
+- **Docker**: `docker-compose.fastapi.yml` - NON altri compose file
+
+**Per dettagli completi vedi: CURRENT_SETUP.md**
+
 ## Project Overview
 
 This is an EAA (European Accessibility Act) compliance scanning and reporting system that performs multi-scanner accessibility audits on websites, generating both HTML reports and normalized JSON data. The project is entirely in Italian (code, comments, and reports).
 
-Scirvi sempre in italiano
+Scrivi sempre in italiano
 
 ## Key Commands
 
@@ -22,12 +32,14 @@ python3 -m eaa_scanner.cli --url https://example.com --company_name "ACME" --ema
 python3 -m eaa_scanner.cli --url https://example.com --company_name "ACME" --email team@example.com --real --wave_api_key YOUR_KEY
 ```
 
-### Web Interface
+### Web Interface - AGGIORNATO
 ```bash
-# Start web server (default on http://localhost:8000)
-make web
-# Or directly:
-python3 webapp/app.py
+# Avvia sistema completo con Docker Compose
+docker-compose -f docker-compose.fastapi.yml up
+
+# Frontend React: http://localhost:3000
+# Backend FastAPI: http://localhost:8000
+# API Docs: http://localhost:8000/docs
 ```
 
 ### Generate Initial Artifacts

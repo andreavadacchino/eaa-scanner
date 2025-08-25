@@ -351,7 +351,12 @@ def calculate_overall_score(errors: List[Dict], warnings: List[Dict]) -> int:
         count = error.get("count", 1) or 1
         if not isinstance(count, (int, float)):
             count = 1
-        total_penalty += weight * min(count, 5)  # Cap a 5 per evitare penalità eccessive
+        # Mantieni cap generale a 5 ma rendi più severo il capping per
+        # errori di severità "medium" per riflettere meglio la priorità
+        # di un singolo errore critico rispetto a molti medium.
+        severity = str(error.get("severity", "medium")).lower()
+        cap = 2 if severity == "medium" else 5
+        total_penalty += weight * min(count, cap)
     
     for warning in warnings:
         weight = severity_weights.get(warning.get("severity", "low"), 3)

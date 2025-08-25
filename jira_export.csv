@@ -1,67 +1,37 @@
 Issue Type,Summary,Description,Priority,Labels,Story Points,Fix Version,Component
-Bug,"[A11Y] Ensure <meta name=""viewport""> does not disable text scaling and zooming","
+Bug,[A11Y] Image elements missing alt attribute,"
 h3. Problema
-Ensure <meta name=""viewport""> does not disable text scaling and zooming
+Image elements missing alt attribute
 
 h3. Criterio WCAG
-1.4.4
+1.1.1
 
 h3. Approccio Remediation
-https://dequeuniversity.com/rules/axe/4.10/meta-viewport?application=webdriverjs
+Aggiungere attributo alt descrittivo alle immagini
 
 h3. Esempio Codice
 {code}
-// Implementare fix appropriato secondo linee guida WCAG
+
+<!-- PRIMA (Errato) -->
+<img src=""logo.jpg"">
+
+<!-- DOPO (Corretto) -->
+<img src=""logo.jpg"" alt=""Logo aziendale ACME Corporation"">
+
 {code}
 
 h3. Testing
-Testare con screen reader e navigazione da tastiera
+Testare con NVDA/JAWS che l'immagine venga annunciata correttamente
 ",Highest,"accessibility,wcag,critical",4,Accessibility Phase 1,Frontend
-Bug,[A11Y] Ensure select element has an accessible name,"
+Bug,[A11Y] Elements must have sufficient color contrast,"
 h3. Problema
-Ensure select element has an accessible name
-
-h3. Criterio WCAG
-4.1.2
-
-h3. Approccio Remediation
-https://dequeuniversity.com/rules/axe/4.10/select-name?application=webdriverjs
-
-h3. Esempio Codice
-{code}
-// Implementare fix appropriato secondo linee guida WCAG
-{code}
-
-h3. Testing
-Testare con screen reader e navigazione da tastiera
-",Highest,"accessibility,wcag,critical",4,Accessibility Phase 1,Frontend
-Bug,"[A11Y] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 3:1, but text in this element has a contrast ratio of 1:1. Recommendation:  change text colour to #949494.","
-h3. Problema
-This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 3:1, but text in this element has a contrast ratio of 1:1. Recommendation:  change text colour to #949494.
+Elements must have sufficient color contrast
 
 h3. Criterio WCAG
 
 
 h3. Approccio Remediation
 
-
-h3. Esempio Codice
-{code}
-// Implementare fix appropriato secondo linee guida WCAG
-{code}
-
-h3. Testing
-Testare con screen reader e navigazione da tastiera
-",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,[A11Y] Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds,"
-h3. Problema
-Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
-
-h3. Criterio WCAG
-1.4.3
-
-h3. Approccio Remediation
-https://dequeuniversity.com/rules/axe/4.10/color-contrast?application=webdriverjs
 
 h3. Esempio Codice
 {code}
@@ -83,9 +53,9 @@ h3. Esempio Codice
 h3. Testing
 Verificare contrasto con Color Contrast Analyzer (minimo 4.5:1)
 ",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,"[A11Y] This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 4.18:1. Recommendation:  change text colour to #222.","
+Bug,[A11Y] Insufficient contrast,"
 h3. Problema
-This element has insufficient contrast at this conformance level. Expected a contrast ratio of at least 4.5:1, but text in this element has a contrast ratio of 4.18:1. Recommendation:  change text colour to #222.
+Insufficient contrast
 
 h3. Criterio WCAG
 
@@ -101,9 +71,9 @@ h3. Esempio Codice
 h3. Testing
 Testare con screen reader e navigazione da tastiera
 ",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,"[A11Y] Anchor element found with a valid href attribute, but no link content has been supplied.","
+Bug,[A11Y] Img element missing alt,"
 h3. Problema
-Anchor element found with a valid href attribute, but no link content has been supplied.
+Img element missing alt
 
 h3. Criterio WCAG
 
@@ -119,243 +89,9 @@ h3. Esempio Codice
 h3. Testing
 Testare con screen reader e navigazione da tastiera
 ",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,"[A11Y] Duplicate id attribute value ""Livello_2"" found on the web page.","
+Bug,[A11Y] Background and foreground colors have sufficient contrast ratio,"
 h3. Problema
-Duplicate id attribute value ""Livello_2"" found on the web page.
-
-h3. Criterio WCAG
-
-
-h3. Approccio Remediation
-
-
-h3. Esempio Codice
-{code}
-// Implementare fix appropriato secondo linee guida WCAG
-{code}
-
-h3. Testing
-Testare con screen reader e navigazione da tastiera
-",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,"[A11Y] This form field should be labelled in some way. Use the label element (either with a ""for"" attribute or wrapped around the form field), or ""title"", ""aria-label"" or ""aria-labelledby"" attributes as appropriate.","
-h3. Problema
-This form field should be labelled in some way. Use the label element (either with a ""for"" attribute or wrapped around the form field), or ""title"", ""aria-label"" or ""aria-labelledby"" attributes as appropriate.
-
-h3. Criterio WCAG
-
-
-h3. Approccio Remediation
-
-
-h3. Esempio Codice
-{code}
-// Implementare fix appropriato secondo linee guida WCAG
-{code}
-
-h3. Testing
-Testare con screen reader e navigazione da tastiera
-",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,[A11Y] Ensure links have discernible text,"
-h3. Problema
-Ensure links have discernible text
-
-h3. Criterio WCAG
-2.4.4
-
-h3. Approccio Remediation
-https://dequeuniversity.com/rules/axe/4.10/link-name?application=webdriverjs
-
-h3. Esempio Codice
-{code}
-// Implementare fix appropriato secondo linee guida WCAG
-{code}
-
-h3. Testing
-Testare con screen reader e navigazione da tastiera
-",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,"[A11Y] This textinput element does not have a name available to an accessibility API. Valid names are: label element, title undefined, aria-label undefined, aria-labelledby undefined.","
-h3. Problema
-This textinput element does not have a name available to an accessibility API. Valid names are: label element, title undefined, aria-label undefined, aria-labelledby undefined.
-
-h3. Criterio WCAG
-
-
-h3. Approccio Remediation
-
-
-h3. Esempio Codice
-{code}
-// Implementare fix appropriato secondo linee guida WCAG
-{code}
-
-h3. Testing
-Testare con screen reader e navigazione da tastiera
-",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,"[A11Y] This button element does not have a name available to an accessibility API. Valid names are: title undefined, element content, aria-label undefined, aria-labelledby undefined.","
-h3. Problema
-This button element does not have a name available to an accessibility API. Valid names are: title undefined, element content, aria-label undefined, aria-labelledby undefined.
-
-h3. Criterio WCAG
-
-
-h3. Approccio Remediation
-
-
-h3. Esempio Codice
-{code}
-// Implementare fix appropriato secondo linee guida WCAG
-{code}
-
-h3. Testing
-Testare con screen reader e navigazione da tastiera
-",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,"[A11Y] This form does not contain a submit button, which creates issues for those who cannot submit the form using the keyboard. Submit buttons are INPUT elements with type attribute ""submit"" or ""image"", or BUTTON elements with type ""submit"" or omitted/invalid.","
-h3. Problema
-This form does not contain a submit button, which creates issues for those who cannot submit the form using the keyboard. Submit buttons are INPUT elements with type attribute ""submit"" or ""image"", or BUTTON elements with type ""submit"" or omitted/invalid.
-
-h3. Criterio WCAG
-
-
-h3. Approccio Remediation
-
-
-h3. Esempio Codice
-{code}
-// Implementare fix appropriato secondo linee guida WCAG
-{code}
-
-h3. Testing
-Testare con screen reader e navigazione da tastiera
-",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,"[A11Y] Img element is the only content of the link, but is missing alt text. The alt text should describe the purpose of the link.","
-h3. Problema
-Img element is the only content of the link, but is missing alt text. The alt text should describe the purpose of the link.
-
-h3. Criterio WCAG
-
-
-h3. Approccio Remediation
-
-
-h3. Esempio Codice
-{code}
-// Implementare fix appropriato secondo linee guida WCAG
-{code}
-
-h3. Testing
-Testare con screen reader e navigazione da tastiera
-",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,[A11Y] Iframe element requires a non-empty title attribute that identifies the frame.,"
-h3. Problema
-Iframe element requires a non-empty title attribute that identifies the frame.
-
-h3. Criterio WCAG
-
-
-h3. Approccio Remediation
-
-
-h3. Esempio Codice
-{code}
-// Implementare fix appropriato secondo linee guida WCAG
-{code}
-
-h3. Testing
-Testare con screen reader e navigazione da tastiera
-",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,"[A11Y] This fieldset element does not have a name available to an accessibility API. Valid names are: legend element, aria-label undefined, aria-labelledby undefined.","
-h3. Problema
-This fieldset element does not have a name available to an accessibility API. Valid names are: legend element, aria-label undefined, aria-labelledby undefined.
-
-h3. Criterio WCAG
-
-
-h3. Approccio Remediation
-
-
-h3. Esempio Codice
-{code}
-// Implementare fix appropriato secondo linee guida WCAG
-{code}
-
-h3. Testing
-Testare con screen reader e navigazione da tastiera
-",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,[A11Y] Fieldset does not contain a legend element. All fieldsets should contain a legend element that describes a description of the field group.,"
-h3. Problema
-Fieldset does not contain a legend element. All fieldsets should contain a legend element that describes a description of the field group.
-
-h3. Criterio WCAG
-
-
-h3. Approccio Remediation
-
-
-h3. Esempio Codice
-{code}
-// Implementare fix appropriato secondo linee guida WCAG
-{code}
-
-h3. Testing
-Testare con screen reader e navigazione da tastiera
-",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,"[A11Y] This select element does not have a name available to an accessibility API. Valid names are: label element, title undefined, aria-label undefined, aria-labelledby undefined.","
-h3. Problema
-This select element does not have a name available to an accessibility API. Valid names are: label element, title undefined, aria-label undefined, aria-labelledby undefined.
-
-h3. Criterio WCAG
-
-
-h3. Approccio Remediation
-
-
-h3. Esempio Codice
-{code}
-// Implementare fix appropriato secondo linee guida WCAG
-{code}
-
-h3. Testing
-Testare con screen reader e navigazione da tastiera
-",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,"[A11Y] This textarea element does not have a name available to an accessibility API. Valid names are: label element, title undefined, aria-label undefined, aria-labelledby undefined.","
-h3. Problema
-This textarea element does not have a name available to an accessibility API. Valid names are: label element, title undefined, aria-label undefined, aria-labelledby undefined.
-
-h3. Criterio WCAG
-
-
-h3. Approccio Remediation
-
-
-h3. Esempio Codice
-{code}
-// Implementare fix appropriato secondo linee guida WCAG
-{code}
-
-h3. Testing
-Testare con screen reader e navigazione da tastiera
-",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,[A11Y] Ensure links are distinguished from surrounding text in a way that does not rely on color,"
-h3. Problema
-Ensure links are distinguished from surrounding text in a way that does not rely on color
-
-h3. Criterio WCAG
-1.4.1
-
-h3. Approccio Remediation
-https://dequeuniversity.com/rules/axe/4.10/link-in-text-block?application=webdriverjs
-
-h3. Esempio Codice
-{code}
-// Implementare fix appropriato secondo linee guida WCAG
-{code}
-
-h3. Testing
-Testare con screen reader e navigazione da tastiera
-",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,[A11Y] Background and foreground colors do not have a sufficient contrast ratio.,"
-h3. Problema
-Background and foreground colors do not have a sufficient contrast ratio.
+Background and foreground colors have sufficient contrast ratio
 
 h3. Criterio WCAG
 1.4.3
@@ -383,30 +119,12 @@ h3. Esempio Codice
 h3. Testing
 Verificare contrasto con Color Contrast Analyzer (minimo 4.5:1)
 ",High,"accessibility,wcag,high",3,Accessibility Phase 2,Frontend
-Bug,[A11Y] Ensure all page content is contained by landmarks,"
+Bug,[A11Y] Link without content,"
 h3. Problema
-Ensure all page content is contained by landmarks
+Link without content
 
 h3. Criterio WCAG
 
-
-h3. Approccio Remediation
-https://dequeuniversity.com/rules/axe/4.10/region?application=webdriverjs
-
-h3. Esempio Codice
-{code}
-
-{code}
-
-h3. Testing
-
-",Medium,"accessibility,wcag,medium",2,Accessibility Phase 3,Frontend
-Bug,[A11Y] Buttons do not have an accessible name,"
-h3. Problema
-Buttons do not have an accessible name
-
-h3. Criterio WCAG
-4.1.2
 
 h3. Approccio Remediation
 
@@ -419,48 +137,30 @@ h3. Esempio Codice
 h3. Testing
 
 ",Medium,"accessibility,wcag,medium",2,Accessibility Phase 3,Frontend
-Bug,[A11Y] Links do not have a discernible name,"
+Bug,[A11Y] Heading levels should only increase by one,"
 h3. Problema
-Links do not have a discernible name
+Heading levels should only increase by one
+
+h3. Criterio WCAG
+
+
+h3. Approccio Remediation
+
+
+h3. Esempio Codice
+{code}
+
+{code}
+
+h3. Testing
+
+",Medium,"accessibility,wcag,medium",2,Accessibility Phase 3,Frontend
+Bug,[A11Y] Links have a discernible name,"
+h3. Problema
+Links have a discernible name
 
 h3. Criterio WCAG
 2.4.4
-
-h3. Approccio Remediation
-
-
-h3. Esempio Codice
-{code}
-
-{code}
-
-h3. Testing
-
-",Medium,"accessibility,wcag,medium",2,Accessibility Phase 3,Frontend
-Bug,"[A11Y] `[user-scalable=""no""]` is used in the `<meta name=""viewport"">` element or the `[maximum-scale]` attribute is less than 5.","
-h3. Problema
-`[user-scalable=""no""]` is used in the `<meta name=""viewport"">` element or the `[maximum-scale]` attribute is less than 5.
-
-h3. Criterio WCAG
-1.4.4
-
-h3. Approccio Remediation
-
-
-h3. Esempio Codice
-{code}
-
-{code}
-
-h3. Testing
-
-",Medium,"accessibility,wcag,medium",2,Accessibility Phase 3,Frontend
-Bug,[A11Y] Select elements do not have associated label elements.,"
-h3. Problema
-Select elements do not have associated label elements.
-
-h3. Criterio WCAG
-1.3.1
 
 h3. Approccio Remediation
 

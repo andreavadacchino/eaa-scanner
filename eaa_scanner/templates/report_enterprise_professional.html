@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report di Accessibilità Professionale - {{ company_name }}</title>
+    <style>
+        :root {
+            --primary-color: #1e40af;
+            --secondary-color: #3b82f6;
+            --accent-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-600: #4b5563;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background-color: #ffffff;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header Section */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 3rem 0;
+            margin: -2rem -2rem 3rem -2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>') repeat;
+            background-size: 20px 20px;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Key Metrics Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.15);
+        }
+
+        .metric-value {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .compliance-score .metric-value {
+            color: {% if compliance and compliance.overall_score >= 80 %}var(--success-color){% elif compliance and compliance.overall_score >= 60 %}var(--warning-color){% else %}var(--danger-color){% endif %};
+        }
+
+        .total-violations .metric-value {
+            color: {% if compliance and compliance.total_violations == 0 %}var(--success-color){% elif compliance and compliance.total_violations < 10 %}var(--warning-color){% else %}var(--danger-color){% endif %};
+        }
+
+        .pages-scanned .metric-value {
+            color: var(--primary-color);
+        }
+
+        .scanners-used .metric-value {
+            color: var(--accent-color);
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-compliant {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-partially-compliant {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-non-compliant {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Section Headers */
+        .section {
+            margin: 4rem 0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .section-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: bold;
+        }
+
+        .section h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin: 0;
+        }
+
+        /* Metadata Table */
+        .metadata-table {
+            background: var(--gray-50);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .metadata-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .metadata-table th,
+        .metadata-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .metadata-table th {
+            background: var(--gray-100);
+            font-weight: 600;
+            color: var(--gray-700);
+            width: 30%;
+        }
+
+        .metadata-table tr:last-child th,
+        .metadata-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* WCAG Compliance Grid */
+        .wcag-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .wcag-principle {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .principle-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .principle-score {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+
+        /* Violations Summary */
+        .violations-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .violation-type {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .violation-type.critical {
+            border-top: 4px solid var(--danger-color);
+        }
+
+        .violation-type.high {
+            border-top: 4px solid #f97316;
+        }
+
+        .violation-type.medium {
+            border-top: 4px solid var(--warning-color);
+        }
+
+        .violation-type.low {
+            border-top: 4px solid #6b7280;
+        }
+
+        .violation-count {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .violation-type.critical .violation-count {
+            color: var(--danger-color);
+        }
+
+        .violation-type.high .violation-count {
+            color: #f97316;
+        }
+
+        .violation-type.medium .violation-count {
+            color: var(--warning-color);
+        }
+
+        .violation-type.low .violation-count {
+            color: #6b7280;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 4rem;
+            padding: 2rem 0;
+            border-top: 2px solid var(--gray-200);
+            text-align: center;
+            color: var(--gray-600);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header {
+                margin: -1rem -1rem 2rem -1rem;
+                padding: 2rem 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .metric-card {
+                padding: 1.5rem;
+            }
+
+            .metric-value {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            .container {
+                max-width: none;
+                padding: 1rem;
+            }
+
+            .header {
+                background: var(--primary-color) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .metric-card,
+            .wcag-principle,
+            .violation-type {
+                box-shadow: none;
+                border: 1px solid var(--gray-300);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>Report di Accessibilità</h1>
+                <p class="subtitle">Analisi di Conformità WCAG 2.1 AA & EAA</p>
+            </div>
+        </header>
+
+        <!-- Key Metrics -->
+        <section class="metrics-grid">
+            <div class="metric-card compliance-score">
+                <span class="metric-value">{{ compliance.overall_score if compliance else 'N/A' }}%</span>
+                <div class="metric-label">Punteggio Conformità</div>
+            </div>
+            
+            <div class="metric-card total-violations">
+                <span class="metric-value">{{ compliance.total_violations if compliance else 'N/A' }}</span>
+                <div class="metric-label">Problemi Rilevati</div>
+            </div>
+            
+            <div class="metric-card pages-scanned">
+                <span class="metric-value">{{ scan_metadata.pages_analyzed if scan_metadata else '1' }}</span>
+                <div class="metric-label">Pagine Analizzate</div>
+            </div>
+            
+            <div class="metric-card scanners-used">
+                <span class="metric-value">{{ scan_metadata.scanners_used|length if scan_metadata and scan_metadata.scanners_used else '4' }}</span>
+                <div class="metric-label">Scanner Utilizzati</div>
+            </div>
+        </section>
+
+        <!-- Compliance Status -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">✓</div>
+                <h2>Stato di Conformità</h2>
+            </div>
+            
+            <div style="text-align: center; margin: 2rem 0;">
+                {% if compliance and compliance.compliance_level == 'conforme' %}
+                    <span class="status-badge status-compliant">✓ Conforme</span>
+                {% elif compliance and compliance.compliance_level == 'parzialmente_conforme' %}
+                    <span class="status-badge status-partially-compliant">⚠ Parzialmente Conforme</span>
+                {% else %}
+                    <span class="status-badge status-non-compliant">✗ Non Conforme</span>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Metadata -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">📋</div>
+                <h2>Dettagli Scansione</h2>
+            </div>
+            
+            <div class="metadata-table">
+                <table>
+                    <tr>
+                        <th>Azienda</th>
+                        <td>{{ company_name or 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                        <th>URL Analizzato</th>
+                        <td>{{ url or 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Data Scansione</th>
+                        <td>{{ scan_metadata.scan_date if scan_metadata else 'N/A' }}</td>
+                    </tr>
+                    <tr>
+                        <th>Scanner Utilizzati</th>
+                        <td>
+                            {% if scan_metadata and scan_metadata.scanners_used %}
+                                {{ scan_metadata.scanners_used|join(', ') }}
+                            {% else %}
+                                Pa11y, Axe-core, Lighthouse, WAVE
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Standard di Riferimento</th>
+                        <td>WCAG 2.1 AA, EN 301 549, European Accessibility Act (EAA)</td>
+                    </tr>
+                </table>
+            </div>
+        </section>
+
+        <!-- Violations Summary -->
+        {% if compliance %}
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">⚠</div>
+                <h2>Riepilogo Problemi per Severità</h2>
+            </div>
+            
+            <div class="violations-summary">
+                <div class="violation-type critical">
+                    <div class="violation-count">{{ compliance.critical_violations or 0 }}</div>
+                    <div class="violation-label">Critici</div>
+                </div>
+                
+                <div class="violation-type high">
+                    <div class="violation-count">{{ compliance.high_violations or 0 }}</div>
+                    <div class="violation-label">Alti</div>
+                </div>
+                
+                <div class="violation-type medium">
+                    <div class="violation-count">{{ compliance.medium_violations or 0 }}</div>
+                    <div class="violation-label">Medi</div>
+                </div>
+                
+                <div class="violation-type low">
+                    <div class="violation-count">{{ compliance.low_violations or 0 }}</div>
+                    <div class="violation-label">Bassi</div>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- WCAG Principles Assessment -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">📐</div>
+                <h2>Valutazione Principi WCAG 2.1</h2>
+            </div>
+            
+            <div class="wcag-grid">
+                <div class="wcag-principle">
+                    <div class="principle-title">1. Percepibile</div>
+                    <div class="principle-score" style="color: var(--success-color);">✓</div>
+                    <p>Le informazioni e i componenti dell'interfaccia utente devono essere presentati in modi che possano essere percepiti dagli utenti.</p>
+                </div>
+                
+                <div class="wcag-principle">
+                    <div class="principle-title">2. Operabile</div>
+                    <div class="principle-score" style="color: var(--success-color);">✓</div>
+                    <p>I componenti dell'interfaccia utente e la navigazione devono essere operabili.</p>
+                </div>
+                
+                <div class="wcag-principle">
+                    <div class="principle-title">3. Comprensibile</div>
+                    <div class="principle-score" style="color: var(--success-color);">✓</div>
+                    <p>Le informazioni e il funzionamento dell'interfaccia utente devono essere comprensibili.</p>
+                </div>
+                
+                <div class="wcag-principle">
+                    <div class="principle-title">4. Robusto</div>
+                    <div class="principle-score" style="color: var(--success-color);">✓</div>
+                    <p>Il contenuto deve essere abbastanza robusto da poter essere interpretato affidabilmente da una grande varietà di user agent, comprese le tecnologie assistive.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detailed Issues -->
+        {% if detailed_results and detailed_results.errors %}
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">🔍</div>
+                <h2>Dettaglio Problemi Rilevati</h2>
+            </div>
+            
+            <div style="background: var(--gray-50); border-radius: 8px; padding: 2rem;">
+                <p><strong>Totale problemi rilevati:</strong> {{ detailed_results.errors|length + detailed_results.warnings|length if detailed_results.errors and detailed_results.warnings else 'N/A' }}</p>
+                <p style="margin-top: 1rem;"><em>Per il dettaglio completo di ogni problema, consultare la sezione tecnica del report o i file JSON di output.</em></p>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- Recommendations -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-icon">💡</div>
+                <h2>Raccomandazioni</h2>
+            </div>
+            
+            <div style="background: white; border-radius: 8px; padding: 2rem; border-left: 4px solid var(--accent-color);">
+                <h3 style="color: var(--accent-color); margin-bottom: 1rem;">Priorità di Intervento</h3>
+                <ol style="line-height: 1.8; margin-left: 2rem;">
+                    <li><strong>Correggere problemi critici</strong> - Impatto immediato sull'accessibilità</li>
+                    <li><strong>Risolvere problemi ad alta priorità</strong> - Miglioramento significativo dell'esperienza utente</li>
+                    <li><strong>Implementare test automatici</strong> - Prevenire regressioni future</li>
+                    <li><strong>Formare il team</strong> - Sviluppo consapevole dell'accessibilità</li>
+                    <li><strong>Test con utenti reali</strong> - Validazione pratica delle correzioni</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Report generato automaticamente il {{ scan_metadata.scan_date if scan_metadata else 'N/A' }}</p>
+            <p>Standard di riferimento: WCAG 2.1 AA, EN 301 549, European Accessibility Act (EAA)</p>
+            <p>© {{ current_year or '2025' }} - Analisi di Accessibilità Professionale</p>
+        </footer>
+    </div>
+</body>
+</html>

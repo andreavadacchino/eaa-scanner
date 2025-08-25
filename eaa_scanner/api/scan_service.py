@@ -321,6 +321,15 @@ class ScanService:
             logger.error(f"Scan session {session_id} non trovata in worker")
             return
         
+        # Initialize SSE monitor for real-time progress updates
+        monitor = None
+        try:
+            from webapp.scan_monitor import get_scan_monitor
+            monitor = get_scan_monitor()
+            logger.info(f"SSE monitor initialized for scan {session_id}")
+        except ImportError:
+            logger.warning("SSE monitor not available, continuing without real-time events")
+        
         try:
             # Avvia sessione
             self.session_manager.set_scan_status(
@@ -328,6 +337,15 @@ class ScanService:
                 SessionStatus.RUNNING,
                 message="Inizializzazione scanner..."
             )
+            
+            # Emit scan start event
+            if monitor:
+                monitor.emit_scan_start(
+                    scan_id=session_id,
+                    url=session.selected_pages[0].url if session.selected_pages else "unknown",
+                    company_name=session.company_name,
+                    scanners_enabled=session.config.scanners_enabled
+                )
             
             logger.info(f"Scan worker avviato per {len(session.selected_pages)} pagine")
             
@@ -350,7 +368,7 @@ class ScanService:
                         logger.warning(f"Errore progress callback: {e}")
             
             # Esegui scansione
-            all_results = self._execute_scan(session_id, internal_progress_callback)
+            all_results = self._execute_scan(session_id, internal_progress_callback, monitor)
             
             # Controlla se cancellato durante esecuzione
             current_session = self.session_manager.get_scan_session(session_id)
@@ -368,6 +386,16 @@ class ScanService:
                 message=f"Scan completata: {current_session.total_issues} problemi trovati"
             )
             
+            # Emit scan complete event
+            if monitor:
+                monitor.emit_scan_complete(session_id, {
+                    'compliance_score': current_session.overall_score,
+                    'total_errors': current_session.critical_issues + current_session.high_issues,
+                    'total_warnings': current_session.medium_issues + current_session.low_issues,
+                    'pages_scanned': current_session.pages_scanned,
+                    'report_url': f'/v2/preview?scan_id={session_id}'
+                })
+            
             logger.info(f"Scan {session_id} completata con successo")
             
         except Exception as e:
@@ -377,18 +405,23 @@ class ScanService:
                 SessionStatus.FAILED,
                 error=f"Errore worker: {str(e)}"
             )
+            
+            # Emit scan failed event
+            if monitor:
+                monitor.emit_scan_failed(session_id, str(e))
         finally:
             # Cleanup thread reference
             if session_id in self._running_threads:
                 del self._running_threads[session_id]
     
-    def _execute_scan(self, session_id: str, progress_callback: Callable) -> List[Dict[str, Any]]:
+    def _execute_scan(self, session_id: str, progress_callback: Callable, monitor=None) -> List[Dict[str, Any]]:
         """
         Esegue scansione di tutte le pagine selezionate
         
         Args:
             session_id: ID della sessione
             progress_callback: Callback per progress
+            monitor: SSE monitor per eventi real-time
             
         Returns:
             Lista risultati per ogni pagina
@@ -423,8 +456,17 @@ class ScanService:
                 message=f"Scansione {page.title or page.url}..."
             )
             
+            # Emit page progress event
+            if monitor:
+                monitor.emit_page_progress(
+                    scan_id=session_id,
+                    current_page=i+1,
+                    total_pages=len(session.selected_pages),
+                    current_url=page.url
+                )
+            
             # Esegui scanner su questa pagina
-            page_results = self._scan_single_page(session_id, page, config, progress_callback)
+            page_results = self._scan_single_page(session_id, page, config, progress_callback, monitor)
             
             if page_results:
                 all_results.append(page_results)
@@ -446,7 +488,7 @@ class ScanService:
         return all_results
     
     def _scan_single_page(self, session_id: str, page: DiscoveredPage, 
-                         config: ScanConfiguration, progress_callback: Callable) -> Optional[Dict[str, Any]]:
+                         config: ScanConfiguration, progress_callback: Callable, monitor=None) -> Optional[Dict[str, Any]]:
         """
         Esegue scansione di una singola pagina con tutti gli scanner abilitati
         
@@ -455,6 +497,7 @@ class ScanService:
             page: Pagina da scansionare
             config: Configurazione scan
             progress_callback: Callback progresso
+            monitor: SSE monitor per eventi real-time
             
         Returns:
             Risultati normalizzati per la pagina
@@ -476,14 +519,14 @@ class ScanService:
         
         # Esegui scanner in parallelo se configurato
         if config.parallel_scans > 1:
-            results['scanners_results'] = self._run_scanners_parallel(page, config, session_id, page_dir)
+            results['scanners_results'] = self._run_scanners_parallel(page, config, session_id, page_dir, monitor)
         else:
-            results['scanners_results'] = self._run_scanners_sequential(page, config, session_id, page_dir)
+            results['scanners_results'] = self._run_scanners_sequential(page, config, session_id, page_dir, monitor)
         
         return results
     
     def _run_scanners_sequential(self, page: DiscoveredPage, config: ScanConfiguration,
-                               session_id: str, page_dir: Optional[Path]) -> Dict[str, Any]:
+                               session_id: str, page_dir: Optional[Path], monitor=None) -> Dict[str, Any]:
         """
         Esegue scanner in sequenza
         
@@ -492,6 +535,7 @@ class ScanService:
             config: Configurazione
             session_id: ID sessione
             page_dir: Directory output per pagina
+            monitor: SSE monitor per eventi real-time
             
         Returns:
             Risultati per scanner
@@ -501,17 +545,59 @@ class ScanService:
         # WAVE Scanner
         if config.scanners_enabled.get('wave', False):
             try:
+                # Emit scanner start event
+                if monitor:
+                    monitor.emit_scanner_start(
+                        scan_id=session_id,
+                        scanner_name="WAVE",
+                        url=page.url
+                    )
+                
                 self.session_manager.update_scan_progress(
                     session_id, current_scanner="WAVE"
                 )
+                
+                # Emit scanner operation events
+                if monitor:
+                    monitor.emit_scanner_operation(
+                        scan_id=session_id,
+                        scanner_name="WAVE",
+                        operation="Inizializzazione API WAVE",
+                        progress=25
+                    )
                 
                 wave = WaveScanner(
                     api_key=config.wave_api_key,
                     timeout_ms=config.scanner_timeout_ms,
                     simulate=config.simulate
                 )
+                
+                if monitor:
+                    monitor.emit_scanner_operation(
+                        scan_id=session_id,
+                        scanner_name="WAVE",
+                        operation="Scansione accessibilità in corso",
+                        progress=75
+                    )
+                
                 wave_result = wave.scan(page.url)
-                scanners_results['wave'] = process_wave(wave_result.json)
+                processed_result = process_wave(wave_result.json)
+                scanners_results['wave'] = processed_result
+                
+                # Emit scanner complete event
+                if monitor:
+                    errors_count = len(processed_result.get('errors', [])) if processed_result else 0
+                    warnings_count = len(processed_result.get('warnings', [])) if processed_result else 0
+                    monitor.emit_scanner_complete(
+                        scan_id=session_id,
+                        scanner_name="WAVE",
+                        results_summary={
+                            'success': wave_result.ok,
+                            'errors': errors_count,
+                            'warnings': warnings_count,
+                            'issues_found': errors_count + warnings_count
+                        }
+                    )
                 
                 # Salva risultato raw
                 if page_dir:
@@ -524,20 +610,70 @@ class ScanService:
             except Exception as e:
                 logger.warning(f"WAVE scan fallito per {page.url}: {e}")
                 scanners_results['wave'] = None
+                
+                # Emit scanner error event
+                if monitor:
+                    monitor.emit_scanner_error(
+                        scan_id=session_id,
+                        scanner_name="WAVE",
+                        error_message=str(e)
+                    )
         
         # Pa11y Scanner
         if config.scanners_enabled.get('pa11y', False):
             try:
+                # Emit scanner start event
+                if monitor:
+                    monitor.emit_scanner_start(
+                        scan_id=session_id,
+                        scanner_name="Pa11y",
+                        url=page.url
+                    )
+                
                 self.session_manager.update_scan_progress(
                     session_id, current_scanner="Pa11y"
                 )
+                
+                # Emit scanner operation events
+                if monitor:
+                    monitor.emit_scanner_operation(
+                        scan_id=session_id,
+                        scanner_name="Pa11y",
+                        operation="Avvio browser headless",
+                        progress=30
+                    )
                 
                 pa11y = Pa11yScanner(
                     timeout_ms=config.scanner_timeout_ms,
                     simulate=config.simulate
                 )
+                
+                if monitor:
+                    monitor.emit_scanner_operation(
+                        scan_id=session_id,
+                        scanner_name="Pa11y",
+                        operation="Test WCAG 2.1 in corso",
+                        progress=80
+                    )
+                
                 pa11y_result = pa11y.scan(page.url)
-                scanners_results['pa11y'] = process_pa11y(pa11y_result.json)
+                processed_result = process_pa11y(pa11y_result.json)
+                scanners_results['pa11y'] = processed_result
+                
+                # Emit scanner complete event
+                if monitor:
+                    errors_count = len(processed_result.get('errors', [])) if processed_result else 0
+                    warnings_count = len(processed_result.get('warnings', [])) if processed_result else 0
+                    monitor.emit_scanner_complete(
+                        scan_id=session_id,
+                        scanner_name="Pa11y",
+                        results_summary={
+                            'success': pa11y_result.ok,
+                            'errors': errors_count,
+                            'warnings': warnings_count,
+                            'issues_found': errors_count + warnings_count
+                        }
+                    )
                 
                 # Salva risultato raw
                 if page_dir:
@@ -550,20 +686,72 @@ class ScanService:
             except Exception as e:
                 logger.warning(f"Pa11y scan fallito per {page.url}: {e}")
                 scanners_results['pa11y'] = None
+                
+                # Emit scanner error event
+                if monitor:
+                    monitor.emit_scanner_error(
+                        scan_id=session_id,
+                        scanner_name="Pa11y",
+                        error_message=str(e)
+                    )
         
         # Axe Scanner
         if config.scanners_enabled.get('axe_core', False):
             try:
+                # Emit scanner start event
+                if monitor:
+                    monitor.emit_scanner_start(
+                        scan_id=session_id,
+                        scanner_name="Axe-core",
+                        url=page.url
+                    )
+                
                 self.session_manager.update_scan_progress(
                     session_id, current_scanner="Axe-core"
                 )
+                
+                # Emit scanner operation events
+                if monitor:
+                    monitor.emit_scanner_operation(
+                        scan_id=session_id,
+                        scanner_name="Axe-core",
+                        operation="Configurazione browser Chromium",
+                        progress=25
+                    )
                 
                 axe = AxeScanner(
                     timeout_ms=config.scanner_timeout_ms,
                     simulate=config.simulate
                 )
+                
+                if monitor:
+                    monitor.emit_scanner_operation(
+                        scan_id=session_id,
+                        scanner_name="Axe-core",
+                        operation="Analisi regole WCAG",
+                        progress=75
+                    )
+                
                 axe_result = axe.scan(page.url)
                 scanners_results['axe'] = axe_result.json
+                
+                # Emit scanner complete event
+                if monitor:
+                    issues_count = 0
+                    if axe_result.json and isinstance(axe_result.json, dict):
+                        violations = axe_result.json.get('violations', [])
+                        issues_count = sum(len(v.get('nodes', [])) for v in violations if isinstance(v, dict))
+                    
+                    monitor.emit_scanner_complete(
+                        scan_id=session_id,
+                        scanner_name="Axe-core",
+                        results_summary={
+                            'success': axe_result.ok,
+                            'errors': issues_count,
+                            'warnings': 0,
+                            'issues_found': issues_count
+                        }
+                    )
                 
                 # Salva risultato raw
                 if page_dir:
@@ -576,20 +764,62 @@ class ScanService:
             except Exception as e:
                 logger.warning(f"Axe scan fallito per {page.url}: {e}")
                 scanners_results['axe'] = None
+                
+                # Emit scanner error event
+                if monitor:
+                    monitor.emit_scanner_error(
+                        scan_id=session_id,
+                        scanner_name="Axe-core",
+                        error_message=str(e)
+                    )
         
         # Lighthouse Scanner
         if config.scanners_enabled.get('lighthouse', False):
             try:
+                # Emit scanner start event
+                if monitor:
+                    monitor.emit_scanner_start(
+                        scan_id=session_id,
+                        scanner_name="Lighthouse",
+                        url=page.url
+                    )
+                
                 self.session_manager.update_scan_progress(
                     session_id, current_scanner="Lighthouse"
                 )
+                
+                # Emit scanner operation events
+                if monitor:
+                    monitor.emit_scanner_operation(
+                        scan_id=session_id,
+                        scanner_name="Lighthouse",
+                        operation="Audit performance e accessibilità",
+                        progress=50
+                    )
                 
                 lighthouse = LighthouseScanner(
                     timeout_ms=config.scanner_timeout_ms,
                     simulate=config.simulate
                 )
+                
                 lighthouse_result = lighthouse.scan(page.url)
                 scanners_results['lighthouse'] = lighthouse_result.json
+                
+                # Emit scanner complete event
+                if monitor:
+                    accessibility_score = 0
+                    if lighthouse_result.json and isinstance(lighthouse_result.json, dict):
+                        accessibility_score = lighthouse_result.json.get('accessibility_score', 0)
+                    
+                    monitor.emit_scanner_complete(
+                        scan_id=session_id,
+                        scanner_name="Lighthouse",
+                        results_summary={
+                            'success': lighthouse_result.ok,
+                            'accessibility_score': accessibility_score,
+                            'issues_found': 100 - accessibility_score  # Rough estimate
+                        }
+                    )
                 
                 # Salva risultato raw
                 if page_dir:
@@ -602,11 +832,19 @@ class ScanService:
             except Exception as e:
                 logger.warning(f"Lighthouse scan fallito per {page.url}: {e}")
                 scanners_results['lighthouse'] = None
+                
+                # Emit scanner error event
+                if monitor:
+                    monitor.emit_scanner_error(
+                        scan_id=session_id,
+                        scanner_name="Lighthouse",
+                        error_message=str(e)
+                    )
         
         return scanners_results
     
     def _run_scanners_parallel(self, page: DiscoveredPage, config: ScanConfiguration,
-                             session_id: str, page_dir: Optional[Path]) -> Dict[str, Any]:
+                             session_id: str, page_dir: Optional[Path], monitor=None) -> Dict[str, Any]:
         """
         Esegue scanner in parallelo (implementazione futura)
         
@@ -615,6 +853,7 @@ class ScanService:
             config: Configurazione
             session_id: ID sessione
             page_dir: Directory output
+            monitor: SSE monitor per eventi real-time
             
         Returns:
             Risultati per scanner
@@ -622,7 +861,7 @@ class ScanService:
         # Per ora fallback a sequenziale
         # TODO: Implementare esecuzione parallela con ThreadPoolExecutor
         logger.warning("Esecuzione parallela non ancora implementata, uso sequenziale")
-        return self._run_scanners_sequential(page, config, session_id, page_dir)
+        return self._run_scanners_sequential(page, config, session_id, page_dir, monitor)
     
     def _process_page_issues(self, session_id: str, page: DiscoveredPage, 
                            page_results: Dict[str, Any]) -> None:

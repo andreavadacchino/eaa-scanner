@@ -1,0 +1,96 @@
+# Git
+.git
+.gitignore
+.github/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Node (for Playwright tests)
+node_modules/
+npm-debug.log*
+package-lock.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Output e logs (verranno montati come volumes)
+output/
+logs/
+reports/
+*.log
+
+# Documentation
+*.md
+docs/
+ADR-*.md
+CHANGELOG*.md
+README*.md
+TESTPLAN*.md
+IMPLEMENTATION*.md
+FRONTEND*.md
+SYSTEM*.md
+LIVE*.md
+FIX*.md
+LLM*.md
+SMART*.md
+PROJECT.md
+LICENSE
+
+# Test
+test*.py
+tests/
+webapp/e2e/
+webapp/test_*.py
+
+# Backup e temp
+*.bak
+*.tmp
+*_backup*
+temp/
+tmp/
+
+# Environment files (verranno passati con env_file)
+.env
+.env.*
+
+# Scripts non necessari nel container
+scripts/
+generate
+Makefile
+
+# Dati di esempio
+samples/
+data/*.csv
+data/*.json
+data/*.yaml
+
+# File di configurazione locali
+*.local
+*.dev

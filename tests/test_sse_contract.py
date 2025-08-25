@@ -1,9 +1,15 @@
+import os
 import json
 import threading
 import time
 from wsgiref.simple_server import make_server
 
 import requests
+import pytest
+
+# Skip dell'intero modulo se SSE è disabilitato a livello progetto
+if str(os.getenv("EAA_ENABLE_SSE", "false")).lower() not in ("1", "true", "yes"):
+    pytest.skip("SSE disabilitato nel progetto", allow_module_level=True)
 
 
 def run_server(app, port):

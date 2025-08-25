@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Site con Problemi di Accessibilità</title>
+    <style>
+        /* Contrasto insufficiente */
+        .low-contrast {
+            color: #999;
+            background-color: #ccc;
+        }
+        
+        /* Testo troppo piccolo */
+        .tiny-text {
+            font-size: 8px;
+        }
+        
+        /* Link senza underline */
+        a {
+            text-decoration: none;
+            color: blue;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Site con Problemi di Accessibilità</h1>
+    
+    <!-- Immagine senza alt text -->
+    <img src="logo.png">
+    
+    <!-- Form senza label -->
+    <form>
+        <input type="text" placeholder="Nome">
+        <input type="email" placeholder="Email">
+        <button>Invia</button>
+    </form>
+    
+    <!-- Testo con contrasto insufficiente -->
+    <div class="low-contrast">
+        Questo testo ha un contrasto troppo basso
+    </div>
+    
+    <!-- Testo troppo piccolo -->
+    <p class="tiny-text">
+        Questo testo è troppo piccolo per essere leggibile
+    </p>
+    
+    <!-- Link senza testo descrittivo -->
+    <a href="#">Clicca qui</a>
+    
+    <!-- Tabella senza headers -->
+    <table>
+        <tr>
+            <td>Prodotto</td>
+            <td>Prezzo</td>
+        </tr>
+        <tr>
+            <td>Item 1</td>
+            <td>€10</td>
+        </tr>
+    </table>
+    
+    <!-- Heading levels saltati -->
+    <h1>Titolo 1</h1>
+    <h3>Saltato H2</h3>
+    
+    <!-- Video senza controlli accessibili -->
+    <video src="video.mp4"></video>
+    
+    <!-- Iframe senza title -->
+    <iframe src="https://example.com"></iframe>
+    
+    <!-- Bottone senza testo accessibile -->
+    <button><img src="icon.png"></button>
+    
+    <!-- Lista senza struttura semantica -->
+    <div>
+        • Item 1<br>
+        • Item 2<br>
+        • Item 3
+    </div>
+</body>
+</html>

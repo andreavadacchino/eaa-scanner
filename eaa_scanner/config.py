@@ -66,7 +66,7 @@ class Config(BaseModel):
     wcag_level: str = Field(default="AA", description="Livello WCAG")
     eaa_compliance: bool = Field(default=True, description="Verifica compliance EAA")
     
-    simulate: bool = Field(default=True, description="Modalità simulata (offline)")
+    simulate: bool = Field(default=False, description="Modalità simulata (offline)")
     
     # Runtime
     out_dir: str = Field(default="output", description="Directory output")

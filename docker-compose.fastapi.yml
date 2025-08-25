@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # Backend FastAPI
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.fastapi
+    container_name: eaa-scanner-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+      - DEBUG_MODE=false
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - WAVE_API_KEY=${WAVE_API_KEY}
+      - REDIS_URL=redis://redis:6379/0
+      - CHROME_CMD=chromium
+      - DEV_ALLOW_LOCAL_URLS=true
+      - TRUSTED_HOSTS=backend,localhost,127.0.0.1
+    volumes:
+      - ./output:/app/output
+      - ./logs:/app/logs
+      - ./eaa_scanner.db:/app/eaa_scanner.db
+      - ./webapp:/app/webapp
+    depends_on:
+      - redis
+    networks:
+      - eaa-network
+    restart: unless-stopped
+
+  # Redis per caching e rate limiting
+  redis:
+    image: redis:7-alpine
+    container_name: eaa-scanner-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - eaa-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # Frontend React (development mode)
+  frontend:
+    image: node:18-alpine
+    container_name: eaa-scanner-frontend
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_BASE_URL=/api
+      - VITE_PROXY_TARGET=http://backend:8000
+      - PORT=3000
+    volumes:
+      - ./webapp/frontend:/app
+      - /app/node_modules  # Evita conflitti con node_modules locali
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 3000"
+    networks:
+      - eaa-network
+    depends_on:
+      - backend
+
+volumes:
+  redis-data:
+
+networks:
+  eaa-network:
+    driver: bridge

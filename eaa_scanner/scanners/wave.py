@@ -24,10 +24,16 @@ class WaveScanner:
         from ..scan_events import get_current_hooks
         hooks = get_current_hooks()
         
-        if self.simulate or not self.api_key:
+        # Modalità simulata
+        if self.simulate:
             if hooks:
-                hooks.emit_scanner_operation("WAVE", "Esecuzione simulata", 50)
+                hooks.emit_scanner_operation("WAVE", "Simulazione risultati WAVE", 60)
             return self._simulate(url)
+        # In modalità reale, richiede API key
+        if not self.api_key:
+            if hooks:
+                hooks.emit_scanner_operation("WAVE", "API key mancante", 100)
+            raise Exception("WAVE API key not provided")
         try:
             # Lazy import to avoid dependency when offline
             import urllib.parse
@@ -103,4 +109,3 @@ class WaveScanner:
             },
         }
         return WaveResult(ok=True, json=data)
-

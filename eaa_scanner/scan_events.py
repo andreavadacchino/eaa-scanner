@@ -108,8 +108,20 @@ class MonitoredScanner:
             if hooks:
                 hooks.emit_scanner_start(self.scanner_name, url)
                 
+            # Emit initial operation event
+            if hooks:
+                hooks.emit_scanner_operation(self.scanner_name, f"Inizializzazione {self.scanner_name}", progress=25)
+            
+            # Emit progress during scan
+            if hooks:
+                hooks.emit_scanner_operation(self.scanner_name, f"Scansione in corso per {url}", progress=50)
+                
             # Execute scanner
             result = self.scanner.scan(url)
+            
+            # Emit progress after scan
+            if hooks:
+                hooks.emit_scanner_operation(self.scanner_name, "Elaborazione risultati", progress=90)
             
             # Emit complete event with summary
             if hooks and hasattr(result, 'json') and result.json:
@@ -143,13 +155,18 @@ class MonitoredScanner:
                 })
                 
         elif self.scanner_name.lower() == "pa11y":
+            issues = None
             if isinstance(result_json, list):
-                errors = [r for r in result_json if r.get('type') == 'error']
-                warnings = [r for r in result_json if r.get('type') == 'warning']
+                issues = result_json
+            elif isinstance(result_json, dict):
+                issues = result_json.get('issues', [])
+            if issues is not None:
+                errors = [r for r in issues if r.get('type') == 'error']
+                warnings = [r for r in issues if r.get('type') == 'warning']
                 summary.update({
                     "errors": len(errors),
                     "warnings": len(warnings),
-                    "total_issues": len(result_json)
+                    "total_issues": len(issues)
                 })
                 
         elif self.scanner_name.lower() == "axe":
@@ -172,8 +189,16 @@ class MonitoredScanner:
                             if a.get('score') == 0])
                 passed = len([a for a in accessibility_audits.values() 
                             if a.get('score') == 1])
+                # Safe extraction per evitare AttributeError su types non-dict
+                categories = result_json.get('categories', {})
+                accessibility_score = 0
+                if isinstance(categories, dict):
+                    accessibility_data = categories.get('accessibility', {})
+                    if isinstance(accessibility_data, dict):
+                        accessibility_score = accessibility_data.get('score', 0)
+                
                 summary.update({
-                    "accessibility_score": result_json.get('categories', {}).get('accessibility', {}).get('score', 0),
+                    "accessibility_score": accessibility_score,
                     "failed_audits": failed,
                     "passed_audits": passed,
                     "total_audits": len(accessibility_audits)

@@ -1,0 +1,66 @@
+{
+  "test_summary": {
+    "timestamp": "20250824_025134",
+    "total_tests": 3,
+    "successful_tests": 3,
+    "real_data_confirmed": 0,
+    "enterprise_working": 0,
+    "overall_success": true
+  },
+  "detailed_results": [
+    {
+      "scan_id": "v2scan_0oX7C5F84Zo",
+      "status": "completed",
+      "url": "N/A",
+      "enterprise_system_used": true,
+      "scanners_completed": [],
+      "total_violations": 0,
+      "compliance_score": 0,
+      "compliance_level": "unknown",
+      "verification_checks": {
+        "real_data_confirmed": false,
+        "all_scanners_ran": false,
+        "enterprise_aggregation": false,
+        "pydantic_validation": false
+      },
+      "test_number": 1,
+      "website_url": "https://www.beinat.com"
+    },
+    {
+      "scan_id": "v2scan_et0Q_RG77RU",
+      "status": "completed",
+      "url": "N/A",
+      "enterprise_system_used": true,
+      "scanners_completed": [],
+      "total_violations": 0,
+      "compliance_score": 0,
+      "compliance_level": "unknown",
+      "verification_checks": {
+        "real_data_confirmed": false,
+        "all_scanners_ran": false,
+        "enterprise_aggregation": false,
+        "pydantic_validation": false
+      },
+      "test_number": 2,
+      "website_url": "https://www.governo.it"
+    },
+    {
+      "scan_id": "v2scan_7jTM22HMTA8",
+      "status": "completed",
+      "url": "N/A",
+      "enterprise_system_used": true,
+      "scanners_completed": [],
+      "total_violations": 0,
+      "compliance_score": 0,
+      "compliance_level": "unknown",
+      "verification_checks": {
+        "real_data_confirmed": false,
+        "all_scanners_ran": false,
+        "enterprise_aggregation": false,
+        "pydantic_validation": false
+      },
+      "test_number": 3,
+      "website_url": "https://www.repubblica.it"
+    }
+  ]
+}

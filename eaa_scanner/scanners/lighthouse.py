@@ -14,7 +14,7 @@ class LighthouseResult:
 
 
 class LighthouseScanner:
-    def __init__(self, timeout_ms: int = 60000, simulate: bool = True):
+    def __init__(self, timeout_ms: int = 60000, simulate: bool = False):
         self.timeout_ms = timeout_ms
         self.simulate = simulate
 
@@ -23,9 +23,10 @@ class LighthouseScanner:
         from ..scan_events import get_current_hooks
         hooks = get_current_hooks()
         
+        # Modalità simulata
         if self.simulate:
             if hooks:
-                hooks.emit_scanner_operation("Lighthouse", "Esecuzione simulata", 50)
+                hooks.emit_scanner_operation("Lighthouse", "Simulazione audit Lighthouse", 60)
             return self._simulate(url)
         try:
             if hooks:
@@ -42,20 +43,34 @@ class LighthouseScanner:
             base, err = first_available(choices)
             if not base:
                 if hooks:
-                    hooks.emit_scanner_operation("Lighthouse", "Lighthouse non trovato, uso simulazione", 100)
-                return self._simulate(url)
+                    hooks.emit_scanner_operation("Lighthouse", "Lighthouse non trovato", 100)
+                raise Exception(f"Lighthouse not found. Tried: {choices}")
                 
             if hooks:
                 hooks.emit_scanner_operation("Lighthouse", "Avvio browser headless", 40)
                 
+            # Configurazione browser per container Docker
+            # Lighthouse richiede flags Chrome estesi per funzionare come root in Docker
+            chrome_flags = "--headless --no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage --disable-gpu --disable-extensions --no-first-run --disable-features=TranslateUI --disable-default-apps"
+            
+            # Specifica il path di chromium se nel container
+            chromium_path = "/usr/bin/chromium" if os.path.exists("/usr/bin/chromium") else None
+            
             cmd = base + [
                 url,
                 "--only-categories=accessibility",
                 "--quiet",
                 "--output=json",
                 "--output-path=stdout",
-                "--chrome-flags=--headless=new --no-sandbox",
             ]
+            
+            # Aggiungi chrome-executable solo se chromium è disponibile
+            if chromium_path:
+                cmd.extend([
+                    f"--chrome-executable={chromium_path}",
+                ])
+            
+            cmd.append(f"--chrome-flags={chrome_flags}")
             
             if hooks:
                 hooks.emit_scanner_operation("Lighthouse", "Audit accessibilità in corso", 70)
@@ -64,19 +79,17 @@ class LighthouseScanner:
             if cp.returncode != 0:
                 return LighthouseResult(ok=False, json={"error": cp.stderr, "stdout": cp.stdout})
             data = json.loads(cp.stdout or "{}")
-            # Normalize expected fields
-            acc_score = int(round((data.get("categories", {}).get("accessibility", {}).get("score", 0) or 0) * 100))
-            audits = data.get("audits", {}) or {}
-            audits_min = {aid: {"score": a.get("score", 0), "title": a.get("title", aid)} for aid, a in audits.items()}
+            # Return raw data for proper processing by normalize.py
+            # Keep all audit details needed by the processor
             return LighthouseResult(
                 ok=True,
                 json={
                     "scanner": "lighthouse",
                     "url": url,
-                    "accessibility_score": acc_score,
-                    "audits": audits_min,
+                    "audits": data.get("audits", {}),  # Full audit data with details
+                    "categories": data.get("categories", {}),  # Complete categories
                     "lighthouse_version": data.get("lighthouseVersion"),
-                    "categories": data.get("categories", {}),
+                    "raw_data": data  # Keep raw data for reference
                 },
             )
         except Exception as e:
@@ -106,6 +119,11 @@ class LighthouseScanner:
             "performance_score": 82,
             "seo_score": 91,
             "best_practices_score": 88,
-            "categories": {"accessibility": 78, "performance": 82, "seo": 91, "best-practices": 88},
+            "categories": {
+                "accessibility": {"score": 0.78, "title": "Accessibility"},
+                "performance": {"score": 0.82, "title": "Performance"},
+                "seo": {"score": 0.91, "title": "SEO"},
+                "best-practices": {"score": 0.88, "title": "Best Practices"}
+            },
         }
         return LighthouseResult(ok=True, json=data)

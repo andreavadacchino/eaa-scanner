@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relazione di conformità all'accessibilità del sito Principia Advisory Enterprise</title>
+    <style>
+        /* Stile pulito e minimale per report professionale */
+        body {
+            background-color: #ffffff;
+            color: #000000;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 2em;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        h1, h2, h3 {
+            font-weight: bold;
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            color: #003366;
+        }
+        
+        h1 {
+            font-size: 1.8em;
+            border-bottom: 2px solid #003366;
+            padding-bottom: 0.3em;
+        }
+        
+        h2 {
+            font-size: 1.4em;
+            margin-top: 2em;
+        }
+        
+        h3 {
+            font-size: 1.2em;
+            color: #004080;
+        }
+        
+        p {
+            margin: 1em 0;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin: 1em 0;
+            padding-left: 2em;
+        }
+        
+        li {
+            margin: 0.5em 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5em 0;
+        }
+        
+        th, td {
+            border: 1px solid #000000;
+            padding: 0.75em;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        
+        caption {
+            font-weight: bold;
+            text-align: left;
+            margin-bottom: 0.5em;
+            font-size: 1.1em;
+        }
+        
+        /* Classi per priorità */
+        .prio-critical {
+            color: #990000;
+            font-weight: bold;
+        }
+        
+        .prio-high {
+            color: #cc0000;
+            font-weight: bold;
+        }
+        
+        .prio-medium {
+            color: #cc6600;
+        }
+        
+        .prio-low {
+            color: #666666;
+        }
+        
+        /* Badge di conformità */
+        .conformity-badge {
+            display: inline-block;
+            padding: 0.5em 1em;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 0.5em 0;
+        }
+        
+        .conformity-compliant {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .conformity-partial {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        
+        .conformity-non-compliant {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Codice inline */
+        code {
+            background-color: #f5f5f5;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        /* Sezioni evidenziate */
+        .highlight-box {
+            background-color: #f0f8ff;
+            border-left: 4px solid #003366;
+            padding: 1em;
+            margin: 1.5em 0;
+        }
+        
+        /* Sintesi Esecutiva - Design Migliorato */
+        .executive-summary-section {
+            margin: 2em 0;
+        }
+        
+        .conformity-status-banner {
+            display: flex;
+            align-items: center;
+            padding: 1.5em;
+            margin-bottom: 2em;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e9e9e9 100%);
+            border-left: 5px solid #666;
+        }
+        
+        .conformity-status-banner.conforme {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left-color: #4caf50;
+        }
+        
+        .conformity-status-banner.parzialmente-conforme {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left-color: #ff9800;
+        }
+        
+        .conformity-status-banner.non-conforme {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border-left-color: #f44336;
+        }
+        
+        .status-icon {
+            font-size: 3em;
+            margin-right: 1em;
+            color: #666;
+        }
+        
+        .conforme .status-icon { color: #4caf50; }
+        .parzialmente-conforme .status-icon { color: #ff9800; }
+        .non-conforme .status-icon { color: #f44336; }
+        
+        .status-content h3 {
+            margin: 0 0 0.5em 0;
+            color: #003366;
+        }
+        
+        .status-text {
+            font-weight: bold;
+        }
+        
+        .status-content p {
+            margin: 0;
+            color: #666;
+            font-size: 0.95em;
+        }
+        
+        /* Dashboard Metriche */
+        .metrics-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5em;
+            margin: 2em 0;
+        }
+        
+        .metric-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5em;
+            display: flex;
+            align-items: flex-start;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .metric-icon {
+            font-size: 2em;
+            margin-right: 1em;
+            opacity: 0.8;
+        }
+        
+        .metric-content {
+            flex: 1;
+        }
+        
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #003366;
+            line-height: 1;
+            margin-bottom: 0.2em;
+        }
+        
+        .metric-label {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 0.2em;
+        }
+        
+        .metric-sublabel {
+            color: #666;
+            font-size: 0.85em;
+        }
+        
+        .metric-errors .metric-value { color: #d32f2f; }
+        .metric-warnings .metric-value { color: #f57c00; }
+        .metric-score .metric-value { color: #003366; }
+        .metric-pages .metric-value { color: #388e3c; }
+        
+        /* Progress Bar */
+        .metric-progress {
+            margin-top: 0.5em;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #003366, #0066cc);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .executive-text {
+            margin-top: 2em;
+            padding: 1.5em;
+            background: #fafafa;
+            border-radius: 4px;
+        }
+        
+        /* Print styles */
+        @media print {
+            body {
+                margin: 0;
+                font-size: 12pt;
+            }
+            
+            h1, h2, h3 {
+                page-break-after: avoid;
+            }
+            
+            table {
+                page-break-inside: avoid;
+            }
+            
+            .no-print {
+                display: none;
+            }
+        }
+        
+        /* Link accessibili */
+        a {
+            color: #0066cc;
+            text-decoration: underline;
+        }
+        
+        a:hover, a:focus {
+            color: #0052a3;
+            text-decoration: none;
+            outline: 2px solid #0066cc;
+            outline-offset: 2px;
+        }
+        
+        /* Footer */
+        .report-footer {
+            margin-top: 3em;
+            padding-top: 2em;
+            border-top: 1px solid #ccc;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>Relazione di conformità all'accessibilità del sito Principia Advisory Enterprise</h1>
+
+    <!-- Sezione 1: Descrizione introduttiva -->
+    <h2>Descrizione introduttiva</h2>
+    
+    <p>Questa relazione tecnica di conformità all'accessibilità è stata generata automaticamente sulla base di dati provenienti da analisi condotte tramite strumenti automatizzati di validazione, in conformità con i criteri previsti dal WCAG 2.1 livello AA, la norma EN 301 549 e le linee guida AgID, nel rispetto dell'European Accessibility Act (EAA). Il documento rappresenta una fotografia attendibile dello stato attuale di accessibilità del sito <a href="https://www.principiadv.com/">https://www.principiadv.com/</a>, evidenziando le principali criticità rilevate in modo tecnico e documentato.</p>
+    
+    <p>L'obiettivo della relazione è fornire un quadro sintetico e dettagliato di conformità, identificando le aree di massimo impatto e le urgenze di intervento, per permettere una pianificazione efficace della remediation e garantire l'accessibilità digitale a tutti gli utenti, incluse le persone con disabilità. Si sottolinea che questa analisi rappresenta una prima valutazione tecnica automatizzata che deve essere integrata con verifiche manuali e test di fruibilità reali per una certificazione completa del sito.</p>
+    
+    <p>L'European Accessibility Act e le normative associate rappresentano un obbligo normativo crescente per la digitalizzazione inclusiva e questo documento intende aiutare Principia Advisory Enterprise a conformarsi in modo efficace, responsabilizzato e conforme agli standard internazionali. Le anomalie individuate sono descritte dettagliatamente con riferimenti ai criteri WCAG e alle best practice di sviluppo accessibile.</p>
+    
+
+    <!-- Sezione 2: Metadati -->
+    <h2>Metadati</h2>
+    <ul>
+        <li><strong>Cliente:</strong> Principia Advisory Enterprise</li>
+        <li><strong>URL Testato:</strong> <a href="https://www.principiadv.com/">https://www.principiadv.com/</a></li>
+        <li><strong>Data e ora verifica:</strong> 24 August 2025</li>
+        <li><strong>Numero pagine analizzate:</strong> 1</li>
+        <li><strong>Fornitore:</strong> Team Accessibilità</li>
+        <li><strong>Referente tecnico:</strong> enterprise@test.com</li>
+        <li><strong>Strumenti utilizzati:</strong>
+            <ul>
+                
+            </ul>
+        </li>
+        
+    </ul>
+
+    <!-- Sezione 3: Sintesi esecutiva -->
+    <h2>Sintesi esecutiva</h2>
+    <div class="executive-summary-section">
+        <!-- Badge di stato prominente -->
+        <div class="conformity-status-banner conforme">
+            <div class="status-icon">
+                
+                ✓
+                
+            </div>
+            <div class="status-content">
+                <h3>Stato di Conformità: <span class="status-text">PIENA CONFORMITÀ</span></h3>
+                <p>Valutazione secondo European Accessibility Act, EN 301 549 e WCAG 2.1 AA</p>
+            </div>
+        </div>
+        
+        <!-- Metriche principali con design migliorato -->
+        <div class="metrics-dashboard">
+            <div class="metric-card metric-errors">
+                <div class="metric-icon">⚠️</div>
+                <div class="metric-content">
+                    <div class="metric-value">0</div>
+                    <div class="metric-label">Errori Critici</div>
+                    <div class="metric-sublabel">Richiedono intervento immediato</div>
+                </div>
+            </div>
+            
+            <div class="metric-card metric-warnings">
+                <div class="metric-icon">ℹ️</div>
+                <div class="metric-content">
+                    <div class="metric-value">0</div>
+                    <div class="metric-label">Avvisi</div>
+                    <div class="metric-sublabel">Da verificare manualmente</div>
+                </div>
+            </div>
+            
+            <div class="metric-card metric-score">
+                <div class="metric-icon">📊</div>
+                <div class="metric-content">
+                    <div class="metric-value">100%</div>
+                    <div class="metric-label">Punteggio Conformità</div>
+                    <div class="metric-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="metric-card metric-pages">
+                <div class="metric-icon">📄</div>
+                <div class="metric-content">
+                    <div class="metric-value">1</div>
+                    <div class="metric-label">Pagine Analizzate</div>
+                    <div class="metric-sublabel">24 August 2025</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sintesi testuale -->
+        <div class="executive-text">
+            
+            <p>Durante l'audit automatico sono stati rilevati complessivamente <strong>0 errori</strong> e <strong>0 avvisi</strong> che interessano principalmente le aree di accessibilità generale. La classificazione come piena conformità deriva dalla presenza di errori di severità bassa che impattano direttamente l'esperienza di persone con disabilità.</p>
+            <p>Si sottolinea che questa valutazione è basata su un'analisi automatizzata e rappresenta una prima fotografia dello stato di accessibilità presente, da integrare necessariamente con verifiche manuali per una valutazione definitiva e certificata.</p>
+            
+        </div>
+    </div>
+
+    <!-- Sezione 4: Contesto e ambito -->
+    <h2>Contesto e ambito</h2>
+    <p>L'analisi tecnica è stata eseguita sul sito web pubblico disponibile all'URL <a href="https://www.principiadv.com/">https://www.principiadv.com/</a>. Il workflow di scansione ha considerato 1 pagine rappresentative del dominio, con tecnologie web standard come HTML, CSS e ARIA. Non sono stati valutati sistemi backend, applicazioni mobili native o software esterni.</p>
+    
+    <p>La verifica è basata su strumenti automatizzati che individuano problemi di accessibilità relativi a strutture semantiche, testi alternativi, contrasti, form e interazioni. Tuttavia, non copre interazioni complesse, contenuti dinamici non accessibili automaticamente, né elementi multimediali avanzati con necessità di verifiche manuali specifiche.</p>
+    
+    <p>L'ambito normativo considerato include standard europei (EAA, EN 301 549), criteri internazionali (WCAG 2.1 AA) e linee guida italiane per siti pubblici (AgID). Sono esclusi dal controllo i documenti PDF esterni e app mobile non collegati direttamente al sito web.</p>
+
+    <!-- Sezione 5: Metodologia -->
+    <h2>Metodologia</h2>
+    <p>L'analisi di accessibilità è stata condotta con l'ausilio di strumenti automatizzati riconosciuti nel settore:</p>
+    <ul>
+        
+    </ul>
+    
+    <p>Il processo di validazione ha permesso di identificare errori e avvisi secondo le logiche di scansione integrate nei software. I dati raccolti sono stati successivamente elaborati per aggregare errori unici e raggruppare le problematiche per categorie secondo linee guida consolidate.</p>
+    
+    
+
+    <!-- Sezione 6: Quadro normativo -->
+    <h2>Quadro normativo</h2>
+    <p>La conformità è valutata rispetto ai seguenti standard e normative:</p>
+    
+    <table>
+        <caption>Tabella riepilogativa delle principali normative</caption>
+        <thead>
+            <tr>
+                <th scope="col">Norma</th>
+                <th scope="col">Data</th>
+                <th scope="col">Ambito</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">WCAG 2.1 Level AA</th>
+                <td>Giugno 2018</td>
+                <td>Standard internazionale per l'accessibilità web</td>
+            </tr>
+            <tr>
+                <th scope="row">EN 301 549 v3.2.1</th>
+                <td>Marzo 2021</td>
+                <td>Accessibilità ICT per prodotti e servizi (web, app, hardware)</td>
+            </tr>
+            <tr>
+                <th scope="row">European Accessibility Act (EAA)</th>
+                <td>Applicazione obbligatoria dal 28 giugno 2025</td>
+                <td>Prodotti e servizi digitali in EU, inclusi privati e commercio elettronico</td>
+            </tr>
+            <tr>
+                <th scope="row">Linee Guida AgID</th>
+                <td>Aggiornamento continuo</td>
+                <td>Accessibilità siti web PA italiana</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Sezione 7: Sintesi del livello di conformità -->
+    <h2>Sintesi del livello di conformità</h2>
+    <p>Le WCAG 2.1 sono organizzate attorno a quattro principi fondamentali sintetizzati nell'acronimo P.O.U.R.:</p>
+    
+    <table>
+        <caption>Stato di conformità per area WCAG</caption>
+        <thead>
+            <tr>
+                <th scope="col">Area</th>
+                <th scope="col">Stato</th>
+                <th scope="col">Problemi rilevati</th>
+                <th scope="col">Note</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <tr>
+                <th scope="row">Percepibile (Perceivable)</th>
+                <td class="conformity-conforme">Conforme</td>
+                <td>0</td>
+                <td>Nessun problema rilevato</td>
+            </tr>
+            
+            <tr>
+                <th scope="row">Operabile (Operable)</th>
+                <td class="conformity-conforme">Conforme</td>
+                <td>0</td>
+                <td>Nessun problema rilevato</td>
+            </tr>
+            
+            <tr>
+                <th scope="row">Comprensibile (Understandable)</th>
+                <td class="conformity-conforme">Conforme</td>
+                <td>0</td>
+                <td>Nessun problema rilevato</td>
+            </tr>
+            
+            <tr>
+                <th scope="row">Robusto (Robust)</th>
+                <td class="conformity-conforme">Conforme</td>
+                <td>0</td>
+                <td>Nessun problema rilevato</td>
+            </tr>
+            
+        </tbody>
+    </table>
+
+    <!-- Sezione 8: Problemi principali rilevati -->
+    <h2>Problemi principali rilevati</h2>
+    
+
+    <!-- Sezione 9: Elenco dettagliato problemi -->
+    <h2>Elenco dettagliato problemi</h2>
+    <p>Questa sezione documenta in dettaglio ogni problematica rilevata durante l'analisi automatica.</p>
+    
+    <table>
+        <caption>Dettaglio problemi rilevati</caption>
+        <thead>
+            <tr>
+                <th scope="col">Categoria</th>
+                <th scope="col">Descrizione</th>
+                <th scope="col">Occorrenze</th>
+                <th scope="col">WCAG</th>
+                <th scope="col">Priorità</th>
+                <th scope="col">Azione Specifica</th>
+                <th scope="col">Localizzazione</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+
+    <!-- Sezione 10: Glossario criteri WCAG più frequenti -->
+    <h2>Glossario criteri WCAG più frequenti</h2>
+    <ul>
+        <li><strong>1.1.1 Testo alternativo</strong> – Le immagini devono avere una descrizione alternativa (attributo alt) che trasmetta il contenuto e la funzione dell'immagine per utenti con disabilità visive.</li>
+        <li><strong>1.3.1 Informazioni e relazioni</strong> – Le informazioni, la struttura e le relazioni veicolate attraverso la presentazione possono essere determinate programmaticamente o sono disponibili nel testo.</li>
+        <li><strong>1.4.3 Contrasto minimo</strong> – Il testo e gli elementi interattivi devono avere un contrasto sufficiente rispetto allo sfondo (almeno 4.5:1 per testo normale).</li>
+        <li><strong>2.1.1 Tastiera</strong> – Tutte le funzionalità devono essere accessibili tramite la tastiera senza richiedere mouse.</li>
+        <li><strong>2.4.1 Salto di blocchi</strong> – È disponibile un meccanismo per saltare blocchi di contenuto che si ripetono su più pagine web.</li>
+        <li><strong>3.3.2 Etichette e suggerimenti</strong> – I campi dei moduli devono essere etichettati in modo chiaro con istruzioni e label.</li>
+        <li><strong>4.1.2 Nome, ruolo, valore</strong> – Per tutti i componenti dell'interfaccia utente, il nome e il ruolo possono essere determinati programmaticamente.</li>
+    </ul>
+
+    <!-- Sezione 11: Piano di remediation -->
+    <h2>Piano di remediation</h2>
+    
+    <table>
+        <caption>Piano operativo di remediation con priorità e assegnazioni</caption>
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Intervento</th>
+                <th scope="col">Area WCAG</th>
+                <th scope="col">Impatto</th>
+                <th scope="col">Priorità</th>
+                <th scope="col">Owner</th>
+                <th scope="col">Stato</th>
+                <th scope="col">Deadline</th>
+                <th scope="col">Note Tecniche</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <tr>
+                <th scope="row">1</th>
+                <td>Test completo con utenti con disabilità</td>
+                <td>Tutte</td>
+                <td>Critico</td>
+                <td class="prio-alta">Alta</td>
+                <td>QA Team + Accessibility Expert</td>
+                <td>Da pianificare</td>
+                <td>23/09/2025</td>
+                <td>Coinvolgere almeno 3 utenti con diverse disabilità. Test con screen reader multipli</td>
+            </tr>
+            
+            <tr>
+                <th scope="row">2</th>
+                <td>Implementazione monitoraggio continuo accessibilità</td>
+                <td>Processo</td>
+                <td>Alto</td>
+                <td class="prio-media">Media</td>
+                <td>DevOps Team</td>
+                <td>Da pianificare</td>
+                <td>08/10/2025</td>
+                <td>Integrare axe-core in CI/CD pipeline. Setup monitoring dashboard</td>
+            </tr>
+            
+        </tbody>
+    </table>
+    
+
+    <!-- Sezione 12: Raccomandazioni finali -->
+    <h2>Raccomandazioni finali</h2>
+    
+    <p>Per garantire la piena conformità alle normative sull'accessibilità e migliorare l'esperienza utente per tutti, si raccomanda di:</p>
+    <ol>
+        <li>Implementare le correzioni identificate seguendo l'ordine di priorità indicato</li>
+        <li>Condurre test manuali con utenti reali, incluse persone con disabilità</li>
+        <li>Stabilire un processo di monitoraggio continuo dell'accessibilità</li>
+        <li>Formare il team di sviluppo sulle best practice di accessibilità</li>
+        <li>Integrare i controlli di accessibilità nel processo di sviluppo (shift-left)</li>
+        <li>Pubblicare una dichiarazione di accessibilità sul sito</li>
+        <li>Implementare un meccanismo di feedback per gli utenti</li>
+    </ol>
+    
+
+    <!-- Footer del report -->
+    <div class="report-footer">
+        <p><strong>Nota:</strong> Questo report è stato generato automaticamente il 24 August 2025 utilizzando strumenti di scansione automatizzati. Per una valutazione completa della conformità, si raccomanda di integrare questa analisi con test manuali e valutazioni da parte di esperti di accessibilità.</p>
+        
+        
+        
+        <p>© 2025 - Report di Accessibilità EAA - Principia Advisory Enterprise</p>
+    </div>
+</body>
+</html>

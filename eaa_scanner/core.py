@@ -29,9 +29,19 @@ def run_scan(cfg: Config, output_root: Path | None = None,
             crawler_config: Optional[Dict[str, Any]] = None,
             methodology_config: Optional[Dict[str, Any]] = None,
             report_type: str = "standard",
-            event_monitor=None) -> Dict[str, Any]:
+            event_monitor=None,
+            scan_id: Optional[str] = None) -> Dict[str, Any]:
+    
+    # DEBUG: Log parametri ricevuti
+    print(f"🔍 DEBUG run_scan - cfg.url: {repr(cfg.url)}")
+    print(f"🔍 DEBUG run_scan - cfg.company_name: {repr(cfg.company_name)}")
+    import logging
+    logging.getLogger(__name__).info(f"EAA CORE: Received URL = {cfg.url}")
+    
     output_root = output_root or Path("output")
-    scan_id = new_scan_id()
+    # Usa scan_id fornito o genera nuovo
+    if not scan_id:
+        scan_id = new_scan_id()
     base_out = output_root / scan_id
     base_out.mkdir(parents=True, exist_ok=True)
     
@@ -110,28 +120,77 @@ def run_scan(cfg: Config, output_root: Path | None = None,
         url_dir.mkdir(exist_ok=True)
         
         if cfg.scanners_enabled.wave:
-            wave = MonitoredScanner(WaveScanner(api_key=cfg.wave_api_key, timeout_ms=cfg.scanner_timeout_ms, simulate=cfg.simulate), "WAVE")
-            r = wave.scan(url)
-            wave_res = process_wave(r.json)
-            (url_dir / "wave.json").write_text(json.dumps(r.json, indent=2), encoding="utf-8")
+            try:
+                wave = MonitoredScanner(
+                    WaveScanner(
+                        api_key=cfg.wave_api_key,
+                        timeout_ms=min(cfg.scanner_timeout_ms, 30000),
+                        simulate=cfg.simulate,
+                    ),
+                    "WAVE",
+                )
+                r = wave.scan(url)
+                wave_res = process_wave(r.json)
+                (url_dir / "wave.json").write_text(json.dumps(r.json, indent=2), encoding="utf-8")
+            except Exception as e:
+                print(f"WAVE scanner error: {e}")
+                # Segnala errore invece di simulare
+                wave_res = None
+                print(f"⚠️ WAVE scan failed for {url}: {e}")
 
         if cfg.scanners_enabled.pa11y:
-            pz = MonitoredScanner(Pa11yScanner(timeout_ms=cfg.scanner_timeout_ms, simulate=cfg.simulate), "Pa11y")
-            r = pz.scan(url)
-            pa11y_res = process_pa11y(r.json)
-            (url_dir / "pa11y.json").write_text(json.dumps(r.json, indent=2), encoding="utf-8")
+            try:
+                pz = MonitoredScanner(
+                    Pa11yScanner(
+                        timeout_ms=min(cfg.scanner_timeout_ms, 30000),
+                        simulate=cfg.simulate,
+                    ),
+                    "Pa11y",
+                )
+                r = pz.scan(url)
+                pa11y_res = process_pa11y(r.json)
+                (url_dir / "pa11y.json").write_text(json.dumps(r.json, indent=2), encoding="utf-8")
+            except Exception as e:
+                print(f"Pa11y scanner error: {e}")
+                # Segnala errore invece di simulare
+                pa11y_res = None
+                print(f"⚠️ Pa11y scan failed for {url}: {e}")
 
         if cfg.scanners_enabled.axe_core:
-            axe = MonitoredScanner(AxeScanner(timeout_ms=cfg.scanner_timeout_ms, simulate=cfg.simulate), "Axe-core")
-            r = axe.scan(url)
-            axe_res = r.json
-            (url_dir / "axe.json").write_text(json.dumps(r.json, indent=2), encoding="utf-8")
+            try:
+                axe = MonitoredScanner(
+                    AxeScanner(
+                        timeout_ms=min(cfg.scanner_timeout_ms, 30000),
+                        simulate=cfg.simulate,
+                    ),
+                    "Axe-core",
+                )
+                r = axe.scan(url)
+                axe_res = r.json
+                (url_dir / "axe.json").write_text(json.dumps(r.json, indent=2), encoding="utf-8")
+            except Exception as e:
+                print(f"Axe scanner error: {e}")
+                # Segnala errore invece di simulare
+                axe_res = None
+                print(f"⚠️ Axe scan failed for {url}: {e}")
 
         if cfg.scanners_enabled.lighthouse:
-            lh = MonitoredScanner(LighthouseScanner(timeout_ms=cfg.scanner_timeout_ms, simulate=cfg.simulate), "Lighthouse")
-            r = lh.scan(url)
-            lighthouse_res = r.json
-            (url_dir / "lighthouse.json").write_text(json.dumps(r.json, indent=2), encoding="utf-8")
+            try:
+                lh = MonitoredScanner(
+                    LighthouseScanner(
+                        timeout_ms=min(cfg.scanner_timeout_ms, 30000),
+                        simulate=cfg.simulate,
+                    ),
+                    "Lighthouse",
+                )
+                r = lh.scan(url)
+                lighthouse_res = r.json
+                (url_dir / "lighthouse.json").write_text(json.dumps(r.json, indent=2), encoding="utf-8")
+            except Exception as e:
+                print(f"Lighthouse scanner error: {e}")
+                # Segnala errore invece di simulare
+                lighthouse_res = None
+                print(f"⚠️ Lighthouse scan failed for {url}: {e}")
         
         # Normalizza risultati per questa URL
         url_results = normalize_all(
@@ -437,7 +496,8 @@ def _generate_professional_report(data: Dict[str, Any], config: Config = None) -
 
 def run_smart_scan(cfg: Config, output_root: Path | None = None,
                   sampler_config: Optional[Dict[str, Any]] = None,
-                  report_type: str = "standard") -> Dict[str, Any]:
+                  report_type: str = "standard",
+                  scan_id: Optional[str] = None) -> Dict[str, Any]:
     """
     Esegue scansione utilizzando Smart Page Sampler per selezione intelligente pagine
     
@@ -446,12 +506,15 @@ def run_smart_scan(cfg: Config, output_root: Path | None = None,
         output_root: Directory output
         sampler_config: Configurazione per Smart Page Sampler
         report_type: Tipo di report (standard/professional)
+        scan_id: ID scan da usare (opzionale, se non fornito viene generato)
         
     Returns:
         Dizionario con risultati scansione
     """
     output_root = output_root or Path("output")
-    scan_id = new_scan_id()
+    # Usa scan_id fornito o genera nuovo
+    if not scan_id:
+        scan_id = new_scan_id()
     base_out = output_root / scan_id
     base_out.mkdir(parents=True, exist_ok=True)
     

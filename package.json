@@ -4,12 +4,12 @@
   "version": "0.1.0",
   "scripts": {
     "sse:dev": "python webapp/app.py",
-    "sse:lint": "npm --prefix frontend run lint",
     "sse:test:e2e": "playwright test webapp/e2e",
     "sse:install-browsers": "playwright install chromium",
     "sse:ci": "bash scripts/sse-ci.sh"
   },
-  "devDependencies": {
-    "@playwright/test": "^1.45.0"
+  "dependencies": {
+    "@playwright/test": "^1.45.0",
+    "playwright": "^1.55.0"
   }
 }

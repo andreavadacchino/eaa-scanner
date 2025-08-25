@@ -2,6 +2,19 @@
 
 Sistema completo di scansione e reporting per la conformità all'European Accessibility Act (EAA 2025).
 
+## Aggiornamento di Stato (2025-08-23)
+
+Modifiche principali per garantire esecuzione reale degli scanner e coerenza API:
+
+- Esecuzione reale di default: `SIMULATE_MODE=false` (la simulazione è solo per testing).
+- WAVE: se `WAVE_API_KEY` non è impostata, il toggle WAVE viene disabilitato (nessuna simulazione in produzione).
+- Multi‑page: applicazione corretta dei toggles con `ScannerToggles`; rimossi parametri non supportati in `EAAConfig`.
+- Endpoint unificato per polling: usare solo `GET /api/scan/status/{session_id}` con supporto `last_event_id` e campo `new_events` nella risposta.
+- Contratto risultati: backend e UI usano i dati `aggregated` prodotti dal core (score complessivo, dettagli WCAG, ecc.).
+- Eventi Pa11y più robusti: conteggi corretti anche quando i risultati sono in forma `{ "issues": [...] }`.
+- Diagnostica: aggiunto `make doctor` per verificare la presenza di Chromium/Chrome e dei CLI (`pa11y`, `@axe-core/cli`, `lighthouse`).
+- Pulizia legacy: rimossa la vecchia API Flask non più utilizzata (`webapp/api/*`, `webapp/api_router.py`). Usare FastAPI (`make web-fastapi`).
+
 ## 🎯 Features
 
 - **Multi-Scanner Integration**: WAVE, Axe-core, Lighthouse, Pa11y
@@ -15,7 +28,7 @@ Sistema completo di scansione e reporting per la conformità all'European Access
 
 ### Prerequisiti
 
-- Python 3.8+
+- Python 3.10+
 - Node.js 16+ (per gli scanner)
 - Chrome/Chromium (per PDF generation)
 
@@ -29,7 +42,7 @@ cd eaa-scanner
 # Installa dipendenze Python
 pip install -r requirements.txt
 
-# Installa scanner tools (opzionale per modalità real)
+# Installa scanner tools (necessari per modalità reale)
 npm install -g pa11y @axe-core/cli lighthouse
 ```
 
@@ -55,12 +68,13 @@ python3 -m eaa_scanner.cli \
 ### Web Interface (Consigliato)
 
 ```bash
-# Avvia server web
-make web
-# Oppure
-python3 webapp/app.py
+# Avvia backend FastAPI e interfaccia web
+make doctor         # verifica browser/CLI e variabili
+make web-fastapi    # avvia FastAPI su :8000
+# Frontend React (dev): vedi sezione Frontend Dev per avvio su :3000 con proxy
 
-# Apri browser su http://localhost:8000
+# In alternativa (dev all-in-one):
+./start_app.sh  # Avvia FastAPI su :8000 e React Dev su :3000
 ```
 
 ### Command Line Interface
@@ -74,7 +88,7 @@ python3 -m eaa_scanner.cli \
   --real \
   --wave_api_key YOUR_KEY
 
-# Modalità simulata per testing
+# Modalità simulata per testing (sviluppo)
 python3 -m eaa_scanner.cli \
   --url https://example.com \
   --company_name "ACME Corp" \
@@ -109,13 +123,11 @@ eaa_scanner/
 └── prompts/        # LLM prompts
 
 webapp/
-├── app.py          # Flask application
-├── static/         # Frontend assets
-│   ├── css/
-│   └── js/
-│       ├── scanner_v2.js     # Main UI controller
-│       └── scan_monitor_fixed.js  # SSE monitor
-└── templates/      # HTML templates
+├── app_fastapi.py     # FastAPI application (principale)
+├── app_fastapi_sse.py # Variante SSE
+├── frontend/          # App React/Vite
+├── static/            # Asset statici
+└── templates/         # Template HTML
 ```
 
 ## 🎨 Features Principali
@@ -178,6 +190,44 @@ npm run test:e2e
 # Lint
 flake8 eaa_scanner/
 black eaa_scanner/ --check
+```
+
+### Frontend Dev (React/Vite)
+
+```bash
+cd webapp/frontend
+# Avvia dev server su :3000 con proxy verso backend
+VITE_PROXY_TARGET=http://localhost:8000 npm run dev
+
+# In alternativa, senza proxy, configura la base URL assoluta
+echo 'VITE_API_BASE_URL=http://localhost:8000/api' > .env.development
+npm run dev
+```
+
+- `VITE_PROXY_TARGET`: URL del backend usato dal proxy Vite per instradare `'/api'` e `'/static'` (default: `http://localhost:8000`).
+- `VITE_API_BASE_URL`: base URL per l'API client quando non si usa il proxy (es. build/preview). Esempio: `http://localhost:8000/api`.
+
+### Config Debug (solo sviluppo)
+
+- `DEV_ALLOW_LOCAL_URLS`: se `true/1`, consente discovery e scansione di URL locali (es. `localhost`, `127.0.0.1`, `192.168.*`). Usare solo in ambienti di sviluppo per evitare rischi SSRF.
+
+
+### Test E2E con Playwright (SPA su :3000)
+
+```bash
+# 1) Avvia backend FastAPI
+make web &
+
+# 2) Avvia frontend React (porta 3000)
+cd webapp/frontend
+VITE_PROXY_TARGET=http://localhost:8000 npm run dev &
+cd ../..
+
+# 3) Installa browser Playwright (una tantum)
+make e2e-setup
+
+# 4) Esegui il full flow test
+make e2e
 ```
 
 ### Contributing

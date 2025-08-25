@@ -35,6 +35,15 @@ class APIKeyManager:
         self._keys = {}
         self._initialize_encryption()
         self.load_keys()
+
+    def _load_env_defaults(self):
+        """Carica chiavi da variabili d'ambiente come default sicuro (senza scrivere su file)."""
+        env_openai = os.getenv('OPENAI_API_KEY')
+        env_wave = os.getenv('WAVE_API_KEY')
+        if env_openai and not self._keys.get('openai'):
+            self._keys['openai'] = env_openai
+        if env_wave and not self._keys.get('wave'):
+            self._keys['wave'] = env_wave
     
     def _initialize_encryption(self):
         """Inizializza il sistema di crittografia con chiave derivata"""
@@ -116,20 +125,26 @@ class APIKeyManager:
         """
         try:
             if not self.storage_path.exists():
-                logger.info("File API keys non trovato, inizializzazione con chiavi vuote")
+                logger.info("File API keys non trovato, caricamento da variabili d'ambiente se presenti")
                 self._keys = {}
+                # Carica da env di default
+                self._load_env_defaults()
                 return False
             
             encrypted_data = self.storage_path.read_bytes()
             decrypted_data = self._fernet.decrypt(encrypted_data)
             self._keys = json.loads(decrypted_data.decode())
             
+            # Carica eventuali default da env se mancano
+            self._load_env_defaults()
             logger.info("API keys caricate con successo")
             return True
             
         except Exception as e:
             logger.error(f"Errore durante il caricamento delle chiavi: {e}")
             self._keys = {}
+            # Carica eventuali default da env anche in caso di errore
+            self._load_env_defaults()
             return False
     
     def get_key(self, key_type: str) -> Optional[str]:

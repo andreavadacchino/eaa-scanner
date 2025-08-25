@@ -26,15 +26,21 @@ def generate_html_report(data: Dict[str, Any], config: Config = None) -> str:
     # Trova il path dei template - priorità al template professionale v2
     template_dir = Path(__file__).parent / "templates"
     if template_dir.exists():
-        # Usa il nuovo template professionale v2
+        # Usa il nuovo template enterprise professionale
         try:
             env = Environment(
                 loader=FileSystemLoader(template_dir),
                 autoescape=select_autoescape(['html', 'xml'])
             )
-            # Usa il nuovo template professionale
-            template = env.get_template("report_professional_v2.html")
-            return template.render(**data)
+            # Prova prima il template enterprise professionale
+            try:
+                template = env.get_template("report_enterprise_professional.html")
+                logger.info("✅ Usando template enterprise professionale")
+                return template.render(**data)
+            except:
+                logger.warning("⚠️ Template enterprise non trovato, uso template v2")
+                template = env.get_template("report_professional_v2.html")
+                return template.render(**data)
         except Exception as e:
             logger.warning(f"Errore caricamento template professionale v2: {e}")
             # Prova con il template minimal come fallback
