@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Accessibilità - {{ company_name }}</title>
+    <style>
+        /* Reset & Base - Stile Minimale Professionale */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-size: 15px;
+            line-height: 1.7;
+            color: #2c3e50;
+            background: #ffffff;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Tipografia Minimale */
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #6c757d;
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-top: 48px;
+            margin-bottom: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+        }
+
+        h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-top: 28px;
+            margin-bottom: 12px;
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: #495057;
+        }
+
+        /* Metriche Principali */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 32px 0;
+            padding: 24px 0;
+            border-top: 1px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 36px;
+            font-weight: 300;
+            color: #1a1a1a;
+            line-height: 1;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #6c757d;
+            margin-top: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        /* Status Pills */
+        .status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-critical {
+            background: #fff5f5;
+            color: #e53e3e;
+            border: 1px solid #feb2b2;
+        }
+
+        .status-high {
+            background: #fffdf7;
+            color: #dd6b20;
+            border: 1px solid #fbd38d;
+        }
+
+        .status-medium {
+            background: #fffff0;
+            color: #d69e2e;
+            border: 1px solid #faf089;
+        }
+
+        .status-low {
+            background: #f7fafc;
+            color: #718096;
+            border: 1px solid #cbd5e0;
+        }
+
+        .status-pass {
+            background: #f0fdf4;
+            color: #38a169;
+            border: 1px solid #9ae6b4;
+        }
+
+        /* Tabelle Minimali */
+        table {
+            width: 100%;
+            margin: 24px 0;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 2px solid #e9ecef;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f7f8fa;
+            color: #495057;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Liste Pulite */
+        ul, ol {
+            margin: 16px 0 16px 24px;
+            color: #495057;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        /* Callout Boxes */
+        .finding {
+            background: #f8f9fa;
+            border-left: 3px solid #dee2e6;
+            padding: 16px;
+            margin: 20px 0;
+        }
+
+        .finding-critical {
+            border-left-color: #e53e3e;
+            background: #fff5f5;
+        }
+
+        .finding-high {
+            border-left-color: #dd6b20;
+            background: #fffdf7;
+        }
+
+        /* Score Circle */
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 8px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            margin: 32px auto;
+        }
+
+        .score-circle.critical {
+            border-color: #feb2b2;
+        }
+
+        .score-circle.warning {
+            border-color: #fbd38d;
+        }
+
+        .score-circle.good {
+            border-color: #9ae6b4;
+        }
+
+        .score-number {
+            font-size: 32px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .score-text {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #6c757d;
+            letter-spacing: 0.5px;
+        }
+
+        /* Sezioni */
+        .section {
+            margin: 48px 0;
+        }
+
+        /* Link Minimali */
+        a {
+            color: #4299e1;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        a:hover {
+            border-bottom-color: #4299e1;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 80px;
+            padding-top: 32px;
+            border-top: 1px solid #e9ecef;
+            font-size: 13px;
+            color: #6c757d;
+            text-align: center;
+        }
+
+        /* Print */
+        @media print {
+            body {
+                font-size: 11pt;
+                padding: 20px;
+            }
+            
+            h2 {
+                page-break-before: auto;
+                page-break-after: avoid;
+            }
+            
+            table {
+                page-break-inside: avoid;
+            }
+        }
+
+        /* Code */
+        code {
+            background: #f7f8fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        /* Summary Box */
+        .summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 32px;
+            border-radius: 8px;
+            margin: 32px 0;
+        }
+
+        .summary h2 {
+            color: white;
+            border: none;
+            margin-top: 0;
+        }
+
+        .summary p {
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        /* Progress Bar */
+        .progress {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>Audit di Accessibilità Web</h1>
+        <p class="subtitle">{{ company_name }} - {{ url }}</p>
+    </header>
+
+    <!-- Executive Summary -->
+    <div class="summary">
+        <h2>Executive Summary</h2>
+        <p>
+            L'analisi condotta sul sito web {{ company_name }} ha rilevato significative barriere all'accessibilità 
+            che impediscono a una porzione sostanziale di utenti di accedere efficacemente ai contenuti e alle funzionalità. 
+            Con un punteggio di conformità del <strong>{{ compliance_score|round|int }}%</strong> rispetto agli standard 
+            WCAG 2.1 AA, il sito richiede interventi strutturati per allinearsi ai requisiti normativi europei 
+            previsti dall'European Accessibility Act e dalle linee guida nazionali AgID.
+        </p>
+        <div class="progress">
+            <div class="progress-bar" style="width: {{ compliance_score }}%"></div>
+        </div>
+        <p style="margin-top: 20px;">
+            Le criticità principali riguardano la mancanza di alternative testuali per contenuti non testuali, 
+            problemi di contrasto colore che rendono il testo illeggibile per utenti con disabilità visive, 
+            e barriere nella navigazione da tastiera che escludono completamente gli utenti che non possono utilizzare il mouse.
+        </p>
+    </div>
+
+    <!-- Metriche Principali -->
+    <div class="metrics-grid">
+        <div class="metric">
+            <div class="metric-value">{{ compliance_score|round|int }}%</div>
+            <div class="metric-label">Conformità WCAG</div>
+        </div>
+        <div class="metric">
+            <div class="metric-value">{{ total_issues }}</div>
+            <div class="metric-label">Problemi Totali</div>
+        </div>
+        <div class="metric">
+            <div class="metric-value">{{ critical_issues }}</div>
+            <div class="metric-label">Criticità</div>
+        </div>
+        <div class="metric">
+            <div class="metric-value">{{ (perceivable_issues|length + operable_issues|length + understandable_issues|length + robust_issues|length) }}</div>
+            <div class="metric-label">Criteri WCAG Violati</div>
+        </div>
+    </div>
+
+    <!-- Introduzione e Contesto -->
+    <section class="section">
+        <h2>1. Introduzione e Obiettivi</h2>
+        
+        <p>
+            Il presente documento costituisce un audit tecnico di accessibilità digitale condotto secondo metodologie 
+            standardizzate e automatizzate, con l'obiettivo di valutare il livello di conformità del sito web 
+            <a href="{{ url }}">{{ url }}</a> rispetto ai criteri di successo definiti dalle Web Content Accessibility 
+            Guidelines (WCAG) 2.1 al livello AA.
+        </p>
+
+        <p>
+            L'accessibilità web non è solo un requisito normativo ma un imperativo etico e commerciale che garantisce 
+            l'inclusione digitale di oltre il 15% della popolazione mondiale che vive con una qualche forma di disabilità. 
+            In Italia, questo si traduce in circa 3 milioni di persone che potrebbero incontrare barriere significative 
+            nell'accesso ai servizi digitali non conformi.
+        </p>
+
+        <h3>Contesto Normativo</h3>
+        <p>
+            L'audit si inserisce nel quadro normativo definito da:
+        </p>
+        <ul>
+            <li>European Accessibility Act (Direttiva UE 2019/882) che richiede conformità per tutti i servizi digitali</li>
+            <li>Direttiva Web Accessibility (2016/2102) per i siti del settore pubblico</li>
+            <li>Legge Stanca (L. 4/2004) e successive modifiche per il contesto italiano</li>
+            <li>Linee Guida AgID per l'accessibilità degli strumenti informatici</li>
+        </ul>
+
+        <p>
+            La non conformità espone l'organizzazione a rischi legali significativi, incluse sanzioni amministrative, 
+            esclusione da appalti pubblici e potenziali azioni legali da parte di utenti discriminati.
+        </p>
+    </section>
+
+    <!-- Metodologia -->
+    <section class="section">
+        <h2>2. Metodologia di Valutazione</h2>
+        
+        <p>
+            L'audit è stato condotto utilizzando una combinazione di strumenti automatizzati leader nel settore, 
+            ciascuno specializzato in aspetti specifici dell'accessibilità. Questa metodologia multi-scanner 
+            garantisce una copertura completa dei criteri WCAG verificabili automaticamente, che rappresentano 
+            circa il 30-40% delle potenziali barriere di accessibilità.
+        </p>
+
+        <h3>Strumenti e Copertura</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Scanner</th>
+                    <th>Focus</th>
+                    <th>Criteri Coperti</th>
+                    <th>Affidabilità</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Axe-core</td>
+                    <td>Violazioni WCAG e ARIA</td>
+                    <td>57 regole</td>
+                    <td><span class="status status-pass">Alta</span></td>
+                </tr>
+                <tr>
+                    <td>Pa11y</td>
+                    <td>HTML5 e semantica</td>
+                    <td>42 regole</td>
+                    <td><span class="status status-pass">Alta</span></td>
+                </tr>
+                <tr>
+                    <td>Lighthouse</td>
+                    <td>Performance e UX</td>
+                    <td>35 regole</td>
+                    <td><span class="status status-pass">Media</span></td>
+                </tr>
+                <tr>
+                    <td>WAVE</td>
+                    <td>Struttura documento</td>
+                    <td>48 regole</td>
+                    <td><span class="status status-pass">Alta</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Processo di Normalizzazione</h3>
+        <p>
+            I risultati dei diversi scanner sono stati normalizzati e deduplicati attraverso un processo che:
+        </p>
+        <ol>
+            <li>Mappa ogni violazione al criterio WCAG 2.1 corrispondente</li>
+            <li>Classifica secondo i quattro principi P.O.U.R. (Percepibile, Operabile, Comprensibile, Robusto)</li>
+            <li>Determina l'impatto su categorie specifiche di disabilità</li>
+            <li>Assegna priorità basate su severità e frequenza</li>
+        </ol>
+
+        <div class="finding">
+            <strong>Nota importante:</strong> L'audit automatico non può valutare completamente aspetti soggettivi 
+            come la qualità dei testi alternativi, la comprensibilità dei contenuti o l'equivalenza funzionale 
+            delle alternative. Si raccomanda l'integrazione con test manuali esperti e coinvolgimento di utenti 
+            con disabilità per una valutazione completa.
+        </div>
+    </section>
+
+    <!-- Risultati Principali -->
+    <section class="section">
+        <h2>3. Risultati dell'Analisi</h2>
+        
+        <p>
+            L'analisi ha identificato <strong>{{ total_issues }} violazioni</strong> dei criteri WCAG 2.1, 
+            distribuite tra i quattro principi fondamentali dell'accessibilità web. La concentrazione maggiore 
+            di problemi si riscontra nell'area della percepibilità, dove contenuti fondamentali risultano 
+            inaccessibili agli utenti con disabilità visive.
+        </p>
+
+        <h3>Distribuzione per Principio P.O.U.R.</h3>
+        
+        <h4>Percepibile</h4>
+        <p>
+            <span class="status status-{% if perceivable_issues|length > 10 %}critical{% elif perceivable_issues|length > 5 %}high{% else %}medium{% endif %}">
+                {{ perceivable_issues|length }} problemi
+            </span>
+        </p>
+        <p>
+            Le informazioni e i componenti dell'interfaccia utente devono essere presentabili agli utenti in modi 
+            che possano percepire. I problemi principali riguardano:
+        </p>
+        <ul>
+            <li>Immagini informative prive di testi alternativi adeguati</li>
+            <li>Video senza sottotitoli o trascrizioni</li>
+            <li>Contrasti di colore insufficienti tra testo e sfondo</li>
+            <li>Informazioni veicolate solo attraverso il colore</li>
+        </ul>
+
+        <h4>Operabile</h4>
+        <p>
+            <span class="status status-{% if operable_issues|length > 10 %}critical{% elif operable_issues|length > 5 %}high{% else %}medium{% endif %}">
+                {{ operable_issues|length }} problemi
+            </span>
+        </p>
+        <p>
+            I componenti dell'interfaccia utente e la navigazione devono essere operabili. Le criticità includono:
+        </p>
+        <ul>
+            <li>Elementi interattivi non raggiungibili da tastiera</li>
+            <li>Focus trap che impediscono la navigazione</li>
+            <li>Timeout insufficienti per completare le azioni</li>
+            <li>Mancanza di skip links per saltare al contenuto principale</li>
+        </ul>
+
+        <h4>Comprensibile</h4>
+        <p>
+            <span class="status status-{% if understandable_issues|length > 10 %}critical{% elif understandable_issues|length > 5 %}high{% else %}medium{% endif %}">
+                {{ understandable_issues|length }} problemi
+            </span>
+        </p>
+        <p>
+            Le informazioni e l'utilizzo dell'interfaccia utente devono essere comprensibili. I problemi rilevati:
+        </p>
+        <ul>
+            <li>Form senza label o istruzioni chiare</li>
+            <li>Messaggi di errore non descrittivi</li>
+            <li>Navigazione inconsistente tra le pagine</li>
+            <li>Lingua della pagina non dichiarata</li>
+        </ul>
+
+        <h4>Robusto</h4>
+        <p>
+            <span class="status status-{% if robust_issues|length > 10 %}critical{% elif robust_issues|length > 5 %}high{% else %}medium{% endif %}">
+                {{ robust_issues|length }} problemi
+            </span>
+        </p>
+        <p>
+            Il contenuto deve essere abbastanza robusto da poter essere interpretato in modo affidabile da una 
+            varietà di programmi utente, comprese le tecnologie assistive:
+        </p>
+        <ul>
+            <li>Markup HTML non valido che confonde gli screen reader</li>
+            <li>Ruoli ARIA utilizzati in modo non corretto</li>
+            <li>ID duplicati che compromettono le associazioni</li>
+            <li>Componenti custom senza semantica appropriata</li>
+        </ul>
+    </section>
+
+    <!-- Impatto sugli Utenti -->
+    <section class="section">
+        <h2>4. Impatto sulle Persone con Disabilità</h2>
+        
+        <p>
+            Le barriere identificate hanno impatti differenziati su diverse categorie di utenti. Questa analisi 
+            evidenzia come le non conformità creino esclusione digitale e quali gruppi necessitino di interventi 
+            prioritari per garantire l'accesso equo ai servizi.
+        </p>
+
+        <h3>Analisi per Categoria di Disabilità</h3>
+
+        <div class="finding finding-critical">
+            <h4>Utenti Non Vedenti (Screen Reader)</h4>
+            <p>
+                Gli utenti che utilizzano screen reader incontrano barriere bloccanti che impediscono completamente 
+                l'accesso a contenuti essenziali. La mancanza di testi alternativi per le immagini informative 
+                rende invisibili informazioni cruciali, mentre la struttura non semantica del documento impedisce 
+                la navigazione efficiente. Form non etichettati risultano incompilabili e la mancanza di heading 
+                gerarchici rende impossibile comprendere l'organizzazione dei contenuti.
+            </p>
+            <p><strong>Livello di impatto: Bloccante</strong> - Accesso completamente impedito a funzionalità essenziali</p>
+        </div>
+
+        <div class="finding finding-high">
+            <h4>Utenti con Ipovisione</h4>
+            <p>
+                Le persone con visione ridotta che non utilizzano screen reader ma necessitano di ingrandimento 
+                o alto contrasto trovano il sito difficilmente utilizzabile. I contrasti insufficienti rendono 
+                il testo illeggibile anche con ingrandimento, mentre layout non responsivi si rompono quando 
+                l'utente effettua zoom. La mancanza di indicatori visivi chiari per lo stato del focus rende 
+                difficile seguire la navigazione.
+            </p>
+            <p><strong>Livello di impatto: Severo</strong> - Utilizzo estremamente difficoltoso</p>
+        </div>
+
+        <div class="finding finding-high">
+            <h4>Utenti con Disabilità Motorie</h4>
+            <p>
+                Chi non può utilizzare il mouse incontra barriere significative nella navigazione. Elementi 
+                interattivi non accessibili da tastiera escludono completamente alcune funzionalità. Target 
+                di click troppo piccoli e ravvicinati causano difficoltà anche a chi ha tremori o controllo 
+                limitato. La mancanza di tempi adeguati per completare le azioni penalizza chi necessita di 
+                più tempo per l'input.
+            </p>
+            <p><strong>Livello di impatto: Severo</strong> - Funzionalità principali inaccessibili</p>
+        </div>
+
+        <h3>Effetto Cumulativo delle Barriere</h3>
+        <p>
+            È importante considerare che molti utenti presentano disabilità multiple o si trovano in situazioni 
+            che combinano diverse limitazioni (es. ambiente rumoroso + schermo piccolo). Le barriere identificate 
+            hanno effetti moltiplicativi che amplificano l'esclusione. Ad esempio, un utente anziano con vista 
+            ridotta e difficoltà motorie incontra simultaneamente problemi di contrasto, target troppo piccoli 
+            e navigazione complessa.
+        </p>
+    </section>
+
+    <!-- Piano di Remediation -->
+    <section class="section">
+        <h2>5. Piano di Remediation Strutturato</h2>
+        
+        <p>
+            Il percorso verso la conformità richiede un approccio sistematico e prioritizzato. Il seguente piano 
+            organizza gli interventi in fasi progressive, partendo dalle criticità bloccanti fino alle ottimizzazioni 
+            che garantiscono un'esperienza inclusiva ottimale.
+        </p>
+
+        <h3>Fase 1: Interventi Critici Immediati</h3>
+        <p>
+            <strong>Obiettivo:</strong> Rimuovere le barriere che impediscono completamente l'accesso ai contenuti 
+            essenziali e alle funzionalità core del sito.
+        </p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Intervento</th>
+                    <th>WCAG</th>
+                    <th>Impatto</th>
+                    <th>Effort</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for issue in issues %}
+                {% if issue.severity.value == 'critical' %}
+                <tr>
+                    <td>{{ issue.remediation }}</td>
+                    <td><code>{{ issue.wcag_criteria|join(', ') }}</code></td>
+                    <td><span class="status status-critical">Critico</span></td>
+                    <td>2-4 ore</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+                <tr>
+                    <td>Aggiungere testi alternativi a tutte le immagini informative</td>
+                    <td><code>1.1.1</code></td>
+                    <td><span class="status status-critical">Critico</span></td>
+                    <td>4-8 ore</td>
+                </tr>
+                <tr>
+                    <td>Garantire navigabilità completa da tastiera</td>
+                    <td><code>2.1.1</code></td>
+                    <td><span class="status status-critical">Critico</span></td>
+                    <td>8-16 ore</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Fase 2: Problemi ad Alta Priorità</h3>
+        <p>
+            <strong>Obiettivo:</strong> Correggere problemi che compromettono significativamente l'usabilità 
+            per ampie categorie di utenti.
+        </p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Intervento</th>
+                    <th>WCAG</th>
+                    <th>Impatto</th>
+                    <th>Effort</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Correggere tutti i contrasti di colore insufficienti</td>
+                    <td><code>1.4.3</code></td>
+                    <td><span class="status status-high">Alto</span></td>
+                    <td>4-6 ore</td>
+                </tr>
+                <tr>
+                    <td>Aggiungere label a tutti i campi form</td>
+                    <td><code>3.3.2</code></td>
+                    <td><span class="status status-high">Alto</span></td>
+                    <td>2-4 ore</td>
+                </tr>
+                <tr>
+                    <td>Implementare struttura heading gerarchica</td>
+                    <td><code>1.3.1</code></td>
+                    <td><span class="status status-high">Alto</span></td>
+                    <td>4-8 ore</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Fase 3: Consolidamento e Ottimizzazione</h3>
+        <p>
+            <strong>Obiettivo:</strong> Raggiungere la piena conformità WCAG 2.1 AA e implementare best practice 
+            per mantenere l'accessibilità nel tempo.
+        </p>
+
+        <ul>
+            <li>Ottimizzare le performance per dispositivi assistivi</li>
+            <li>Implementare pattern ARIA avanzati per componenti complessi</li>
+            <li>Creare documentazione di accessibilità per il team</li>
+            <li>Configurare test automatici nel processo CI/CD</li>
+        </ul>
+
+        <h3>Stima Risorse e Timeline</h3>
+        <div class="finding">
+            <p><strong>Effort totale stimato:</strong> 80-120 ore/uomo</p>
+            <p><strong>Team consigliato:</strong> 1 Frontend Developer + 1 Accessibility Specialist</p>
+            <p><strong>Approccio consigliato:</strong> Sprint di 2 settimane per fase con validazione incrementale</p>
+        </div>
+    </section>
+
+    <!-- Raccomandazioni Strategiche -->
+    <section class="section">
+        <h2>6. Raccomandazioni Strategiche e Governance</h2>
+        
+        <p>
+            L'accessibilità digitale non è un progetto una tantum ma un processo continuo che richiede 
+            commitment organizzativo, competenze dedicate e integrazione nei processi aziendali. Le seguenti 
+            raccomandazioni definiscono un framework sostenibile per mantenere e migliorare l'accessibilità 
+            nel tempo.
+        </p>
+
+        <h3>Governance e Responsabilità</h3>
+        
+        <p>
+            <strong>Designare un Accessibility Champion</strong><br>
+            Nominare una figura di riferimento con responsabilità diretta per l'accessibilità digitale. 
+            Questa persona coordinerà le iniziative, manterrà le competenze aggiornate e fungerà da punto 
+            di contatto per feedback e segnalazioni. Idealmente con background tecnico e sensibilità UX.
+        </p>
+
+        <p>
+            <strong>Creare un Accessibility Board</strong><br>
+            Costituire un gruppo di lavoro trasversale che includa rappresentanti di sviluppo, design, 
+            contenuti, legale e customer service. Incontri trimestrali per review progressi e pianificazione.
+        </p>
+
+        <h3>Processi e Metodologie</h3>
+
+        <p>
+            <strong>Shift-Left nell'Accessibilità</strong><br>
+            Integrare requisiti di accessibilità fin dalle prime fasi di design. Utilizzare design system 
+            con componenti accessibili by default. Includere criteri di accessibilità nelle Definition of Done 
+            di ogni user story.
+        </p>
+
+        <p>
+            <strong>Testing Continuo</strong><br>
+            Implementare suite di test automatici che girino ad ogni deployment. Configurare threshold di 
+            accessibilità che blocchino il rilascio se non rispettati. Pianificare audit manuali trimestrali 
+            e test con utenti reali annuali.
+        </p>
+
+        <h3>Formazione e Competenze</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Ruolo</th>
+                    <th>Formazione Necessaria</th>
+                    <th>Durata</th>
+                    <th>Priorità</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Sviluppatori</td>
+                    <td>WCAG 2.1, ARIA, Testing tools</td>
+                    <td>16 ore</td>
+                    <td><span class="status status-critical">Immediata</span></td>
+                </tr>
+                <tr>
+                    <td>Designer</td>
+                    <td>Design inclusivo, Color contrast, Typography</td>
+                    <td>8 ore</td>
+                    <td><span class="status status-high">Alta</span></td>
+                </tr>
+                <tr>
+                    <td>Content Editor</td>
+                    <td>Alt text, Struttura documenti, Plain language</td>
+                    <td>4 ore</td>
+                    <td><span class="status status-high">Alta</span></td>
+                </tr>
+                <tr>
+                    <td>QA Tester</td>
+                    <td>Screen reader, Keyboard testing, Tools</td>
+                    <td>8 ore</td>
+                    <td><span class="status status-medium">Media</span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Quick Wins per Risultati Immediati</h3>
+        
+        <div class="finding">
+            <p><strong>Interventi a basso costo con alto impatto:</strong></p>
+            <ol>
+                <li>Installare e configurare axe DevTools per tutti gli sviluppatori</li>
+                <li>Creare checklist di accessibilità per code review</li>
+                <li>Implementare color palette accessibile nel design system</li>
+                <li>Configurare linter per HTML semantico e ARIA valido</li>
+                <li>Creare template per alt text e documentazione accessibile</li>
+            </ol>
+        </div>
+
+        <h3>KPI e Monitoraggio</h3>
+        
+        <p>Definire metriche misurabili per tracciare i progressi:</p>
+        <ul>
+            <li><strong>Compliance Score WCAG:</strong> Target 95%</li>
+            <li><strong>Automated Test Pass Rate:</strong> Mantenere >98%</li>
+            <li><strong>User Feedback:</strong> <5 segnalazioni di accessibilità/mese</li>
+            <li><strong>Time to Fix:</strong> Priorità basata su severità (critiche prima)</li>
+            <li><strong>Training Coverage:</strong> 100% team tecnico</li>
+        </ul>
+    </section>
+
+    <!-- Conformità Normativa -->
+    <section class="section">
+        <h2>7. Implicazioni Normative e Compliance</h2>
+        
+        <p>
+            Il quadro normativo europeo e italiano sull'accessibilità digitale è in rapida evoluzione, 
+            con requisiti sempre più stringenti e sanzioni significative per la non conformità. 
+            Comprendere gli obblighi legali è essenziale per la gestione del rischio aziendale.
+        </p>
+
+        <h3>European Accessibility Act (EAA)</h3>
+        <p>
+            La Direttiva (UE) 2019/882 richiede che tutti i prodotti e servizi digitali siano accessibili. 
+            Per i servizi esistenti, la conformità è obbligatoria. L'EAA copre:
+        </p>
+        <ul>
+            <li>Servizi bancari e finanziari online</li>
+            <li>E-commerce e marketplace</li>
+            <li>Servizi di trasporto (prenotazioni, check-in)</li>
+            <li>Media audiovisivi e relativi servizi</li>
+            <li>E-book e software dedicati</li>
+            <li>Servizi di comunicazione elettronica</li>
+        </ul>
+
+        <h3>Obblighi e Sanzioni</h3>
+        
+        <div class="finding finding-critical">
+            <p><strong>Rischi di Non Conformità:</strong></p>
+            <ul>
+                <li><strong>Sanzioni amministrative:</strong> Fino a €90.000 per violazione</li>
+                <li><strong>Esclusione appalti pubblici:</strong> Impossibilità di partecipare a gare PA</li>
+                <li><strong>Azioni legali:</strong> Class action per discriminazione</li>
+                <li><strong>Danno reputazionale:</strong> Impatto negativo su brand e CSR</li>
+                <li><strong>Perdita di mercato:</strong> ~15% di utenti potenziali esclusi</li>
+            </ul>
+        </div>
+
+        <h3>Roadmap di Compliance</h3>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Milestone</th>
+                    <th>Azioni</th>
+                    <th>Output</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Immediato</strong></td>
+                    <td>Fix criticità bloccanti</td>
+                    <td>Accessibilità minima garantita</td>
+                </tr>
+                <tr>
+                    <td><strong>30 giorni</strong></td>
+                    <td>Pubblicare dichiarazione accessibilità</td>
+                    <td>Trasparenza e commitment pubblico</td>
+                </tr>
+                <tr>
+                    <td><strong>90 giorni</strong></td>
+                    <td>Raggiungere 70% conformità</td>
+                    <td>Rischio legale ridotto</td>
+                </tr>
+                <tr>
+                    <td><strong>180 giorni</strong></td>
+                    <td>Conformità WCAG 2.1 AA completa</td>
+                    <td>Compliance normativa</td>
+                </tr>
+                <tr>
+                    <td><strong>Continuo</strong></td>
+                    <td>Monitoraggio e miglioramento</td>
+                    <td>Mantenimento standard</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Dichiarazione di Accessibilità</h3>
+        <p>
+            Elemento obbligatorio che deve includere:
+        </p>
+        <ol>
+            <li>Stato di conformità (totale/parziale/non conforme)</li>
+            <li>Contenuti non accessibili e motivazioni</li>
+            <li>Alternative accessibili fornite</li>
+            <li>Feedback e meccanismo di contatto</li>
+            <li>Procedura di attuazione (enforcement)</li>
+            <li>Data di pubblicazione e aggiornamenti</li>
+        </ol>
+    </section>
+
+    <!-- Conclusioni -->
+    <section class="section">
+        <h2>8. Conclusioni e Prossimi Passi</h2>
+        
+        <p>
+            L'audit ha evidenziato che il sito web di {{ company_name }} presenta significative barriere 
+            all'accessibilità che richiedono intervento strutturato e sistematico. Con un punteggio di 
+            conformità del {{ compliance_score|round|int }}%, il livello attuale espone l'organizzazione 
+            a rischi normativi, legali e reputazionali, oltre a escludere una porzione significativa di 
+            potenziali utenti.
+        </p>
+
+        <div class="score-circle {% if compliance_score < 40 %}critical{% elif compliance_score < 70 %}warning{% else %}good{% endif %}">
+            <div class="score-number">{{ compliance_score|round|int }}%</div>
+            <div class="score-text">Conformità</div>
+        </div>
+
+        <h3>Sintesi delle Criticità</h3>
+        <p>
+            Le {{ critical_issues }} criticità bloccanti identificate impediscono completamente l'accesso 
+            a funzionalità essenziali per utenti con disabilità, in particolare chi utilizza tecnologie 
+            assistive. I {{ high_issues }} problemi ad alta priorità compromettono significativamente 
+            l'usabilità, mentre le rimanenti {{ medium_issues + low_issues }} issue di media e bassa 
+            priorità impattano la qualità complessiva dell'esperienza.
+        </p>
+
+        <h3>Azioni Immediate Necessarie</h3>
+        <ol>
+            <li><strong>Costituire team di remediation</strong> con competenze tecniche e di accessibilità</li>
+            <li><strong>Avviare fix delle criticità</strong> seguendo il piano fase 1</li>
+            <li><strong>Pubblicare dichiarazione di accessibilità</strong> con stato attuale e commitment</li>
+            <li><strong>Implementare processo di monitoraggio</strong> continuo con KPI definiti</li>
+            <li><strong>Pianificare formazione team</strong> su WCAG 2.1 e best practice</li>
+        </ol>
+
+        <h3>Benefici Attesi</h3>
+        <p>
+            L'investimento nell'accessibilità genera ritorni misurabili:
+        </p>
+        <ul>
+            <li><strong>Ampliamento mercato:</strong> Accesso al 15% di utenti precedentemente esclusi</li>
+            <li><strong>SEO migliorato:</strong> Struttura semantica e contenuti accessibili favoriscono ranking</li>
+            <li><strong>UX superiore:</strong> Miglioramenti beneficiano tutti gli utenti, non solo disabili</li>
+            <li><strong>Risk mitigation:</strong> Eliminazione rischio sanzioni e azioni legali</li>
+            <li><strong>Brand reputation:</strong> Posizionamento come azienda inclusiva e socialmente responsabile</li>
+            <li><strong>Innovation driver:</strong> L'accessibilità spinge verso soluzioni più robuste e innovative</li>
+        </ul>
+
+        <h3>Supporto e Risorse</h3>
+        <p>
+            Per l'implementazione delle raccomandazioni, sono disponibili:
+        </p>
+        <ul>
+            <li><a href="https://www.w3.org/WAI/WCAG21/quickref/">WCAG 2.1 Quick Reference</a> - Guida interattiva ai criteri</li>
+            <li><a href="https://www.agid.gov.it/it/design-servizi/accessibilita">Linee Guida AgID</a> - Documentazione italiana ufficiale</li>
+            <li><a href="https://webaim.org/">WebAIM Resources</a> - Tutorial e strumenti pratici</li>
+            <li><a href="https://a11yproject.com/">The A11Y Project</a> - Checklist e pattern accessibili</li>
+        </ul>
+
+        <div class="finding">
+            <p><strong>Messaggio Finale:</strong></p>
+            <p>
+                L'accessibilità non è un costo ma un investimento nel futuro digitale inclusivo. 
+                Ogni barriera rimossa non solo adempie a un obbligo legale, ma apre le porte a 
+                milioni di persone che hanno il diritto di partecipare pienamente alla società digitale. 
+                Il percorso verso la conformità è anche un percorso verso l'eccellenza tecnica e l'innovazione.
+            </p>
+        </div>
+    </section>
+
+    <!-- Note Legali -->
+    <section class="section">
+        <h2>Note Legali e Metodologiche</h2>
+        
+        <p>
+            <strong>Limitazioni dell'Audit Automatico:</strong> Questo audit identifica circa il 30-40% 
+            delle potenziali barriere di accessibilità attraverso verifiche automatizzate. Non può valutare 
+            completamente aspetti qualitativi come la pertinenza dei testi alternativi, la reale comprensibilità 
+            dei contenuti, o l'equivalenza funzionale delle alternative fornite.
+        </p>
+
+        <p>
+            <strong>Validità Temporale:</strong> I risultati riflettono lo stato del sito al momento 
+            dell'analisi. Qualsiasi modifica a contenuti, struttura o funzionalità può alterare il livello 
+            di conformità. Si raccomanda monitoraggio continuo.
+        </p>
+
+        <p>
+            <strong>Raccomandazioni per Completezza:</strong> Per una valutazione esaustiva si consiglia di:
+        </p>
+        <ul>
+            <li>Condurre test manuali con esperti di accessibilità certificati</li>
+            <li>Coinvolgere utenti reali con diverse disabilità in sessioni di usability testing</li>
+            <li>Testare con diverse combinazioni di browser e tecnologie assistive</li>
+            <li>Valutare l'accessibilità dei documenti scaricabili (PDF, Word, etc.)</li>
+            <li>Verificare l'accessibilità di contenuti multimediali e interattivi</li>
+        </ul>
+
+        <p>
+            <strong>Uso del Documento:</strong> Questo audit fornisce indicazioni tecniche professionali 
+            per supportare il processo di miglioramento dell'accessibilità. Non costituisce certificazione 
+            legale di conformità né consulenza legale. L'implementazione delle raccomandazioni deve essere 
+            valutata nel contesto specifico dell'organizzazione.
+        </p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Audit di Accessibilità Web - {{ company_name }}</p>
+        <p>Documento generato secondo metodologia WCAG 2.1 AA</p>
+        <p>Per informazioni: accessibilita@{{ company_name|lower|replace(' ', '')|replace('.', '')|replace('srl', '')|replace('spa', '') }}.it</p>
+    </footer>
+
+</body>
+</html>

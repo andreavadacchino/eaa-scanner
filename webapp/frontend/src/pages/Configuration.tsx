@@ -127,6 +127,17 @@ export default function Configuration() {
       currentStep={1}
       totalSteps={5}
     >
+      {/* Link alla lista report */}
+      <div className="p-6 pb-0">
+        <button
+          type="button"
+          onClick={() => navigate('/reports')}
+          className="mb-4 px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors flex items-center gap-2"
+        >
+          📊 Visualizza Report Esistenti
+        </button>
+      </div>
+      
       <form onSubmit={handleSubmit} className="space-y-6 p-6">
         {/* URL del sito */}
         <div>

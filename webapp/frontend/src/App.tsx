@@ -7,6 +7,7 @@ import Selection from './pages/Selection';
 import Scanning from './pages/Scanning';
 import LLMConfiguration from './pages/LLMConfiguration';
 import Report from './pages/Report';
+import ReportsList from './pages/ReportsList';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
             <Routes>
               <Route path="/" element={<Configuration />} />
+              <Route path="/reports" element={<ReportsList />} />
               <Route path="/discovery" element={<Discovery />} />
               <Route path="/selection" element={<Selection />} />
               <Route path="/scanning" element={<Scanning />} />

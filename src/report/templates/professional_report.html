@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relazione di conformità all'accessibilità - {{ company_name }}</title>
+    <style>
+        body {
+            font-family: 'Titillium Web', Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #000000;
+            background-color: #ffffff;
+            margin: 2em;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2em;
+        }
+        h1, h2, h3 {
+            font-weight: bold;
+            margin-top: 1.5em;
+            color: #003366;
+        }
+        h1 {
+            font-size: 2em;
+            border-bottom: 3px solid #003366;
+            padding-bottom: 0.5em;
+        }
+        h2 {
+            font-size: 1.5em;
+            margin-top: 2em;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 0.3em;
+        }
+        h3 {
+            font-size: 1.2em;
+            color: #004080;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5em 0;
+        }
+        th, td {
+            border: 1px solid #000000;
+            padding: 0.5em;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        caption {
+            font-weight: bold;
+            text-align: left;
+            margin-bottom: 0.5em;
+            font-size: 1.1em;
+        }
+        .prio-critical {
+            color: #cc0000;
+            font-weight: bold;
+        }
+        .prio-high {
+            color: #cc0000;
+            font-weight: bold;
+        }
+        .prio-medium {
+            color: #cc6600;
+        }
+        .prio-low {
+            color: #666666;
+        }
+        .info-box {
+            background: #f5f9ff;
+            border-left: 4px solid #003366;
+            padding: 1em;
+            margin: 1.5em 0;
+        }
+        .nota-legale {
+            background: #fff9e6;
+            border: 1px solid #ffc107;
+            padding: 1em;
+            margin: 2em 0;
+            border-radius: 5px;
+        }
+        ul, ol {
+            line-height: 1.8;
+            margin-left: 2em;
+        }
+        .metadata {
+            background: #f8f8f8;
+            padding: 1em;
+            border-radius: 5px;
+            margin: 1em 0;
+        }
+        .metadata ul {
+            list-style: none;
+            margin-left: 0;
+        }
+        .metadata li {
+            margin: 0.5em 0;
+        }
+        footer {
+            margin-top: 3em;
+            padding-top: 2em;
+            border-top: 2px solid #003366;
+            color: #666;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Relazione di conformità all'accessibilità del sito {{ company_name }}</h1>
+
+    <h2>Descrizione introduttiva</h2>
+    <p>Questa relazione tecnica di conformità all'accessibilità è stata generata sulla base di dati provenienti da analisi effettuate tramite strumenti automatizzati di validazione, in ottemperanza alle normative europee e nazionali vigenti in materia di accessibilità digitale. Il documento rappresenta una fotografia attendibile e professionale dello stato attuale di conformità del sito web <strong>{{ company_name }}</strong>, con particolare riferimento alle normative europee come l'European Accessibility Act (EAA), e alle linee guida tecniche quali WCAG 2.1 livello AA, la norma EN 301 549 e le indicazioni AgID.</p>
+    
+    <p>L'obiettivo primario di questa relazione è fornire un quadro chiaro e dettagliato delle problematiche riscontrate, suddivise per categorie e priorità, per consentire una pianificazione efficace degli interventi di remediation. Pur essendo basata su un'analisi automatizzata, la relazione costituisce uno strumento fondamentale per individuare le criticità più rilevanti e avviare un percorso di adeguamento strutturale e contenutistico del sito web, indispensabile per garantire l'accesso alle informazioni a tutte le persone, incluse quelle con disabilità.</p>
+    
+    <p>L'accessibilità digitale rappresenta un diritto fondamentale e un'opportunità che va perseguita attraverso il rispetto dei criteri tecnici riconosciuti a livello internazionale. Questo documento costituisce una base oggettiva per tali processi di miglioramento continuo.</p>
+
+    <h2>Metadati</h2>
+    <div class="metadata">
+        <ul>
+            <li><strong>Cliente:</strong> {{ company_name }}</li>
+            <li><strong>Sito web analizzato:</strong> <a href="{{ url }}">{{ url }}</a></li>
+            <li><strong>Fornitore analisi:</strong> {{ company_name }}</li>
+            <li><strong>Referente tecnico:</strong> Team Accessibilità</li>
+            <li><strong>Strumenti utilizzati:</strong> Axe-core, Pa11y, Lighthouse, WAVE</li>
+            <li><strong>Standard di riferimento:</strong> WCAG 2.1 AA, EN 301 549 v3.2.1</li>
+        </ul>
+    </div>
+
+    <h2>Sintesi esecutiva</h2>
+    <div class="info-box">
+        <p>Il sito web di <strong>{{ company_name }}</strong> risulta classificato come 
+        {% if compliance_score >= 80 %}
+            <strong>Conforme</strong>
+        {% elif compliance_score >= 50 %}
+            <strong>Parzialmente Conforme</strong>
+        {% else %}
+            <strong class="prio-critical">Non Conforme</strong>
+        {% endif %}
+        agli standard di accessibilità digitale previsti dalla normativa europea e nazionale. 
+        Questa valutazione è determinata dalla presenza di <strong>{{ total_issues }} problematiche totali</strong>, 
+        di cui <strong class="prio-critical">{{ critical_issues }} critiche</strong> che richiedono intervento immediato.</p>
+        
+        <p>Le criticità più rilevanti riguardano principalmente:</p>
+        <ul>
+            <li><strong>Area Percepibile:</strong> {{ perceivable_issues|length }} problematiche riscontrate</li>
+            <li><strong>Area Operabile:</strong> {{ operable_issues|length }} problematiche riscontrate</li>
+            <li><strong>Area Comprensibile:</strong> {{ understandable_issues|length }} problematiche riscontrate</li>
+            <li><strong>Area Robusta:</strong> {{ robust_issues|length }} problematiche riscontrate</li>
+        </ul>
+        
+        <p>È fondamentale procedere con un piano strutturato di remediation per garantire la conformità alle normative vigenti.</p>
+    </div>
+
+    <h2>Contesto e ambito</h2>
+    <p>Il presente documento riguarda il sito web <a href="{{ url }}">{{ url }}</a>, operante nel territorio italiano ed europeo. L'analisi è stata condotta mediante strumenti automatizzati che valutano la conformità alle normative europee e italiane sull'accessibilità.</p>
+    
+    <p>L'accento è posto sulle funzionalità web accessibili agli utenti con disabilità visive, motorie, cognitive e uditive, verificando che le pagine siano progettate per rispettare i principi di percepibilità, operabilità, comprensibilità e robustezza secondo le WCAG 2.1 livello AA e gli standard correlati.</p>
+    
+    <p>Si sottolinea l'importanza di affiancare l'audit tecnico automatico con test manuali, coinvolgimento degli utenti con disabilità e controllo delle diverse configurazioni di navigazione per assicurare effettivo accesso e usabilità.</p>
+
+    <h2>Metodologia</h2>
+    <p>{{ methodology.statement }}</p>
+    
+    <p>L'audit è stato eseguito utilizzando una suite integrata di strumenti automatizzati leader nel settore:</p>
+    <ul>
+        <li><strong>Axe-core:</strong> Analisi approfondita delle violazioni WCAG con identificazione precisa degli elementi problematici</li>
+        <li><strong>Pa11y:</strong> Validazione degli standard di accessibilità con focus su HTML5 e ARIA</li>
+        <li><strong>Lighthouse:</strong> Valutazione delle performance e best practice di accessibilità</li>
+        <li><strong>WAVE:</strong> Analisi strutturale e semantica con identificazione di pattern problematici</li>
+    </ul>
+    
+    <p>Gli strumenti si basano su regole tecniche validate per il controllo della conformità alle WCAG 2.1 AA, integrando codici e segnalazioni corrispondenti a errori di codice HTML, ARIA, contrasto, etichettatura moduli e navigazione semantica.</p>
+    
+    <p>L'analisi è stata successivamente elaborata in forma aggregata, categorizzando i problemi per area di impatto e priorità di intervento, con suggerimenti di remediation tecnica basati sulle best practice di sviluppo web accessibile.</p>
+
+    <h2>Quadro normativo</h2>
+    <p>La base normativa di riferimento per la presente relazione è costituita da:</p>
+    
+    <h3>Normativa Europea</h3>
+    <ul>
+        <li><strong>Direttiva (UE) 2016/2102</strong> - Web Accessibility Directive, applicabile ai siti web e applicazioni mobili degli enti pubblici</li>
+        <li><strong>Direttiva (UE) 2019/882</strong> - European Accessibility Act (EAA), con conformità obbligatoria entro le scadenze previste</li>
+        <li><strong>Norma EN 301 549 v3.2.1</strong> - Standard tecnico europeo per l'accessibilità ICT</li>
+    </ul>
+    
+    <h3>Normativa Italiana</h3>
+    <ul>
+        <li><strong>Legge n. 4</strong> - "Disposizioni per favorire l'accesso dei soggetti disabili agli strumenti informatici" (Legge Stanca)</li>
+        <li><strong>D.Lgs. 82/2005</strong> - Codice dell'amministrazione digitale e successivi aggiornamenti</li>
+        <li><strong>D.Lgs. 82/2022</strong> - Recepimento della Direttiva UE 2019/882</li>
+        <li><strong>Linee Guida AgID</strong> - Linee guida sull'accessibilità degli strumenti informatici</li>
+    </ul>
+
+    <h2>Sintesi del livello di conformità - Principi P.O.U.R.</h2>
+    <p>Le WCAG sono organizzate attorno a quattro principi fondamentali (P.O.U.R.):</p>
+    
+    <table>
+        <caption>Stato di conformità per principio P.O.U.R.</caption>
+        <thead>
+            <tr>
+                <th scope="col">Principio</th>
+                <th scope="col">Descrizione</th>
+                <th scope="col">Problemi rilevati</th>
+                <th scope="col">Stato</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th scope="row">Percepibile</th>
+                <td>Le informazioni e i componenti dell'interfaccia devono essere presentati in modi che gli utenti possano percepire</td>
+                <td>{{ perceivable_issues|length }}</td>
+                <td class="{% if perceivable_issues|length > 10 %}prio-critical{% elif perceivable_issues|length > 5 %}prio-high{% elif perceivable_issues|length > 0 %}prio-medium{% endif %}">
+                    {% if perceivable_issues|length == 0 %}Conforme{% elif perceivable_issues|length <= 5 %}Parzialmente Conforme{% else %}Non Conforme{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Operabile</th>
+                <td>I componenti dell'interfaccia e la navigazione devono essere utilizzabili</td>
+                <td>{{ operable_issues|length }}</td>
+                <td class="{% if operable_issues|length > 10 %}prio-critical{% elif operable_issues|length > 5 %}prio-high{% elif operable_issues|length > 0 %}prio-medium{% endif %}">
+                    {% if operable_issues|length == 0 %}Conforme{% elif operable_issues|length <= 5 %}Parzialmente Conforme{% else %}Non Conforme{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Comprensibile</th>
+                <td>Le informazioni e il funzionamento dell'interfaccia devono essere comprensibili</td>
+                <td>{{ understandable_issues|length }}</td>
+                <td class="{% if understandable_issues|length > 10 %}prio-critical{% elif understandable_issues|length > 5 %}prio-high{% elif understandable_issues|length > 0 %}prio-medium{% endif %}">
+                    {% if understandable_issues|length == 0 %}Conforme{% elif understandable_issues|length <= 5 %}Parzialmente Conforme{% else %}Non Conforme{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">Robusto</th>
+                <td>Il contenuto deve essere sufficientemente robusto da essere interpretato da un'ampia varietà di user agent</td>
+                <td>{{ robust_issues|length }}</td>
+                <td class="{% if robust_issues|length > 10 %}prio-critical{% elif robust_issues|length > 5 %}prio-high{% elif robust_issues|length > 0 %}prio-medium{% endif %}">
+                    {% if robust_issues|length == 0 %}Conforme{% elif robust_issues|length <= 5 %}Parzialmente Conforme{% else %}Non Conforme{% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Riepilogo numerico della scansione</h2>
+    <table>
+        <caption>Distribuzione problemi per severità</caption>
+        <thead>
+            <tr>
+                <th scope="col">Severità</th>
+                <th scope="col">Numero</th>
+                <th scope="col">Percentuale</th>
+                <th scope="col">Impatto</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="prio-critical">Critico</td>
+                <td>{{ critical_issues }}</td>
+                <td>{{ "%.1f"|format((critical_issues / total_issues * 100) if total_issues > 0 else 0) }}%</td>
+                <td>Impedisce completamente l'accesso</td>
+            </tr>
+            <tr>
+                <td class="prio-high">Alto</td>
+                <td>{{ high_issues }}</td>
+                <td>{{ "%.1f"|format((high_issues / total_issues * 100) if total_issues > 0 else 0) }}%</td>
+                <td>Crea barriere significative</td>
+            </tr>
+            <tr>
+                <td class="prio-medium">Medio</td>
+                <td>{{ medium_issues }}</td>
+                <td>{{ "%.1f"|format((medium_issues / total_issues * 100) if total_issues > 0 else 0) }}%</td>
+                <td>Causa difficoltà nell'utilizzo</td>
+            </tr>
+            <tr>
+                <td class="prio-low">Basso</td>
+                <td>{{ low_issues }}</td>
+                <td>{{ "%.1f"|format((low_issues / total_issues * 100) if total_issues > 0 else 0) }}%</td>
+                <td>Problemi minori di usabilità</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Analisi Impatto su Tipologie di Disabilità</h2>
+    <p>Le problematiche identificate impattano diverse categorie di utenti con disabilità. Questa analisi evidenzia quali gruppi di utenti sono maggiormente penalizzati dalle barriere di accessibilità presenti nel sito.</p>
+
+    <table>
+        <caption>Distribuzione problematiche per tipologia di disabilità impattata</caption>
+        <thead>
+            <tr>
+                <th scope="col">Tipologia Disabilità</th>
+                <th scope="col">Problemi Correlati</th>
+                <th scope="col">Priorità Intervento</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set disability_map = {
+                'non_vedenti': 'Non vedenti / Screen reader',
+                'ipovisione': 'Ipovisione',
+                'daltonismo': 'Daltonismo',
+                'motorie': 'Disabilità motorie',
+                'cognitive_linguistiche': 'Disabilità cognitive e linguistiche',
+                'uditiva': 'Disabilità uditive'
+            } %}
+            {% for disability in disability_impacts %}
+            <tr>
+                <td>{{ disability_map.get(disability.value, disability.value) }}</td>
+                <td>
+                    {% set count = 0 %}
+                    {% for issue in report.issues %}
+                        {% if disability in issue.disability_impact %}
+                            {% set count = count + 1 %}
+                        {% endif %}
+                    {% endfor %}
+                    {{ count }}
+                </td>
+                <td>
+                    {% if count > 10 %}
+                        <span class="prio-critical">Immediata</span>
+                    {% elif count > 5 %}
+                        <span class="prio-high">Urgente</span>
+                    {% elif count > 2 %}
+                        <span class="prio-medium">Pianificata</span>
+                    {% else %}
+                        <span class="prio-low">Routine</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Dettaglio Problematiche per Principio P.O.U.R.</h2>
+
+    <h3>1. Percepibile</h3>
+    <p>Le seguenti problematiche impediscono agli utenti di percepire correttamente i contenuti attraverso diversi canali sensoriali. Queste barriere impattano principalmente utenti non vedenti, ipovedenti e con daltonismo.</p>
+    
+    {% if perceivable_issues %}
+    <table>
+        <caption>Problematiche del principio Percepibile</caption>
+        <thead>
+            <tr>
+                <th scope="col">Descrizione</th>
+                <th scope="col">WCAG</th>
+                <th scope="col">Severità</th>
+                <th scope="col">Impatto</th>
+                <th scope="col">Remediation</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for issue in perceivable_issues[:10] %}
+            <tr>
+                <td>{{ issue.description }}</td>
+                <td>{{ issue.wcag_criteria_string() }}</td>
+                <td class="prio-{{ issue.severity.value }}">{{ issue.severity.value|capitalize }}</td>
+                <td>{{ issue.disability_impact_string() }}</td>
+                <td>{{ issue.remediation }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="info-box">
+        ✅ Nessuna problematica rilevata per questo principio.
+    </div>
+    {% endif %}
+
+    <h3>2. Operabile</h3>
+    <p>Le seguenti problematiche impediscono agli utenti di operare correttamente con l'interfaccia, particolarmente attraverso la navigazione da tastiera. Queste barriere impattano principalmente utenti con disabilità motorie.</p>
+    
+    {% if operable_issues %}
+    <table>
+        <caption>Problematiche del principio Operabile</caption>
+        <thead>
+            <tr>
+                <th scope="col">Descrizione</th>
+                <th scope="col">WCAG</th>
+                <th scope="col">Severità</th>
+                <th scope="col">Impatto</th>
+                <th scope="col">Remediation</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for issue in operable_issues[:10] %}
+            <tr>
+                <td>{{ issue.description }}</td>
+                <td>{{ issue.wcag_criteria_string() }}</td>
+                <td class="prio-{{ issue.severity.value }}">{{ issue.severity.value|capitalize }}</td>
+                <td>{{ issue.disability_impact_string() }}</td>
+                <td>{{ issue.remediation }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="info-box">
+        ✅ Nessuna problematica rilevata per questo principio.
+    </div>
+    {% endif %}
+
+    <h3>3. Comprensibile</h3>
+    <p>Le seguenti problematiche rendono difficile la comprensione dei contenuti e del funzionamento dell'interfaccia. Queste barriere impattano principalmente utenti con disabilità cognitive e linguistiche.</p>
+    
+    {% if understandable_issues %}
+    <table>
+        <caption>Problematiche del principio Comprensibile</caption>
+        <thead>
+            <tr>
+                <th scope="col">Descrizione</th>
+                <th scope="col">WCAG</th>
+                <th scope="col">Severità</th>
+                <th scope="col">Impatto</th>
+                <th scope="col">Remediation</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for issue in understandable_issues[:10] %}
+            <tr>
+                <td>{{ issue.description }}</td>
+                <td>{{ issue.wcag_criteria_string() }}</td>
+                <td class="prio-{{ issue.severity.value }}">{{ issue.severity.value|capitalize }}</td>
+                <td>{{ issue.disability_impact_string() }}</td>
+                <td>{{ issue.remediation }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="info-box">
+        ✅ Nessuna problematica rilevata per questo principio.
+    </div>
+    {% endif %}
+
+    <h3>4. Robusto</h3>
+    <p>Le seguenti problematiche impediscono la corretta interpretazione dei contenuti da parte delle tecnologie assistive. Queste barriere impattano tutti gli utenti che utilizzano screen reader o altre tecnologie assistive.</p>
+    
+    {% if robust_issues %}
+    <table>
+        <caption>Problematiche del principio Robusto</caption>
+        <thead>
+            <tr>
+                <th scope="col">Descrizione</th>
+                <th scope="col">WCAG</th>
+                <th scope="col">Severità</th>
+                <th scope="col">Impatto</th>
+                <th scope="col">Remediation</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for issue in robust_issues[:10] %}
+            <tr>
+                <td>{{ issue.description }}</td>
+                <td>{{ issue.wcag_criteria_string() }}</td>
+                <td class="prio-{{ issue.severity.value }}">{{ issue.severity.value|capitalize }}</td>
+                <td>{{ issue.disability_impact_string() }}</td>
+                <td>{{ issue.remediation }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="info-box">
+        ✅ Nessuna problematica rilevata per questo principio.
+    </div>
+    {% endif %}
+
+    <h2>Processo di Conformità Continua</h2>
+    <p>L'accessibilità web non è un traguardo statico ma un processo continuo che richiede monitoraggio, manutenzione e miglioramento costanti. Il processo di conformità continua garantisce che il sito mantenga e migliori nel tempo il proprio livello di accessibilità.</p>
+
+    <div class="info-box">
+        <h3>Pratiche Implementate:</h3>
+        <ul>
+            {% for practice in continuous_process.practices %}
+            <li>{{ practice }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <h2>Dichiarazione di Accessibilità e Canali di Feedback</h2>
+    <p>La dichiarazione di accessibilità rappresenta l'impegno formale dell'organizzazione verso l'accessibilità web e fornisce agli utenti informazioni trasparenti sullo stato di conformità e sui canali di supporto disponibili.</p>
+
+    <div class="info-box">
+        <h3>Canali di Feedback Disponibili:</h3>
+        <ul>
+            {% for channel in declaration.channels %}
+            <li>{{ channel|capitalize }}</li>
+            {% endfor %}
+        </ul>
+        <p style="margin-top: 1rem;">{{ declaration.notes }}</p>
+    </div>
+
+    <h2>Note Legali</h2>
+    <h2>Glossario criteri WCAG più frequenti</h2>
+    <ul>
+        <li><strong>1.1.1 Contenuto non testuale:</strong> Tutto il contenuto non testuale deve avere un'alternativa testuale equivalente</li>
+        <li><strong>1.3.1 Informazioni e relazioni:</strong> Le informazioni, la struttura e le relazioni devono essere determinate programmaticamente</li>
+        <li><strong>1.4.3 Contrasto minimo:</strong> Il testo deve avere un rapporto di contrasto di almeno 4.5:1</li>
+        <li><strong>2.1.1 Tastiera:</strong> Tutte le funzionalità devono essere disponibili tramite tastiera</li>
+        <li><strong>2.4.4 Scopo del collegamento:</strong> Lo scopo di ogni link deve essere determinabile dal testo del link</li>
+        <li><strong>3.3.2 Etichette o istruzioni:</strong> Etichette o istruzioni sono fornite quando il contenuto richiede input</li>
+        <li><strong>4.1.2 Nome, ruolo, valore:</strong> Per tutti i componenti UI, nome e ruolo devono essere determinabili programmaticamente</li>
+    </ul>
+
+    <h2>Piano di remediation</h2>
+    <table>
+        <caption>Priorità interventi e figure responsabili</caption>
+        <thead>
+            <tr>
+                <th scope="col">Intervento</th>
+                <th scope="col">Area P.O.U.R.</th>
+                <th scope="col">Impatto</th>
+                <th scope="col">Priorità</th>
+                <th scope="col">Owner</th>
+                <th scope="col">Note tecniche</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for issue in issues %}
+            {% if issue.severity.value in ['critical', 'high'] %}
+            <tr>
+                <td>{{ issue.remediation }}</td>
+                <td>{{ issue.pour.value }}</td>
+                <td>
+                    {% for disability in issue.disability_impact %}
+                    {{ disability.value }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                </td>
+                <td class="prio-{{ issue.severity.value }}">
+                    {% if issue.severity.value == 'critical' %}Critica
+                    {% elif issue.severity.value == 'high' %}Alta
+                    {% elif issue.severity.value == 'medium' %}Media
+                    {% else %}Bassa{% endif %}
+                </td>
+                <td>Frontend Developer, Content Editor</td>
+                <td>WCAG {{ issue.wcag_criteria|join(', ') }}</td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Raccomandazioni strategiche</h2>
+    <div class="info-box">
+        <h3>Interventi prioritari</h3>
+        <ol>
+            <li><strong>Fase 1 - Immediata:</strong> Risolvere i problemi critici che impediscono completamente l'accesso</li>
+            <li><strong>Fase 2 - Urgente:</strong> Correggere i problemi ad alta priorità</li>
+            <li><strong>Fase 3 - Pianificata:</strong> Affrontare i problemi di media priorità</li>
+            <li><strong>Fase 4 - Ottimizzazione:</strong> Implementare miglioramenti continui e monitoraggio</li>
+        </ol>
+        
+        <h3>Azioni di sistema</h3>
+        <ul>
+            <li>Formazione del team di sviluppo sulle WCAG 2.1 e tecniche di accessibilità</li>
+            <li>Implementazione di test automatici di accessibilità nel processo CI/CD</li>
+            <li>Adozione di un Design System accessibile by design</li>
+            <li>Coinvolgimento di utenti con disabilità nel processo di testing</li>
+            <li>Predisposizione della Dichiarazione di Accessibilità su form.agid.gov.it</li>
+            <li>Attivazione del meccanismo di feedback per segnalazioni di accessibilità</li>
+        </ul>
+    </div>
+
+    <h2>Metodologia e preparazione della dichiarazione</h2>
+    <p>La presente relazione è stata prodotta mediante analisi automatizzata svolta con tool riconosciuti e aggiornati. Si tratta di una valutazione tecnica preliminare che evidenzia in modo affidabile i principali profili di non conformità sul sito web, in conformità con le linee guida e gli standard citati.</p>
+    
+    <p>Pur avendo elevata accuratezza tecnica, l'audit automatico non sostituisce una verifica manuale approfondita, che si consiglia di integrare periodicamente per ottenere un quadro complessivo di accessibilità completo e certificato.</p>
+
+    <h2>Conclusioni</h2>
+    <p>L'analisi automatizzata ha evidenziato diverse aree di miglioramento per garantire la piena conformità del sito web {{ company_name }} agli standard di accessibilità. Le problematiche riscontrate sono state classificate secondo i principi P.O.U.R. e mappate per impatto sulle diverse tipologie di disabilità.</p>
+    
+    <p>È fondamentale avviare un processo strutturato di remediation, partendo dalle criticità più severe e procedendo con un approccio sistematico. L'implementazione delle raccomandazioni fornite permetterà di raggiungere la conformità normativa e, soprattutto, di garantire un accesso equo e inclusivo a tutti gli utenti.</p>
+
+    <h2>Contatti per supporto accessibilità</h2>
+    <p>Per segnalazioni, richieste di supporto o feedback sull'accessibilità del sito:</p>
+    <ul>
+        <li><strong>Email:</strong> accessibilita@{{ company_name|lower|replace(' ', '') }}.it</li>
+        <li><strong>Telefono:</strong> Servizio clienti aziendale</li>
+        <li><strong>Form online:</strong> Disponibile sulla pagina accessibilità del sito</li>
+    </ul>
+    <p>Le segnalazioni verranno gestite tempestivamente con l'obiettivo di offrire assistenza efficace e miglioramenti continui.</p>
+
+    <h2>Procedura di reclamo</h2>
+    <p>Gli utenti che riscontrassero problemi o barriere all'accesso ai contenuti digitali possono:</p>
+    <ol>
+        <li>Inviare una segnalazione tramite i canali di supporto sopra indicati</li>
+        <li>In caso di mancata risposta, rivolgersi al Difensore civico digitale</li>
+        <li>Presentare reclamo all'AgID tramite il modulo disponibile su <a href="https://form.agid.gov.it">form.agid.gov.it</a></li>
+        <li>Rivolgersi alle autorità competenti nazionali per la tutela delle persone con disabilità</li>
+    </ol>
+
+    <h2>Stato aggiornamento</h2>
+    <p><strong>Frequenza monitoraggio:</strong> Trimestrale con verifiche continue sui contenuti pubblicati</p>
+    <p><strong>Processo di aggiornamento:</strong> Revisione continua basata su feedback utenti e evoluzioni normative</p>
+
+    <div class="nota-legale">
+        <h2>Nota legale / Disclaimer</h2>
+        <p>Questa relazione tecnica è stata generata da un sistema avanzato di audit automatico sull'accessibilità digitale, sviluppato per fornire una valutazione affidabile dello stato di conformità di un sito web rispetto ai principali standard normativi (WCAG 2.1 AA, EAA, AgID, EN 301 549).</p>
+        
+        <p>L'analisi riguarda un insieme rappresentativo di pagine del sito e riflette lo stato di accessibilità al momento dell'audit. Non copre l'intero sito né garantisce l'assenza totale di problemi al di fuori dell'ambito testato.</p>
+        
+        <p>I risultati presentati sono da intendersi come <strong>indicazione tecnica professionale</strong> utile a definire le priorità di intervento. Per una verifica completa e certificata, si raccomanda di integrare il presente audit con controlli manuali periodici, test con utenti reali e revisioni continue dei contenuti pubblicati.</p>
+        
+        <p>L'organizzazione si impegna a mantenere aggiornata la presente relazione e a pubblicare la Dichiarazione di Accessibilità secondo le modalità previste dalla normativa vigente.</p>
+    </div>
+
+    <footer>
+        <p>Relazione di conformità all'accessibilità - {{ company_name }}</p>
+        <p>Report generato con metodologia automatica basata su scanner multipli</p>
+        <p>Conforme alle linee guida WCAG 2.1 Livello AA e normative italiane sull'accessibilità</p>
+    </footer>
+</body>
+</html>

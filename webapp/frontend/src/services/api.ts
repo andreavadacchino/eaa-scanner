@@ -6,7 +6,9 @@ import {
   MultiPageScanRequest,
   ScanResponse,
   ScanStatus,
-  ApiError
+  ApiError,
+  ReportsListResponse,
+  ReportFilters
 } from '../types';
 
 const API_BASE = '/api';
@@ -250,6 +252,29 @@ class ApiService {
       TIMEOUT_CONFIG.long
     );
     return response.blob();
+  }
+
+  // Get reports list
+  async getReportsList(
+    skip: number = 0,
+    limit: number = 20,
+    filters?: ReportFilters
+  ): Promise<ReportsListResponse> {
+    const params = new URLSearchParams({
+      skip: skip.toString(),
+      limit: limit.toString(),
+      ...(filters?.status && { status: filters.status }),
+      ...(filters?.order_by && { order_by: filters.order_by }),
+      ...(filters?.order_dir && { order_dir: filters.order_dir })
+    });
+
+    const response = await this.fetchWithTimeout(
+      `${API_BASE}/reports?${params}`,
+      { method: 'GET' },
+      TIMEOUT_CONFIG.short
+    );
+
+    return response.json();
   }
 
   // Utility per cancellare richieste in corso

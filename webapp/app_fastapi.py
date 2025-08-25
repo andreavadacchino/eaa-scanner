@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 from contextlib import asynccontextmanager
 
 # FastAPI core imports
-from fastapi import FastAPI, HTTPException, Depends, Request, Response, status, BackgroundTasks
+from fastapi import FastAPI, HTTPException, Depends, Request, Response, status, BackgroundTasks, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
@@ -23,6 +23,9 @@ from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse, Fil
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi import WebSocket, WebSocketDisconnect
+
+# Import routers
+from webapp.routers import report_generator
 
 # Pydantic models for validation
 from pydantic import BaseModel, Field, HttpUrl, EmailStr, validator, ConfigDict, field_validator
@@ -1025,6 +1028,11 @@ class NoCacheStaticFiles(StaticFiles):
 output_dir = Path("/app/output")
 if output_dir.exists():
     app.mount("/output", NoCacheStaticFiles(directory=str(output_dir)), name="output")
+
+# ==================== ROUTERS ====================
+
+# Include report generator router
+app.include_router(report_generator.router, prefix="/api/report", tags=["report"])
 
 # ==================== API ROUTES ====================
 
@@ -5338,6 +5346,289 @@ async def estimate_llm_costs(request: dict):
             "error": "Errore durante la stima dei costi",
             "estimated_cost": 0.25
         }
+
+@app.get("/api/reports/{report_id}/download")
+async def download_report_direct(report_id: str, format: str = Query("pdf", regex="^(pdf|html|json)$")):
+    """
+    Scarica il report nel formato richiesto.
+    """
+    try:
+        conn = sqlite3.connect(get_database_path())
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM scans WHERE id = ?', (report_id,))
+        scan_row = cursor.fetchone()
+        conn.close()
+        
+        if not scan_row:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Report non trovato"
+            )
+        
+        # Estrai i dati della scansione
+        columns = ['id', 'url', 'company_name', 'email', 'status', 'progress', 'results', 
+                  'created_at', 'updated_at', 'output_path', 'html_report_path', 'pdf_report_path']
+        scan_data = dict(zip(columns[:len(scan_row)], scan_row))
+        
+        company_name = scan_data.get("company_name", "report")
+        
+        if format == "pdf":
+            pdf_path = scan_data.get("pdf_report_path")
+            if pdf_path and Path(pdf_path).exists():
+                return FileResponse(
+                    path=pdf_path,
+                    media_type="application/pdf",
+                    filename=f"report_{company_name}.pdf"
+                )
+            else:
+                # Genera PDF se non esiste
+                # TODO: implementare generazione PDF
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="PDF non disponibile per questo report"
+                )
+        
+        elif format == "html":
+            html_path = scan_data.get("html_report_path")
+            if not html_path and scan_data.get("output_path"):
+                # Cerca nella cartella output
+                output_dir = Path(scan_data["output_path"])
+                if output_dir.exists():
+                    html_files = list(output_dir.glob("*.html"))
+                    if html_files:
+                        html_path = str(html_files[0])
+            
+            if html_path and Path(html_path).exists():
+                return FileResponse(
+                    path=html_path,
+                    media_type="text/html",
+                    filename=f"report_{company_name}.html"
+                )
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="HTML non trovato"
+                )
+        
+        elif format == "json":
+            results = scan_data.get("results")
+            if results:
+                return Response(
+                    content=results if isinstance(results, str) else json.dumps(results),
+                    media_type="application/json",
+                    headers={
+                        "Content-Disposition": f"attachment; filename=report_{company_name}.json"
+                    }
+                )
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Dati JSON non disponibili"
+                )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error downloading report: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Errore nel download del report: {str(e)}"
+        )
+
+@app.get("/api/reports/{report_id}/view", response_class=HTMLResponse)
+async def view_report(report_id: str):
+    """
+    Visualizza il report HTML direttamente nel browser.
+    """
+    try:
+        conn = sqlite3.connect(get_database_path())
+        cursor = conn.cursor()
+        cursor.execute('SELECT output_path, html_report_path FROM scans WHERE id = ?', (report_id,))
+        result = cursor.fetchone()
+        conn.close()
+        
+        if not result:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Report non trovato"
+            )
+        
+        output_path, html_report_path = result
+        
+        # Prova prima il percorso html_report_path
+        if html_report_path and Path(html_report_path).exists():
+            with open(html_report_path, 'r', encoding='utf-8') as f:
+                return HTMLResponse(content=f.read())
+        
+        # Altrimenti cerca nella cartella output
+        if output_path:
+            # Cerca file HTML nella cartella output
+            output_dir = Path(output_path)
+            if output_dir.exists():
+                html_files = list(output_dir.glob("*.html"))
+                if html_files:
+                    # Prendi il primo file HTML trovato
+                    with open(html_files[0], 'r', encoding='utf-8') as f:
+                        return HTMLResponse(content=f.read())
+        
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="File HTML del report non trovato"
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error viewing report: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Errore nella visualizzazione del report: {str(e)}"
+        )
+
+@app.get("/api/reports")
+async def get_reports(
+    skip: int = Query(0, ge=0, description="Numero di record da saltare"),
+    limit: int = Query(20, ge=1, le=100, description="Numero massimo di record"),
+    status: Optional[str] = Query(None, description="Filtra per stato (completed, failed, in_progress)"),
+    order_by: str = Query("created_at", regex="^(created_at|completed_at|company_name|url)$"),
+    order_dir: str = Query("desc", regex="^(asc|desc)$")
+):
+    """
+    Recupera lista paginata dei report di scansione dal database.
+    
+    Returns:
+        Lista paginata dei report con informazioni di paginazione
+    """
+    try:
+        conn = sqlite3.connect(get_database_path())
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        # Query base per recuperare i report
+        query = """
+            SELECT 
+                id,
+                url,
+                company_name,
+                email,
+                status,
+                progress,
+                created_at,
+                updated_at,
+                completed_at,
+                output_path,
+                html_report_path,
+                pdf_report_path,
+                results
+            FROM scans
+        """
+        
+        params = []
+        
+        # Aggiungi filtro status se fornito
+        if status:
+            query += " WHERE status = ?"
+            params.append(status)
+        
+        # Aggiungi ordinamento
+        query += f" ORDER BY {order_by} {order_dir.upper()}"
+        
+        # Aggiungi paginazione
+        query += " LIMIT ? OFFSET ?"
+        params.extend([limit, skip])
+        
+        # Esegui query principale
+        cursor.execute(query, params)
+        reports_raw = cursor.fetchall()
+        
+        # Converti in dizionari e aggiungi campi calcolati
+        reports = []
+        for row in reports_raw:
+            report = dict(row)
+            
+            # Estrai informazioni dal campo results se presente
+            if report.get('results'):
+                try:
+                    results_data = json.loads(report['results'])
+                    if isinstance(results_data, dict):
+                        # Estrai score e compliance_level
+                        report['score'] = results_data.get('score', 0)
+                        report['compliance_level'] = results_data.get('compliance_level', 'unknown')
+                        
+                        # Conta i problemi per severità
+                        issues = results_data.get('issues', [])
+                        report['critical_issues'] = sum(1 for i in issues if i.get('severity') == 'Critical')
+                        report['high_issues'] = sum(1 for i in issues if i.get('severity') == 'High')
+                        report['medium_issues'] = sum(1 for i in issues if i.get('severity') == 'Medium')
+                        report['low_issues'] = sum(1 for i in issues if i.get('severity') == 'Low')
+                except (json.JSONDecodeError, TypeError):
+                    # Se non riusciamo a parsare, usa valori default
+                    report['score'] = 0
+                    report['compliance_level'] = 'unknown'
+                    report['critical_issues'] = 0
+                    report['high_issues'] = 0
+                    report['medium_issues'] = 0
+                    report['low_issues'] = 0
+            else:
+                # Valori default se non ci sono risultati
+                report['score'] = 0
+                report['compliance_level'] = 'unknown'
+                report['critical_issues'] = 0
+                report['high_issues'] = 0
+                report['medium_issues'] = 0
+                report['low_issues'] = 0
+            
+            # Rimuovi il campo results dal response (troppo grande)
+            report.pop('results', None)
+            
+            # Aggiungi scan_type basato su output_path
+            if report.get('output_path'):
+                report['scan_type'] = 'real' if 'real' in str(report['output_path']) else 'simulate'
+            else:
+                report['scan_type'] = 'unknown'
+            
+            # Se html_report_path è null, cerca file HTML nella directory output
+            if not report.get('html_report_path') and report.get('id'):
+                output_dir = f"/app/output/{report['id']}"
+                try:
+                    if os.path.exists(output_dir):
+                        # Cerca file HTML nella directory
+                        html_files = [f for f in os.listdir(output_dir) if f.endswith('.html') and f.startswith('report_')]
+                        if html_files:
+                            # Prendi il primo file HTML trovato
+                            report['html_report_path'] = f"output/{report['id']}/{html_files[0]}"
+                            logger.info(f"Found HTML report for {report['id']}: {report['html_report_path']}")
+                except Exception as e:
+                    logger.warning(f"Error searching HTML for report {report['id']}: {e}")
+                
+            reports.append(report)
+        
+        # Conta totale record per paginazione
+        count_query = "SELECT COUNT(*) as total FROM scans"
+        if status:
+            count_query += " WHERE status = ?"
+            cursor.execute(count_query, [status])
+        else:
+            cursor.execute(count_query)
+        
+        total = cursor.fetchone()['total']
+        
+        conn.close()
+        
+        return {
+            "reports": reports,
+            "total": total,
+            "skip": skip,
+            "limit": limit,
+            "has_more": (skip + limit) < total
+        }
+        
+    except Exception as e:
+        logger.error(f"Error fetching reports list: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Errore nel recupero della lista report: {str(e)}"
+        )
 
 @app.post("/api/reports/regenerate")
 async def regenerate_report(request: dict):
